@@ -1,0 +1,101 @@
+@import '../../../assets/styles/constant.css';
+
+:local(.container) {
+  position: absolute;
+  z-index: 30;
+  width: 60px;
+  height: 60px;
+
+  :local(.tip) {
+    position: absolute;
+    display: block;
+    width: 5px;
+    height: 5px;
+
+    animation-duration: 200ms;
+    :local {
+      animation-name: show-hide;
+    }
+
+    &:nth-child(1) {
+      background-color: var(--red);
+      animation-delay: 0ms;
+    }
+
+    &:nth-child(2) {
+      background-color: var(--purple);
+      animation-delay: 30ms;
+    }
+
+    &:nth-child(3) {
+      background-color: var(--blue);
+      animation-delay: 60ms;
+    }
+
+    &:nth-child(4) {
+      background-color: var(--green);
+      animation-delay: 90ms;
+    }
+
+    &:nth-child(5) {
+      background-color: var(--orange);
+      animation-delay: 120ms;
+    }
+
+    &:nth-child(6) {
+      background-color: var(--red);
+      animation-delay: 150ms;
+    }
+
+    &:nth-child(7) {
+      background-color: var(--purple);
+      animation-delay: 180ms;
+    }
+
+    &:nth-child(8) {
+      background-color: var(--blue);
+      animation-delay: 210ms;
+    }
+
+    &:nth-child(9) {
+      background-color: var(--green);
+      animation-delay: 240ms;
+    }
+
+    &:nth-child(10) {
+      background-color: var(--orange);
+      animation-delay: 270ms;
+    }
+
+    &:nth-child(11) {
+      background-color: var(--red);
+      animation-delay: 300ms;
+    }
+
+    &:nth-child(12) {
+      background-color: var(--purple);
+      animation-delay: 330ms;
+    }
+  }
+}
+
+@keyframes :local(show-hide) {
+  0% {
+    opacity: 0;
+  }
+  39% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+   opacity: 1; 
+  }
+  61% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}

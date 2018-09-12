@@ -1,0 +1,16 @@
+:root {
+  --light-sepia: rgba(245, 222, 179, 1);
+  --dark-sepia: rgba(74, 74, 74, 1);
+
+  --black: #212121;
+  --white: #efefef;
+
+  --black-alpha8: rgba(0, 0, 0, 0.8);
+  --white-alpha8: rgba(255, 255, 255, 0.8);
+
+  --red: rgba(239, 0, 127, 1);
+  --purple: rgba(135, 0, 255, 1);
+  --blue: rgba(0, 157, 255, 1);
+  --green: rgba(136, 198, 19, 1);
+  --orange: rgba(255, 145, 20, 1);
+}
