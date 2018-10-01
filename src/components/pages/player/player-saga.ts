@@ -33,7 +33,10 @@ const playerSaga = [
   takeEvery(PlayerAction.START_MUSIC, function* (_action: PlayerAction.StartMusic) {
     const { player } = yield select();
     const { source } = player as PlayerState;
+    
     source.start(0, 0);
+    yield put(PlayerAction.setOffsetCurrentTime(source.context.currentTime));
+
     source.onended = (e) => {
       console.log('onended', e);
       source.stop();

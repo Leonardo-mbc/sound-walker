@@ -7,6 +7,7 @@ interface NotesPlayerProps {
   scores: MusicScore[][];
   meta: MusicMetaData;
   source: AudioBufferSourceNode;
+  offsetCurrentTime: number;
 }
 
 interface NotesPlayerState {
@@ -57,11 +58,6 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
       });
     });
 
-    this.setState({
-      stepsTimers,
-      stepsState
-    });
-
     setInterval(() => {
       this.setState({
         timingBarBlink: !this.state.timingBarBlink
@@ -98,23 +94,28 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
   }
 
   onTap(e: TouchEvent) {
-    const { context } = this.props.source;
+    const { source, offsetCurrentTime } = this.props;
+    const { tapEffectDoms } = this.state;
     const fingerCount = e.touches.length;
+    const currentTime = source.context.currentTime;
+    const playTime = currentTime - offsetCurrentTime;
+
     Array(fingerCount).fill(0).map((_, id) => {
       const touch = e.touches.item(id);
       this.setState({
         tapEffectDoms: [
-          ...this.state.tapEffectDoms,
-          <TapEffect key={`${context.currentTime}`} isVisible x={touch.clientX} y={touch.clientY} />
+          ...tapEffectDoms,
+          <TapEffect key={`${currentTime}`} isVisible x={touch.clientX} y={touch.clientY} />
         ]
       });
-      console.log(touch.identifier, touch.screenX, touch.screenY, context.currentTime);
+
+      console.log(touch.identifier, touch.screenX, touch.screenY, playTime);
     });
   }
 
   render() {
     const { scores } = this.props;
-    const { stepsState, timingBarBlink } = this.state;
+    const { stepsState, timingBarBlink, tapEffectDoms } = this.state;
 
     return (
       <div ref={(elem) => this.container = elem} className={styles.container}>
@@ -122,7 +123,7 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
           return score.map((_, stepKey) => {
             const key = `${scoreKey}-${stepKey}`;
             const stepStyle = {
-              left: `calc(50% + ${50 + 100 * (stepsState[key].position - 4.5) + (5 * stepsState[key].position - 100)}px)`
+              left: `${(innerWidth * 0.125 - 2.5) * (stepsState[key].position - 1) + 10}px`
             };
             return (
               stepsState[key].isVisible
@@ -132,7 +133,11 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
           });
         })}
         <div className={`${styles.timingBar} ${timingBarBlink? styles.timingBarBlink: ''}`} />
-        {this.state.tapEffectDoms.map(v => v)}
+        {
+          tapEffectDoms //FIXME: 出し方がよくない、同時タップだと新しい方が見えない
+            .slice(tapEffectDoms.length < 10 ? 0 : tapEffectDoms.length - 10, tapEffectDoms.length)
+            .map(v => v)
+        }
       </div>
     );
   }

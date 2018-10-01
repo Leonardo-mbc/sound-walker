@@ -6,7 +6,8 @@ export type ActionTypes =
   | SetMusicSource
   | StartMusic
   | LoadMusicInfo
-  | SetMusicInfo;
+  | SetMusicInfo
+  | SetOffsetCurrentTime;
 
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
 export const LOAD_MUSIC = 'LOAD_MUSIC';
@@ -14,6 +15,7 @@ export const SET_MUSIC_SOURCE = 'SET_MUSIC_SOURCE';
 export const START_MUSIC = 'START_MUSIC';
 export const LOAD_MUSIC_INFO = 'LOAD_SCORE';
 export const SET_MUSIC_INFO = 'SET_MUSIC_INFO';
+export const SET_OFFSET_CURRENT_TIME = 'SET_OFFSET_CURRENT_TIME';
 
 export interface SetSystemReady {
   type: typeof SET_SYSTEM_READY;
@@ -84,5 +86,18 @@ export const setMusicInfo = (musicInfo: MusicInfo): SetMusicInfo => ({
   type: SET_MUSIC_INFO,
   payload: {
     musicInfo
+  }
+});
+
+export interface SetOffsetCurrentTime {
+  type: typeof SET_OFFSET_CURRENT_TIME;
+  payload: {
+    offsetCurrentTime: number;
+  }
+}
+export const setOffsetCurrentTime = (offsetCurrentTime: number): SetOffsetCurrentTime => ({
+  type: SET_OFFSET_CURRENT_TIME,
+  payload: {
+    offsetCurrentTime
   }
 });

@@ -38,7 +38,7 @@ export class Player extends React.Component<PlayerViewProps & RouteComponentProp
           : null
         }
         {player.isMusicPlaying
-          ? <NotesPlayer scores={player.musicInfo.scores} source={player.source} meta={player.musicInfo.meta} />
+          ? <NotesPlayer scores={player.musicInfo.scores} source={player.source} meta={player.musicInfo.meta} offsetCurrentTime={player.offsetCurrentTime} />
           : <div className={styles.loadState}>
               SYSTEM: {this.props.player.isSystemReady ? 'READY' : '...'}<br />
               MUSIC: {this.props.player.isSourceReady ? 'READY' : '...'}<br />

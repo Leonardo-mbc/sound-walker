@@ -7,7 +7,7 @@
   :local(.step) {
     z-index: 15;
 
-    width: 100px;
+    width: calc(12.5% - 5px);
     height: 10px;
     background-color: var(--white);
     position: absolute;

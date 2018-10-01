@@ -35,6 +35,7 @@ export const initialState: State = {
     isMusicInfoReady: false,
     isMusicPlaying: false,
     source: null,
+    offsetCurrentTime: 0,
     musicInfo: null
   }
 };

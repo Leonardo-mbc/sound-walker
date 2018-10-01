@@ -4,7 +4,8 @@ import {
   SET_SYSTEM_READY,
   SET_MUSIC_SOURCE,
   SET_MUSIC_INFO,
-  START_MUSIC
+  START_MUSIC,
+  SET_OFFSET_CURRENT_TIME
 } from './player-actions';
 import { PlayerState } from './player-interfaces';
 
@@ -35,6 +36,13 @@ export function playerReducer(state = initialState.player, action: ActionTypes):
       ...state,
       isMusicPlaying: true
     }
+    
+    case SET_OFFSET_CURRENT_TIME:
+    return {
+      ...state,
+      offsetCurrentTime: action.payload.offsetCurrentTime
+    }
+
     default:
       return state;
   }

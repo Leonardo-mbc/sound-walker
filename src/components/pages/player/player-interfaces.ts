@@ -4,6 +4,7 @@ export interface PlayerState {
   isMusicInfoReady: boolean;
   isMusicPlaying: boolean;
   source: AudioBufferSourceNode;
+  offsetCurrentTime: number;
   musicInfo: MusicInfo;
 }
 
