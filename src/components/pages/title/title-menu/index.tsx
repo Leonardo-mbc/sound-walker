@@ -18,7 +18,13 @@ export class TitleMenu extends React.Component<TitleMenuProps, {}> {
 
   render() {
     return this.props.isLoadComplete ? (
-      <div className={styles.container}>menu</div>
+      <div className={styles.container}>
+        <div className={styles.menuList}>
+          <span>Music Select</span>
+          <span>Dj Mode</span>
+          <span>Options</span>
+        </div>
+      </div>
     ) : (
       <Redirect to={'/'} />
     );

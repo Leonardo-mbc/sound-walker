@@ -1,2 +1,25 @@
 :local(.container) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+
+  :local(.menu-list) {
+    margin-top: 20%;
+    margin-right: 10%;
+    transform: perspective(500px) rotateY(-23deg);
+    z-index: 50;
+
+    & > span {
+      display: block;
+      font-weight: bold;
+      font-size: xx-large;
+
+      animation-duration: 5s;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+      animation-name: shadow-flickering;
+    }
+  }
 }
