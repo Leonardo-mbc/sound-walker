@@ -1,0 +1,21 @@
+:local(.container) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  :local(.go-to-main-menu) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    :local(.intro-logo) {
+      width: 80%;
+      max-width: 800px;
+      flex-shrink: 0;
+    }
+  }
+}

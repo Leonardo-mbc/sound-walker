@@ -13,8 +13,8 @@ export class App extends React.Component<State, {}> {
     return (
       <div className={styles.container}>
         <Switch>
-          <Route path='/player/:musicId' component={PlayerView} />
-          <Route path='/' component={TitleView} />
+          <Route path="/player/:musicId" component={PlayerView} />
+          <Route path="/" component={TitleView} />
         </Switch>
         <LoadingCircle isVisible={system.display.isLoadingCircleVisible} />
         <VerticalAnnounce isVisible={!system.display.isPortrait} />
