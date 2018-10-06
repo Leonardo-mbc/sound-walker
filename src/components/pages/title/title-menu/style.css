@@ -2,12 +2,10 @@
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: flex-end;
+  align-items: center;
 
   :local(.menu-list) {
-    margin-top: 20%;
     margin-right: 10%;
     transform: perspective(500px) rotateY(-23deg);
     z-index: 50;
@@ -92,7 +90,7 @@
     margin-right: 10%;
   }
   100% {
-    margin-right: -20%;
+    margin-right: -50%;
   }
 }
 

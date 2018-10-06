@@ -1,13 +1,12 @@
 import * as React from 'react';
 import * as styles from './style.css';
-import { Redirect } from 'react-router';
 
-interface TitleIntroProps {
+interface TitleIndexProps {
   isLoadComplete: boolean;
-  goToMainMenu: () => void;
+  startGameTitle: () => void;
 }
 
-export class TitleIntro extends React.Component<TitleIntroProps, {}> {
+export class TitleIndex extends React.Component<TitleIndexProps, {}> {
   private container: HTMLDivElement;
 
   componentDidMount() {
@@ -27,7 +26,7 @@ export class TitleIntro extends React.Component<TitleIntroProps, {}> {
         'touchstart',
         (e) => {
           e.preventDefault();
-          this.props.goToMainMenu();
+          this.props.startGameTitle();
         },
         passiveSupported ? { passive: false } : false
       );
@@ -46,16 +45,17 @@ export class TitleIntro extends React.Component<TitleIntroProps, {}> {
     const { isLoadComplete } = this.props;
 
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div
+        ref={(elem) => (this.container = elem)}
+        className={styles.loadingContainer}
+      >
         {isLoadComplete ? (
-          <div className={styles.goToMainMenu}>
-            <img
-              className={styles.introLogo}
-              src="assets/images/logo-anim@x2.gif"
-            />
-          </div>
+          <div className={styles.touchToStart}>タッチしてスタート</div>
         ) : (
-          <Redirect to={'/'} />
+          <div className={styles.loaderContainer}>
+            <div className={styles.loadingText}>LOADING</div>
+            <div id="system-loading-bar" className={styles.loadingBar} />
+          </div>
         )}
       </div>
     );

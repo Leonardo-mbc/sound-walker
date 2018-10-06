@@ -4,6 +4,7 @@ import * as styles from './style.css';
 import { TitleViewProps } from './title-container';
 import { TitleMenu } from './title-menu';
 import { TitleIntro } from './title-intro';
+import { TitleIndex } from './title-index';
 
 export class Title extends React.Component<TitleViewProps, {}> {
   render() {
@@ -14,7 +15,6 @@ export class Title extends React.Component<TitleViewProps, {}> {
       jumpTitleSound,
       goToMusicSelect,
     } = this.props;
-    const loadingBarStyle = {};
 
     return (
       <div className={styles.container}>
@@ -41,25 +41,10 @@ export class Title extends React.Component<TitleViewProps, {}> {
           <Route
             path="/"
             render={() => (
-              <div className={styles.loadingContainer}>
-                {title.isLoadComplete ? (
-                  <div
-                    className={styles.touchToStart}
-                    onClick={() => startGameTitle()}
-                  >
-                    タッチしてスタート
-                  </div>
-                ) : (
-                  <div className={styles.loaderContainer}>
-                    <div className={styles.loadingText}>LOADING</div>
-                    <div
-                      id="system-loading-bar"
-                      className={styles.loadingBar}
-                      style={loadingBarStyle}
-                    />
-                  </div>
-                )}
-              </div>
+              <TitleIndex
+                isLoadComplete={title.isLoadComplete}
+                startGameTitle={startGameTitle}
+              />
             )}
           />
         </Switch>

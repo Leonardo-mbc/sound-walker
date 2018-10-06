@@ -17,6 +17,8 @@ interface TitleMenuState {
 }
 
 export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
+  private container: HTMLDivElement;
+
   constructor(props: TitleMenuProps, state: TitleMenuState) {
     super(props, state);
 
@@ -29,36 +31,70 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     };
   }
 
-  selectMenu(
-    state: 'SELECTED_MUSIC_SELECT' | 'SELECTED_DJ_MODE' | 'SELECTED_OPTIONS'
-  ) {
+  componentDidMount() {
+    let passiveSupported = false;
+    try {
+      document.addEventListener(
+        'test',
+        null,
+        Object.defineProperty({}, 'passive', {
+          get: function() {
+            passiveSupported = true;
+          },
+        })
+      );
+
+      this.container.addEventListener(
+        'touchstart',
+        (e) => {
+          e.preventDefault();
+
+          const state = (e.target as HTMLElement).getAttribute('data-target');
+          if (state) {
+            this.selectMenu(state);
+          }
+        },
+        passiveSupported ? { passive: false } : false
+      );
+
+      this.container.addEventListener(
+        'touchmove',
+        (e) => {
+          e.preventDefault();
+        },
+        passiveSupported ? { passive: false } : false
+      );
+    } catch (err) {}
+  }
+
+  selectMenu(state: string) {
     this.setState({
       selected: true,
     });
 
     switch (state) {
       case SELECTED_MUSIC_SELECT:
-        setTimeout(() => this.props.goToMusicSelect(), 800);
+        this.props.goToMusicSelect();
         break;
     }
   }
 
   render() {
     return this.props.isLoadComplete ? (
-      <div className={styles.container}>
+      <div ref={(elem) => (this.container = elem)} className={styles.container}>
         <div
           className={`${styles.menuList} ${
             this.state.selected ? styles.selected : ''
           }`}
         >
           <span onClick={() => this.selectMenu(SELECTED_MUSIC_SELECT)}>
-            <p>Music Select</p>
+            <p data-target="SELECTED_MUSIC_SELECT">Music Select</p>
           </span>
           <span onClick={() => this.selectMenu(SELECTED_DJ_MODE)}>
-            <p>Dj Mode</p>
+            <p data-target="SELECTED_DJ_MODE">Dj Mode</p>
           </span>
           <span onClick={() => this.selectMenu(SELECTED_OPTIONS)}>
-            <p>Options</p>
+            <p data-target="SELECTED_OPTIONS">Options</p>
           </span>
         </div>
       </div>

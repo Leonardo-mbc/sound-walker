@@ -5,6 +5,8 @@ import { Sound } from '../../../systems/system-interfaces';
 import { push } from 'react-router-redux';
 import * as TWEEN from 'tween.js';
 
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 const titleSaga = [
   takeEvery(TitleAction.START_GAME_TITLE, function*(
     _action: TitleAction.StartGameTitle
@@ -49,6 +51,7 @@ const titleSaga = [
     const { systemGainNode } = system.sound as Sound;
 
     new TWEEN.Tween(systemGainNode.gain).to({ value: 0.0 }, 1000).start();
+    yield delay(800);
     yield put(push('/music-select'));
   }),
 ];
