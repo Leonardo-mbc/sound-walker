@@ -20,9 +20,15 @@ export class TitleMenu extends React.Component<TitleMenuProps, {}> {
     return this.props.isLoadComplete ? (
       <div className={styles.container}>
         <div className={styles.menuList}>
-          <span>Music Select</span>
-          <span>Dj Mode</span>
-          <span>Options</span>
+          <span>
+            <p>Music Select</p>
+          </span>
+          <span>
+            <p>Dj Mode</p>
+          </span>
+          <span>
+            <p>Options</p>
+          </span>
         </div>
       </div>
     ) : (

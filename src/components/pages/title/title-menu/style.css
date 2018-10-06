@@ -10,16 +10,69 @@
     margin-right: 10%;
     transform: perspective(500px) rotateY(-23deg);
     z-index: 50;
+    animation-duration: 500ms;
+    animation-timing-function: cubic-bezier(0, 0, 0, 1);
+
+    :local {
+      animation-name: show;
+    }
 
     & > span {
       display: block;
+      cursor: pointer;
+
+      animation-duration: 1000ms;
+      animation-timing-function: cubic-bezier(0, 0, 0, 1);
+    }
+
+    & > span:nth-child(2) {
+      :local {
+        animation-name: slide50;
+      }
+    }
+
+    & > span:nth-child(3) {
+      :local {
+        animation-name: slide100;
+      }
+    }
+
+    & > span > p {
+      margin: 0;
       font-weight: bold;
       font-size: xx-large;
-
+      user-select: none;
       animation-duration: 5s;
       animation-iteration-count: infinite;
       animation-fill-mode: forwards;
       animation-name: shadow-flickering;
     }
+  }
+}
+
+@keyframes :local(show) {
+  0% {
+    margin-right: -20%;
+  }
+  100% {
+    margin-right: 10%;
+  }
+}
+
+@keyframes :local(slide50) {
+  0% {
+    padding-left: 50px;
+  }
+  100% {
+    padding-left: 0px;
+  }
+}
+
+@keyframes :local(slide100) {
+  0% {
+    padding-left: 100px;
+  }
+  100% {
+    padding-left: 0px;
   }
 }
