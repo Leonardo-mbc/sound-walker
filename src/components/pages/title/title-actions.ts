@@ -3,13 +3,15 @@ export type ActionTypes =
   | SetLoadComplete
   | StartGameTitle
   | GoToMainMenu
-  | JumpTitleSound;
+  | JumpTitleSound
+  | GoToMusicSelect;
 
 export const SET_LOADING_BAR_WIDTH = 'SET_LOADING_BAR_WIDTH';
 export const SET_LOAD_COMPLETE = 'SET_LOAD_COMPLETE';
 export const START_GAME_TITLE = 'START_GAME_TITLE';
 export const GO_TO_MAIN_MENU = 'GO_TO_MAIN_MENU';
 export const JUMP_TITLE_SOUND = 'JUMP_TITLE_SOUND';
+export const GO_TO_MUSIC_SELECT = 'GO_TO_MUSIC_SELECT';
 
 export interface SetLoadingBarWidth {
   type: typeof SET_LOADING_BAR_WIDTH;
@@ -50,4 +52,11 @@ export interface JumpTitleSound {
 }
 export const jumpTitleSound = (): JumpTitleSound => ({
   type: JUMP_TITLE_SOUND,
+});
+
+export interface GoToMusicSelect {
+  type: typeof GO_TO_MUSIC_SELECT;
+}
+export const goToMusicSelect = (): GoToMusicSelect => ({
+  type: GO_TO_MUSIC_SELECT,
 });

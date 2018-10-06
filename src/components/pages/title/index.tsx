@@ -7,7 +7,13 @@ import { TitleIntro } from './title-intro';
 
 export class Title extends React.Component<TitleViewProps, {}> {
   render() {
-    const { title, startGameTitle, goToMainMenu, jumpTitleSound } = this.props;
+    const {
+      title,
+      startGameTitle,
+      goToMainMenu,
+      jumpTitleSound,
+      goToMusicSelect,
+    } = this.props;
     const loadingBarStyle = {};
 
     return (
@@ -19,6 +25,7 @@ export class Title extends React.Component<TitleViewProps, {}> {
               <TitleMenu
                 isLoadComplete={title.isLoadComplete}
                 jumpTitleSound={jumpTitleSound}
+                goToMusicSelect={goToMusicSelect}
               />
             )}
           />

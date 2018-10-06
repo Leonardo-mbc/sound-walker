@@ -1,0 +1,84 @@
+@import '../../../assets/styles/constant.css';
+
+:local(.container) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  :local(.load-state) {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    font-size: smaller;
+  }
+
+  :local(.touch-to-start) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    :local(.text) {
+      animation-duration: 5s;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+      animation-name: shadow-flickering;
+    }
+  }
+}
+
+@keyframes shadow-flickering {
+  10% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  13% {
+    text-shadow: 10px 2px 3px var(--red);
+  }
+  14% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  15% {
+    text-shadow: 10px -2px 3px var(--red);
+  }
+  16% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  18% {
+    text-shadow: -5px 4px 3px var(--red);
+  }
+  20% {
+    text-shadow: 2px 1px 2px var(--red);
+  }
+  60% {
+    text-shadow: 5px 1px 2px var(--red);
+  }
+  61% {
+    text-shadow: -1px 1px 2px var(--red);
+  }
+  62% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  63% {
+    text-shadow: -5px 4px 3px var(--red);
+  }
+  64% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  65% {
+    text-shadow: 10px -2px 3px var(--red);
+  }
+  66% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+  68% {
+    text-shadow: 10px 2px 3px var(--red);
+  }
+  70% {
+    text-shadow: 2px 1px 2px var(--black-alpha8);
+  }
+}

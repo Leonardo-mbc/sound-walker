@@ -10,6 +10,7 @@ export interface TitleViewProps {
   startGameTitle: () => void;
   goToMainMenu: () => void;
   jumpTitleSound: () => void;
+  goToMusicSelect: () => void;
 }
 
 export const TitleView = connect(
@@ -29,6 +30,9 @@ export const TitleView = connect(
     },
     jumpTitleSound: () => {
       dispatch(TitleAction.jumpTitleSound());
+    },
+    goToMusicSelect: () => {
+      dispatch(TitleAction.goToMusicSelect());
     },
   })
 )(Title);

@@ -2,8 +2,9 @@
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
 
   :local(.menu-list) {
     margin-top: 20%;
@@ -47,6 +48,33 @@
       animation-fill-mode: forwards;
       animation-name: shadow-flickering;
     }
+
+    &:local(.selected) {
+      animation-duration: 500ms;
+      animation-timing-function: ease-in;
+      animation-fill-mode: forwards;
+
+      :local {
+        animation-name: hide;
+      }
+
+      & > span {
+        animation-duration: 1000ms;
+        animation-timing-function: ease-in;
+      }
+
+      & > span:nth-child(2) {
+        :local {
+          animation-name: slide50-reverse;
+        }
+      }
+
+      & > span:nth-child(3) {
+        :local {
+          animation-name: slide100-reverse;
+        }
+      }
+    }
   }
 }
 
@@ -56,6 +84,15 @@
   }
   100% {
     margin-right: 10%;
+  }
+}
+
+@keyframes :local(hide) {
+  0% {
+    margin-right: 10%;
+  }
+  100% {
+    margin-right: -20%;
   }
 }
 
@@ -74,5 +111,23 @@
   }
   100% {
     padding-left: 0px;
+  }
+}
+
+@keyframes :local(slide50-reverse) {
+  0% {
+    padding-left: 0px;
+  }
+  100% {
+    padding-left: 50px;
+  }
+}
+
+@keyframes :local(slide100-reverse) {
+  0% {
+    padding-left: 0px;
+  }
+  100% {
+    padding-left: 100px;
   }
 }

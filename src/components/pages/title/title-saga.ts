@@ -3,6 +3,7 @@ import * as TitleAction from './title-actions';
 import * as SystemAction from '../../../systems/system-actions';
 import { Sound } from '../../../systems/system-interfaces';
 import { push } from 'react-router-redux';
+import * as TWEEN from 'tween.js';
 
 const titleSaga = [
   takeEvery(TitleAction.START_GAME_TITLE, function*(
@@ -18,6 +19,10 @@ const titleSaga = [
   takeEvery(TitleAction.GO_TO_MAIN_MENU, function*(
     _action: TitleAction.GoToMainMenu
   ) {
+    const { system } = yield select();
+    const { systemGainNode } = system.sound as Sound;
+    new TWEEN.Tween(systemGainNode.gain).to({ value: 1.0 }, 1000).start();
+
     yield put(push('/title/menu'));
   }),
 
@@ -35,6 +40,16 @@ const titleSaga = [
         soonToPlay: true,
       })
     );
+  }),
+
+  takeEvery(TitleAction.GO_TO_MUSIC_SELECT, function*(
+    _action: TitleAction.GoToMusicSelect
+  ) {
+    const { system } = yield select();
+    const { systemGainNode } = system.sound as Sound;
+
+    new TWEEN.Tween(systemGainNode.gain).to({ value: 0.0 }, 1000).start();
+    yield put(push('/music-select'));
   }),
 ];
 
