@@ -15,9 +15,12 @@ export interface MusicInfo {
 
 export interface MusicMetaData {
   title: string;
+  artist: string;
   musicId: string;
   bpm: number;
   offsetTime: number;
+  level: number;
+  discImage: string;
 }
 
 export interface MusicScore {

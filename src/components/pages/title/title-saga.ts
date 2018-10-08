@@ -1,11 +1,10 @@
+import * as TWEEN from 'tween.js';
 import { put, takeEvery, select } from 'redux-saga/effects';
 import * as TitleAction from './title-actions';
 import * as SystemAction from '../../../systems/system-actions';
 import { Sound } from '../../../systems/system-interfaces';
 import { push } from 'react-router-redux';
-import * as TWEEN from 'tween.js';
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import { delay } from '../../../utilities/delay';
 
 const titleSaga = [
   takeEvery(TitleAction.START_GAME_TITLE, function*(
@@ -48,9 +47,17 @@ const titleSaga = [
     _action: TitleAction.GoToMusicSelect
   ) {
     const { system } = yield select();
-    const { systemGainNode } = system.sound as Sound;
+    const { systemGainNode, sources } = system.sound as Sound;
 
-    new TWEEN.Tween(systemGainNode.gain).to({ value: 0.0 }, 1000).start();
+    new TWEEN.Tween(systemGainNode.gain)
+      .to({ value: 0.0 }, 1000)
+      .onComplete(() => {
+        sources.title.stop();
+        // 次 title を鳴らすときは remakeSystemSounds しなくてはならない
+
+        systemGainNode.gain.value = 1.0;
+      })
+      .start();
     yield delay(800);
     yield put(push('/music-select'));
   }),

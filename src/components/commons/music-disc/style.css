@@ -1,0 +1,17 @@
+:local(.container) {
+  width: 100vh;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  :local(.disc) {
+    width: 50vh;
+    height: 50vh;
+    min-width: 250px;
+    min-height: 250px;
+    border: 2px solid white;
+    border-radius: 100%;
+  }
+}

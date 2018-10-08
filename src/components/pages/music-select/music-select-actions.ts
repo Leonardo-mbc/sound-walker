@@ -1,16 +1,16 @@
-export type ActionTypes = SetSystemReady;
+export type ActionTypes = GoToPlayer;
 
-export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
+export const GO_TO_PLAYER = 'GO_TO_PLAYER';
 
-export interface SetSystemReady {
-  type: typeof SET_SYSTEM_READY;
+export interface GoToPlayer {
+  type: typeof GO_TO_PLAYER;
   payload: {
-    isSystemReady: boolean;
+    musicId: string;
   };
 }
-export const setSystemReady = (isSystemReady: boolean): SetSystemReady => ({
-  type: SET_SYSTEM_READY,
+export const goToPlayer = (musicId: string): GoToPlayer => ({
+  type: GO_TO_PLAYER,
   payload: {
-    isSystemReady,
+    musicId,
   },
 });
