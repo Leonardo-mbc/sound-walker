@@ -5,13 +5,18 @@ import { MusicDisc } from '../../commons/music-disc';
 
 // デバッグ用 const Object
 import { musicList } from '../../../constant/music-list';
-import { DISC_LABEL } from '../../../constant/target-name';
+import {
+  DISC_LABEL,
+  MUSIC_SELECT_PLAY_BUTTON,
+  MUSIC_SELECT_BACK_BUTTON,
+} from '../../../constant/target-name';
 
 interface MusicSelectState {
   cursor: number;
   discTouchstartPositionX: number;
   discTouchmovePositionX: number;
   discTouchmovePreviousPositionX: number;
+  selectedMusicId: string;
 }
 
 export class MusicSelect extends React.Component<
@@ -28,6 +33,7 @@ export class MusicSelect extends React.Component<
       discTouchstartPositionX: null,
       discTouchmovePositionX: 0,
       discTouchmovePreviousPositionX: 0,
+      selectedMusicId: 'm1',
     };
   }
 
@@ -87,6 +93,12 @@ export class MusicSelect extends React.Component<
               this.setDiscTouchstartPositionX(null);
               this.setDiscTouchmovePositionX(0);
               break;
+            case MUSIC_SELECT_PLAY_BUTTON:
+              this.props.goToPlayer(this.state.selectedMusicId);
+              break;
+            case MUSIC_SELECT_BACK_BUTTON:
+              this.props.goToMainMenu();
+              break;
           }
         },
         passiveSupported ? { passive: false } : false
@@ -104,10 +116,14 @@ export class MusicSelect extends React.Component<
         // TODO: musicList を本物に置き換え
 
         this.setCursor(this.state.cursor + 1);
+        this.setSelectedMusicId(musicList[this.state.cursor][0].meta.musicId);
+        // TODO: musicList を本物に置き換え
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
       } else if (170 <= amountX && 0 < this.state.cursor) {
         this.setCursor(this.state.cursor - 1);
+        this.setSelectedMusicId(musicList[this.state.cursor][0].meta.musicId);
+        // TODO: musicList を本物に置き換え
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
       } else {
@@ -143,8 +159,13 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  setSelectedMusicId(musicId: string) {
+    this.setState({
+      selectedMusicId: musicId,
+    });
+  }
+
   render() {
-    const { goToPlayer } = this.props;
     const discListStyle: React.CSSProperties = {
       transform: `translate3d(calc(${this.state.discTouchmovePositionX *
         0.8}px - ${this.state.cursor * 100}vh), calc(${this.state
@@ -153,10 +174,18 @@ export class MusicSelect extends React.Component<
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         <div className={styles.footer}>
-          <span className={styles.playButton} onClick={() => goToPlayer('m1')}>
+          <span
+            className={styles.playButton}
+            data-target={MUSIC_SELECT_PLAY_BUTTON}
+          >
             Play
           </span>
-          <span className={styles.backButton}>Back</span>
+          <span
+            className={styles.backButton}
+            data-target={MUSIC_SELECT_BACK_BUTTON}
+          >
+            Back
+          </span>
         </div>
         <div className={styles.discList} style={discListStyle}>
           {musicList.map((discInfo, idx) => {

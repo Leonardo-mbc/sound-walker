@@ -7,7 +7,6 @@ const musicSelectSaga = [
   takeEvery(MusicSelectAction.GO_TO_PLAYER, function*(
     action: MusicSelectAction.GoToPlayer
   ) {
-    console.log('in');
     yield delay(800);
     yield put(push(`/player/${action.payload.musicId}`));
   }),
