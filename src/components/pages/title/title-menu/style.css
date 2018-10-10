@@ -5,6 +5,15 @@
   justify-content: flex-end;
   align-items: center;
 
+  :local(.animation-container) {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
+
   :local(.menu-list) {
     margin-right: 10%;
     transform: perspective(500px) rotateY(-23deg);

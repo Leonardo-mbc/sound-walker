@@ -6,6 +6,7 @@ import {
   MENU_DJ_MODE,
   MENU_OPTIONS,
 } from '../../../../constant/target-name';
+import { AnimationGround } from '../../../commons/animation-ground';
 
 interface TitleMenuProps {
   isLoadComplete: boolean;
@@ -83,6 +84,9 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
   render() {
     return this.props.isLoadComplete ? (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
+        <div className={styles.animationContainer}>
+          <AnimationGround />
+        </div>
         <div
           className={`${styles.menuList} ${
             this.state.selected ? styles.selected : ''
