@@ -8,4 +8,5 @@ export const slide50Reverse: string;
 export const slide100Reverse: string;
 export const animationContainer: string;
 export const menuList: string;
+export const hideMenuText: string;
 export const selected: string;

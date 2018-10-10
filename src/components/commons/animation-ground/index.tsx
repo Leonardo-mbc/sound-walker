@@ -17,7 +17,9 @@ let logoPlate: THREE.Object3D;
 let symbolTween: any;
 let logoPlateTween: any;
 
-interface AnimationGroundProps {}
+interface AnimationGroundProps {
+  fadeOut: boolean;
+}
 
 interface AnimationGroundState {
   animationSymbolId: number;
@@ -214,7 +216,9 @@ export class AnimationGround extends React.Component<
     return (
       <div
         ref={(elem) => (this.container = elem)}
-        className={styles.container}
+        className={`${styles.container} ${
+          this.props.fadeOut ? styles.fadeOut : ''
+        }`}
       />
     );
   }

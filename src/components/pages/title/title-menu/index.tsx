@@ -15,7 +15,8 @@ interface TitleMenuProps {
 }
 
 interface TitleMenuState {
-  selected: boolean;
+  selectedItem: string;
+  animationGroundFadeOut: boolean;
 }
 
 export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
@@ -29,7 +30,8 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     }
 
     this.state = {
-      selected: false,
+      selectedItem: null,
+      animationGroundFadeOut: false,
     };
   }
 
@@ -71,7 +73,8 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
 
   selectMenu(state: string) {
     this.setState({
-      selected: true,
+      selectedItem: state,
+      animationGroundFadeOut: true,
     });
 
     switch (state) {
@@ -85,20 +88,44 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     return this.props.isLoadComplete ? (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         <div className={styles.animationContainer}>
-          <AnimationGround />
+          <AnimationGround fadeOut={this.state.animationGroundFadeOut} />
         </div>
         <div
           className={`${styles.menuList} ${
-            this.state.selected ? styles.selected : ''
+            this.state.selectedItem !== null ? styles.selected : ''
           }`}
         >
-          <span onClick={() => this.selectMenu(MENU_MUSIC_SELECT)}>
+          <span
+            className={
+              this.state.selectedItem &&
+              this.state.selectedItem !== MENU_MUSIC_SELECT
+                ? styles.hideMenuText
+                : ''
+            }
+            onClick={() => this.selectMenu(MENU_MUSIC_SELECT)}
+          >
             <p data-target={MENU_MUSIC_SELECT}>Music Select</p>
           </span>
-          <span onClick={() => this.selectMenu(MENU_DJ_MODE)}>
+          <span
+            className={
+              this.state.selectedItem &&
+              this.state.selectedItem !== MENU_DJ_MODE
+                ? styles.hideMenuText
+                : ''
+            }
+            onClick={() => this.selectMenu(MENU_DJ_MODE)}
+          >
             <p data-target={MENU_DJ_MODE}>Dj Mode</p>
           </span>
-          <span onClick={() => this.selectMenu(MENU_OPTIONS)}>
+          <span
+            className={
+              this.state.selectedItem &&
+              this.state.selectedItem !== MENU_OPTIONS
+                ? styles.hideMenuText
+                : ''
+            }
+            onClick={() => this.selectMenu(MENU_OPTIONS)}
+          >
             <p data-target={MENU_OPTIONS}>Options</p>
           </span>
         </div>

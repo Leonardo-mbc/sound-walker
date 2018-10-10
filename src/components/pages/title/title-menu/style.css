@@ -31,6 +31,11 @@
 
       animation-duration: 1000ms;
       animation-timing-function: cubic-bezier(0, 0, 0, 1);
+
+      &:local(.hide-menu-text) {
+        transition: opacity 200ms ease-out;
+        opacity: 0;
+      }
     }
 
     & > span:nth-child(2) {
@@ -57,6 +62,7 @@
     }
 
     &:local(.selected) {
+      animation-delay: 200ms;
       animation-duration: 500ms;
       animation-timing-function: ease-in;
       animation-fill-mode: forwards;

@@ -5,4 +5,9 @@
   & > canvas {
     display: block;
   }
+
+  &:local(.fade-out) {
+    transition: opacity 400ms ease-out;
+    opacity: 0;
+  }
 }
