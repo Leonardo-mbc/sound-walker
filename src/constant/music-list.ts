@@ -8,13 +8,13 @@ export const musicList: MusicList = [
   [
     {
       meta: {
-        title: 'music1',
-        artist: 'artist1',
+        title: '24 Hours Happiness (ONE! TWO! remix)',
+        artist: 'Quickdrop feat. Toni Fox',
         musicId: 'm1',
         bpm: 130.0,
         offsetTime: 0.0,
         level: 5,
-        discImage: '',
+        discImage: 'm1/1.png',
       },
       scores: [[], []],
     },
@@ -26,7 +26,7 @@ export const musicList: MusicList = [
         bpm: 130.0,
         offsetTime: 0.0,
         level: 5,
-        discImage: '',
+        discImage: 'm1/2.png',
       },
       scores: [[], []],
     },
@@ -34,13 +34,13 @@ export const musicList: MusicList = [
   [
     {
       meta: {
-        title: 'music3',
-        artist: 'artist3',
+        title: 'My Heart',
+        artist: 'Different Heaven & EH!DE',
         musicId: 'm2',
         bpm: 130.0,
         offsetTime: 0.0,
         level: 5,
-        discImage: '',
+        discImage: 'm2/1.png',
       },
       scores: [[], []],
     },
@@ -52,7 +52,7 @@ export const musicList: MusicList = [
         bpm: 130.0,
         offsetTime: 0.0,
         level: 5,
-        discImage: '',
+        discImage: 'm2/2.png',
       },
       scores: [[], []],
     },

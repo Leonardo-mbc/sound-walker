@@ -5,30 +5,30 @@
   height: 100%;
   overflow: hidden;
 
-  :local(.footer) {
+  :local(.play-button) {
     position: absolute;
-    width: 90%;
     bottom: 5%;
-    padding: 0px 5%;
-    display: flex;
-    justify-content: space-between;
+    left: 5%;
+    display: block;
+    font-weight: bold;
+    font-size: xx-large;
+    user-select: none;
+    cursor: pointer;
     z-index: 10;
+    transform: perspective(180px) rotateY(23deg);
+  }
 
-    & > span {
-      display: block;
-      font-weight: bold;
-      font-size: xx-large;
-      user-select: none;
-      cursor: pointer;
-    }
-
-    :local(.play-button) {
-      transform: perspective(180px) rotateY(23deg);
-    }
-
-    :local(.back-button) {
-      transform: perspective(180px) rotateY(-23deg);
-    }
+  :local(.back-button) {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    display: block;
+    font-weight: bold;
+    font-size: xx-large;
+    user-select: none;
+    cursor: pointer;
+    z-index: 10;
+    transform: perspective(180px) rotateY(-23deg);
   }
 
   :local(.disc-list) {

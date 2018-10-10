@@ -173,19 +173,17 @@ export class MusicSelect extends React.Component<
     };
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
-        <div className={styles.footer}>
-          <span
-            className={styles.playButton}
-            data-target={MUSIC_SELECT_PLAY_BUTTON}
-          >
-            Play
-          </span>
-          <span
-            className={styles.backButton}
-            data-target={MUSIC_SELECT_BACK_BUTTON}
-          >
-            Back
-          </span>
+        <div
+          className={styles.playButton}
+          data-target={MUSIC_SELECT_PLAY_BUTTON}
+        >
+          Play
+        </div>
+        <div
+          className={styles.backButton}
+          data-target={MUSIC_SELECT_BACK_BUTTON}
+        >
+          Back
         </div>
         <div className={styles.discList} style={discListStyle}>
           {musicList.map((discInfo, idx) => {
@@ -197,6 +195,7 @@ export class MusicSelect extends React.Component<
                 key={`music-disc-${idx}`}
                 discInfo={discInfo}
                 customStyle={customStyle}
+                selectedMusicId={this.state.selectedMusicId}
               />
             );
           })}
