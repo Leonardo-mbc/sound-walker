@@ -4,7 +4,7 @@ import { PlayerState } from '../components/pages/player/player-interfaces';
 
 export interface State {
   system: SystemState;
-  title: TitleState
+  title: TitleState;
   player: PlayerState;
 }
 
@@ -12,22 +12,25 @@ export const initialState: State = {
   system: {
     sound: {
       sources: {
-        title: null
+        title: null,
+        samples: {},
       },
       context: null,
       systemGainNode: null,
+      cueAGainNode: null,
+      cueBGainNode: null,
       analyserNode: null,
       filterNode: null,
-      analyserParams: null
+      analyserParams: null,
     },
     display: {
       isPortrait: false,
-      isLoadingCircleVisible: false
-    }
+      isLoadingCircleVisible: false,
+    },
   },
   title: {
     loadingBarWidth: 0,
-    isLoadComplete: false
+    isLoadComplete: false,
   },
   player: {
     isSystemReady: false,
@@ -36,6 +39,6 @@ export const initialState: State = {
     isMusicPlaying: false,
     source: null,
     offsetCurrentTime: 0,
-    musicInfo: null
-  }
+    musicInfo: null,
+  },
 };

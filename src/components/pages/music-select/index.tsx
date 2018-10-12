@@ -35,6 +35,15 @@ export class MusicSelect extends React.Component<
       discTouchmovePreviousPositionX: 0,
       selectedMusicId: 'm1',
     };
+
+    // TODO: musicList を本物に置き換え
+    this.props.sampleMusicPlay(
+      musicList[0].map((musicInfo) => {
+        return musicInfo.meta.musicId;
+      })
+    );
+
+    // TODO: デコードが複数同時に立たけるようにする。キューイングなどで！
   }
 
   componentDidMount() {
@@ -98,6 +107,11 @@ export class MusicSelect extends React.Component<
               break;
             case MUSIC_SELECT_BACK_BUTTON:
               this.props.goToMainMenu();
+              this.props.sampleMusicFadeOut(
+                musicList[this.state.cursor].map((musicInfo) => {
+                  return musicInfo.meta.musicId;
+                })
+              );
               break;
           }
         },
@@ -135,10 +149,25 @@ export class MusicSelect extends React.Component<
     }
   }
 
-  setCursor(newCursor: number) {
+  async setCursor(newCursor: number) {
+    this.props.sampleMusicFadeOut(
+      musicList[this.state.cursor].map((musicInfo) => {
+        return musicInfo.meta.musicId;
+      })
+    );
+
     this.setState({
       cursor: newCursor,
     });
+
+    setTimeout(() => {
+      // TODO: musicList を本物に置き換え
+      this.props.sampleMusicPlay(
+        musicList[newCursor].map((musicInfo) => {
+          return musicInfo.meta.musicId;
+        })
+      );
+    }, 500);
   }
 
   setDiscTouchstartPositionX(x: number) {

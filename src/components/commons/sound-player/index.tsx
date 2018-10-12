@@ -6,18 +6,17 @@ interface SoundPlayerProps {
   loadMusic: (url: string) => void;
 }
 
-interface SoundPlayerState {
+interface SoundPlayerState {}
 
-}
-
-export class SoundPlayer extends React.Component<SoundPlayerProps, SoundPlayerState> {
+export class SoundPlayer extends React.Component<
+  SoundPlayerProps,
+  SoundPlayerState
+> {
   componentWillMount() {
-    this.props.loadMusic(`../musics/${this.props.musicId}.mp3`);
+    this.props.loadMusic(`/musics/${this.props.musicId}.mp3`);
   }
 
   render() {
-    return (
-      <div className={styles.container} />
-    );
+    return <div className={styles.container} />;
   }
 }

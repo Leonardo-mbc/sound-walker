@@ -22,7 +22,7 @@ const systemSaga = [
     const titleSource = yield call(async () => {
       const audioUtils = AudioUtils.instance;
       const audioBuffer = await audioUtils.loadAudioBufferFromUrl({
-        url: '../assets/sounds/title.mp3',
+        url: '/assets/sounds/title.mp3',
         onProgress: (loaded: number) => {
           // どうしてもreducerを呼べないため妥協
           const loadingBar = document.getElementById('system-loading-bar');
@@ -56,7 +56,10 @@ const systemSaga = [
   takeEvery(SystemAction.REMAKE_SYSTEM_SOUNDS, function*(
     action: SystemAction.RemakeSystemSounds
   ) {
-    action.payload.bufferNode.stop(0);
+    try {
+      // タイトル以外の画面から入ってきたときに再生されてないためエラーとなるため
+      action.payload.bufferNode.stop(0);
+    } catch (e) {}
 
     const audioUtils = AudioUtils.instance;
     const buffer = action.payload.bufferNode.buffer;

@@ -1,4 +1,4 @@
-import { singleton } from "./decorators/singleton";
+import { singleton } from './decorators/singleton';
 
 export interface ReadFileType {
   url: string;
@@ -31,9 +31,15 @@ export class AudioUtils {
     return this._context;
   }
 
-  async loadAudioBufferFromUrl({ url, onProgress }: ReadFileType): Promise<AudioBuffer> {
+  async loadAudioBufferFromUrl({
+    url,
+    onProgress,
+  }: ReadFileType): Promise<AudioBuffer> {
     try {
-      const audioArrayBuffer = await this._bufferLoader.getURL({ url, onProgress });
+      const audioArrayBuffer = await this._bufferLoader.getURL({
+        url,
+        onProgress,
+      });
       const audioBuffer = await this._decodeToBuffer(audioArrayBuffer);
       return audioBuffer;
     } catch (e) {
@@ -44,9 +50,9 @@ export class AudioUtils {
   _decodeToBuffer(audioArrayBuffer: ArrayBuffer) {
     return new Promise<AudioBuffer>((resolve, reject) => {
       this._context.decodeAudioData(
-        audioArrayBuffer,
-        buffer => resolve(buffer),
-        error => reject(`decodeAudioData error ${error}`)
+        audioArrayBuffer.slice(0), // なぜ slice(0) かはこちらを参照 https://github.com/WebAudio/web-audio-api/issues/1175
+        (buffer) => resolve(buffer),
+        (error) => reject(`decodeAudioData error ${error}`)
       );
     });
   }
@@ -63,8 +69,8 @@ class BufferLoader {
 
   public getURL({ url, onProgress }: ReadFileType) {
     return new Promise<ArrayBuffer>((resolve, reject) => {
-      this._request.open("GET", url, true);
-      this._request.responseType = "arraybuffer";
+      this._request.open('GET', url, true);
+      this._request.responseType = 'arraybuffer';
 
       const _onLoad = () => {
         resolve(this._request.response);
@@ -80,9 +86,9 @@ class BufferLoader {
         reject(e);
       };
 
-      this._request.addEventListener("progress", _onProgress, false);
-      this._request.addEventListener("load", _onLoad, false);
-      this._request.addEventListener("error", _onError, false);
+      this._request.addEventListener('progress', _onProgress, false);
+      this._request.addEventListener('load', _onLoad, false);
+      this._request.addEventListener('error', _onError, false);
 
       this._request.send();
     });

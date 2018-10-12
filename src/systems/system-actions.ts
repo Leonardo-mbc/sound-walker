@@ -5,7 +5,8 @@ export type ActionTypes =
   | SetLoadingCircleVisible
   | SetDisplayVertically
   | RemakeSystemSounds
-  | SetSystemSource;
+  | SetSystemSource
+  | SetSampleSource;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const LOAD_SYSTEM_SOUNDS = 'LOAD_SYSTEM_SOUNDS';
@@ -14,6 +15,7 @@ export const SET_LOADING_CIRCLE_VISIBLE = 'SET_LOADING_CIRCLE_VISIBLE';
 export const SET_DISPLAY_VERTICALLY = 'SET_DISPLAY_VERTICALLY';
 export const REMAKE_SYSTEM_SOUNDS = 'REMAKE_SYSTEM_SOUNDS';
 export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
+export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -107,6 +109,25 @@ export const setSystemSource = ({
   bufferNode,
 }: SetSystemSourcePayload): SetSystemSource => ({
   type: SET_SYSTEM_SOURCE,
+  payload: {
+    key,
+    bufferNode,
+  },
+});
+
+interface SetSampleSourcePayload {
+  key: string;
+  bufferNode: AudioBufferSourceNode;
+}
+export interface SetSampleSource {
+  type: typeof SET_SAMPLE_SOURCE;
+  payload: SetSampleSourcePayload;
+}
+export const setSampleSource = ({
+  key,
+  bufferNode,
+}: SetSampleSourcePayload): SetSampleSource => ({
+  type: SET_SAMPLE_SOURCE,
   payload: {
     key,
     bufferNode,
