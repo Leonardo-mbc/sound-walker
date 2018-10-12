@@ -8,8 +8,11 @@ export interface MusicSelectProps {
   musicSelect: MusicSelectState;
   goToPlayer: (musicId: string) => void;
   goToMainMenu: () => void;
-  sampleMusicPlay: (musicIds: string[]) => void;
+  sampleMusicPlay: (
+    { musicIds, faderGainValues }: MusicSelectAction.SampleMusicPlayPayload
+  ) => void;
   sampleMusicFadeOut: (musicIds: string[]) => void;
+  fadeDiscMusic: (cursor: number, values: number[]) => void;
 }
 
 export const MusicSelectView = connect(
@@ -26,11 +29,19 @@ export const MusicSelectView = connect(
     goToMainMenu: () => {
       dispatch(TitleAction.goToMainMenu());
     },
-    sampleMusicPlay: (musicIds: string[]) => {
-      dispatch(MusicSelectAction.sampleMusicPlay(musicIds));
+    sampleMusicPlay: ({
+      musicIds,
+      faderGainValues,
+    }: MusicSelectAction.SampleMusicPlayPayload) => {
+      dispatch(
+        MusicSelectAction.sampleMusicPlay({ musicIds, faderGainValues })
+      );
     },
     sampleMusicFadeOut: (musicIds: string[]) => {
       dispatch(MusicSelectAction.sampleMusicFadeOut(musicIds));
+    },
+    fadeDiscMusic: (cursor: number, values: number[]) => {
+      dispatch(MusicSelectAction.fadeDiscMusic(cursor, values));
     },
   })
 )(MusicSelect);

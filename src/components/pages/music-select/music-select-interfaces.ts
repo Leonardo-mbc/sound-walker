@@ -1,1 +1,3 @@
-export interface MusicSelectState {}
+export interface MusicSelectState {
+  discFaders: number[][];
+}

@@ -8,6 +8,7 @@ interface MusicDiscProps {
   customStyle: React.CSSProperties;
   selectedMusicId: string;
   isLevelVisible?: boolean;
+  fadeDiscMusic?: (values: number[]) => void;
 }
 
 interface MusicDiscState {
@@ -118,7 +119,6 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
   calcFaderBarMove(x: number) {
     if (this.state.faderBarTouchstartPositionX !== null) {
       const moveX = x - this.state.faderBarTouchstartPositionX;
-
       const faderBarWidth = parseFloat(getComputedStyle(this.fader).width);
 
       if (this.state.faderBarPositionX + moveX < 0) {
@@ -129,6 +129,17 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         );
       } else {
         this.setFaderBarTouchmovePositionX(moveX);
+      }
+
+      if (this.props.fadeDiscMusic) {
+        const cueAGain =
+          1.0 -
+          (this.state.faderBarPositionX +
+            this.state.faderBarTouchmovePositionX) /
+            faderBarWidth;
+        const cueBGain = 1.0 - cueAGain;
+
+        this.props.fadeDiscMusic([cueAGain, cueBGain]);
       }
     }
   }

@@ -1,11 +1,13 @@
 import { SystemState } from '../systems/system-interfaces';
 import { TitleState } from '../components/pages/title/title-interfaces';
 import { PlayerState } from '../components/pages/player/player-interfaces';
+import { MusicSelectState } from '../components/pages/music-select/music-select-interfaces';
 
 export interface State {
   system: SystemState;
   title: TitleState;
   player: PlayerState;
+  musicSelect: MusicSelectState;
 }
 
 export const initialState: State = {
@@ -40,5 +42,8 @@ export const initialState: State = {
     source: null,
     offsetCurrentTime: 0,
     musicInfo: null,
+  },
+  musicSelect: {
+    discFaders: [],
   },
 };

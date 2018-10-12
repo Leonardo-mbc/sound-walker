@@ -37,11 +37,12 @@ export class MusicSelect extends React.Component<
     };
 
     // TODO: musicList を本物に置き換え
-    this.props.sampleMusicPlay(
-      musicList[0].map((musicInfo) => {
+    this.props.sampleMusicPlay({
+      musicIds: musicList[0].map((musicInfo) => {
         return musicInfo.meta.musicId;
-      })
-    );
+      }),
+      faderGainValues: [1, 0],
+    });
 
     // TODO: デコードが複数同時に立たけるようにする。キューイングなどで！
   }
@@ -150,6 +151,8 @@ export class MusicSelect extends React.Component<
   }
 
   async setCursor(newCursor: number) {
+    const { musicSelect } = this.props;
+
     this.props.sampleMusicFadeOut(
       musicList[this.state.cursor].map((musicInfo) => {
         return musicInfo.meta.musicId;
@@ -162,11 +165,12 @@ export class MusicSelect extends React.Component<
 
     setTimeout(() => {
       // TODO: musicList を本物に置き換え
-      this.props.sampleMusicPlay(
-        musicList[newCursor].map((musicInfo) => {
-          return musicInfo.meta.musicId;
-        })
-      );
+      this.props.sampleMusicPlay({
+        musicIds: musicList[newCursor].map(
+          (musicInfo) => musicInfo.meta.musicId
+        ),
+        faderGainValues: musicSelect.discFaders[newCursor] || [1, 0],
+      });
     }, 500);
   }
 
@@ -225,6 +229,7 @@ export class MusicSelect extends React.Component<
                 discInfo={discInfo}
                 customStyle={customStyle}
                 selectedMusicId={this.state.selectedMusicId}
+                fadeDiscMusic={this.props.fadeDiscMusic.bind(this, idx)}
               />
             );
           })}

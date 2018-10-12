@@ -18,7 +18,8 @@ const musicSelectSaga = [
   takeEvery(MusicSelectAction.SAMPLE_MUSIC_PLAY, function*(
     action: MusicSelectAction.SampleMusicPlay
   ) {
-    const [musicAId, musicBId] = action.payload.musicIds;
+    const { musicIds, faderGainValues } = action.payload;
+    const [musicAId, musicBId] = musicIds;
 
     const { system } = yield select();
     const { sources, cueAGainNode, cueBGainNode } = system.sound as Sound;
@@ -81,8 +82,8 @@ const musicSelectSaga = [
     const sound = store.system.sound as Sound;
     const { samples } = sound.sources;
 
-    cueAGainNode.gain.value = 1.0;
-    cueBGainNode.gain.value = 0.0;
+    cueAGainNode.gain.value = faderGainValues[0];
+    cueBGainNode.gain.value = faderGainValues[1];
 
     samples[musicAId].start(0, 0);
     samples[musicBId].start(0, 0);
@@ -113,7 +114,7 @@ const musicSelectSaga = [
       })
       .start();
 
-    yield delay(1000);
+    yield delay(250);
     yield put(
       MusicSelectAction.remakeSampleSounds({
         key: musicAId,
@@ -155,6 +156,17 @@ const musicSelectSaga = [
         bufferNode,
       })
     );
+  }),
+
+  takeEvery(MusicSelectAction.FADE_DISC_MUSIC, function*(
+    action: MusicSelectAction.FadeDiscMusic
+  ) {
+    const { system } = yield select();
+    const { cueAGainNode, cueBGainNode } = system.sound as Sound;
+    const [cueAGainValue, cueBGainValue] = action.payload.values;
+
+    cueAGainNode.gain.value = cueAGainValue;
+    cueBGainNode.gain.value = cueBGainValue;
   }),
 ];
 

@@ -2,12 +2,14 @@ export type ActionTypes =
   | GoToPlayer
   | SampleMusicPlay
   | SampleMusicFadeOut
-  | RemakeSampleSounds;
+  | RemakeSampleSounds
+  | FadeDiscMusic;
 
 export const GO_TO_PLAYER = 'GO_TO_PLAYER';
 export const SAMPLE_MUSIC_PLAY = 'SAMPLE_MUSIC_PLAY';
 export const SAMPLE_MUSIC_FADE_OUT = 'SAMPLE_MUSIC_FADE_OUT';
 export const REMAKE_SAMPLE_SOUNDS = 'REMAKE_SAMPLE_SOUNDS';
+export const FADE_DISC_MUSIC = 'FADE_DISC_MUSIC';
 
 export interface GoToPlayer {
   type: typeof GO_TO_PLAYER;
@@ -22,16 +24,22 @@ export const goToPlayer = (musicId: string): GoToPlayer => ({
   },
 });
 
+export interface SampleMusicPlayPayload {
+  musicIds: string[];
+  faderGainValues: number[];
+}
 export interface SampleMusicPlay {
   type: typeof SAMPLE_MUSIC_PLAY;
-  payload: {
-    musicIds: string[];
-  };
+  payload: SampleMusicPlayPayload;
 }
-export const sampleMusicPlay = (musicIds: string[]): SampleMusicPlay => ({
+export const sampleMusicPlay = ({
+  musicIds,
+  faderGainValues,
+}: SampleMusicPlayPayload): SampleMusicPlay => ({
   type: SAMPLE_MUSIC_PLAY,
   payload: {
     musicIds,
+    faderGainValues,
   },
 });
 
@@ -73,5 +81,23 @@ export const remakeSampleSounds = ({
     gainNode,
     startTime,
     soonToPlay,
+  },
+});
+
+export interface FadeDiscMusic {
+  type: typeof FADE_DISC_MUSIC;
+  payload: {
+    cursor: number;
+    values: number[];
+  };
+}
+export const fadeDiscMusic = (
+  cursor: number,
+  values: number[]
+): FadeDiscMusic => ({
+  type: FADE_DISC_MUSIC,
+  payload: {
+    cursor,
+    values,
   },
 });

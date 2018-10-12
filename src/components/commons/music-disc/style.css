@@ -95,7 +95,7 @@
         height: 21px;
         background-image: url('/assets/images/scale-bar.png');
         background-repeat: repeat-x;
-        background-position: center;
+        background-position: left center;
 
         :local(.pick) {
           display: flex;
