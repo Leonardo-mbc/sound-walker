@@ -9,12 +9,14 @@ interface MusicDiscProps {
   selectedMusicId: string;
   isLevelVisible?: boolean;
   fadeDiscMusic?: (values: number[]) => void;
+  changeDiscSide?: (discSide: number) => void;
 }
 
 interface MusicDiscState {
   faderBarTouchstartPositionX: number;
   faderBarTouchmovePositionX: number;
   faderBarPositionX: number;
+  discSide: number;
 }
 
 export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
@@ -28,6 +30,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
       faderBarTouchstartPositionX: null,
       faderBarTouchmovePositionX: 0,
       faderBarPositionX: 0,
+      discSide: 0,
     };
   }
 
@@ -140,16 +143,31 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         const cueBGain = 1.0 - cueAGain;
 
         this.props.fadeDiscMusic([cueAGain, cueBGain]);
+
+        if (this.state.discSide === 0 && cueAGain < cueBGain) {
+          const discSide = 1;
+          this.props.changeDiscSide(discSide);
+          this.setState({
+            discSide,
+          });
+        } else if (this.state.discSide === 1 && cueAGain > cueBGain) {
+          const discSide = 0;
+          this.props.changeDiscSide(discSide);
+          this.setState({
+            discSide,
+          });
+        }
       }
     }
   }
 
   render() {
     const { customStyle, discInfo, selectedMusicId } = this.props;
+    const { discSide } = this.state;
 
     const discCustomStyle = {
       backgroundImage: `url(/assets/images/disc-images/${
-        discInfo[0].meta.discImage
+        discInfo[discSide].meta.discImage
       })`,
     };
 
@@ -177,11 +195,15 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         <div className={styles.details}>
           <div
             className={`${styles.values} ${
-              selectedMusicId === discInfo[0].meta.musicId ? styles.show : ''
+              selectedMusicId === discInfo[discSide].meta.musicId
+                ? styles.show
+                : ''
             }`}
           >
-            <div className={styles.title}>{discInfo[0].meta.title}</div>
-            <div className={styles.artist}>{discInfo[0].meta.artist}</div>
+            <div className={styles.title}>{discInfo[discSide].meta.title}</div>
+            <div className={styles.artist}>
+              {discInfo[discSide].meta.artist}
+            </div>
           </div>
         </div>
         <div className={styles.remixes}>

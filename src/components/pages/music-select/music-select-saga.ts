@@ -6,12 +6,14 @@ import { delay } from '../../../utilities/delay';
 import { push } from 'react-router-redux';
 import { AudioUtils } from '../../../utilities/audio-utils';
 import { Sound } from '../../../systems/system-interfaces';
+import { musicList } from '../../../constant/music-list';
+import { MusicSelectState } from './music-select-interfaces';
 
 const musicSelectSaga = [
   takeEvery(MusicSelectAction.GO_TO_PLAYER, function*(
     action: MusicSelectAction.GoToPlayer
   ) {
-    yield delay(800);
+    // yield delay(800);
     yield put(push(`/player/${action.payload.musicId}`));
   }),
 
@@ -25,7 +27,7 @@ const musicSelectSaga = [
     const { sources, cueAGainNode, cueBGainNode } = system.sound as Sound;
     const audioUtils = AudioUtils.instance;
 
-    // FIXME: デコード待ちがジェネレータファンクションでできないため愚直に２回書いてる
+    // FIXME: put だと非同期を待ってくれないため愚直に２回書いてる
     if (!(musicAId in sources.samples)) {
       yield put(SystemAction.setLoadingCircleVisible(true));
       const sampleSource: AudioBufferSourceNode = yield call(async () => {
@@ -167,6 +169,28 @@ const musicSelectSaga = [
 
     cueAGainNode.gain.value = cueAGainValue;
     cueBGainNode.gain.value = cueBGainValue;
+  }),
+
+  takeEvery(MusicSelectAction.GET_MUSIC_LIST, function*(
+    _action: MusicSelectAction.GetMusicList
+  ) {
+    yield put(SystemAction.setLoadingCircleVisible(true));
+    yield delay(1000);
+    yield put(SystemAction.setLoadingCircleVisible(false));
+
+    yield put(MusicSelectAction.setMusicList(musicList));
+
+    const { musicSelect } = yield select();
+    const { cursor, discFaders } = musicSelect as MusicSelectState;
+
+    yield put(
+      MusicSelectAction.sampleMusicPlay({
+        musicIds: musicList[cursor].map((musicInfo) => {
+          return musicInfo.meta.musicId;
+        }),
+        faderGainValues: discFaders[cursor] || [1, 0],
+      })
+    );
   }),
 ];
 

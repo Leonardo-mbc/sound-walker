@@ -13,6 +13,10 @@ export interface MusicSelectProps {
   ) => void;
   sampleMusicFadeOut: (musicIds: string[]) => void;
   fadeDiscMusic: (cursor: number, values: number[]) => void;
+  changeDiscSide: (cursor: number, discSide: number) => void;
+  setSelectedMusicId: (musicId: string) => void;
+  getMusicList: () => void;
+  setCursor: (cursor: number) => void;
 }
 
 export const MusicSelectView = connect(
@@ -42,6 +46,18 @@ export const MusicSelectView = connect(
     },
     fadeDiscMusic: (cursor: number, values: number[]) => {
       dispatch(MusicSelectAction.fadeDiscMusic(cursor, values));
+    },
+    changeDiscSide: (cursor: number, discSide: number) => {
+      dispatch(MusicSelectAction.changeDiscSide(cursor, discSide));
+    },
+    setSelectedMusicId: (musicId: string) => {
+      dispatch(MusicSelectAction.setSelectedMusicId(musicId));
+    },
+    getMusicList: () => {
+      dispatch(MusicSelectAction.getMusicList());
+    },
+    setCursor: (cursor: number) => {
+      dispatch(MusicSelectAction.setCursor(cursor));
     },
   })
 )(MusicSelect);

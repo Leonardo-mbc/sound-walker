@@ -2,9 +2,6 @@ import * as React from 'react';
 import * as styles from './style.css';
 import { MusicSelectProps } from './music-select-container';
 import { MusicDisc } from '../../commons/music-disc';
-
-// デバッグ用 const Object
-import { musicList } from '../../../constant/music-list';
 import {
   DISC_LABEL,
   MUSIC_SELECT_PLAY_BUTTON,
@@ -12,11 +9,9 @@ import {
 } from '../../../constant/target-name';
 
 interface MusicSelectState {
-  cursor: number;
   discTouchstartPositionX: number;
   discTouchmovePositionX: number;
   discTouchmovePreviousPositionX: number;
-  selectedMusicId: string;
 }
 
 export class MusicSelect extends React.Component<
@@ -29,22 +24,12 @@ export class MusicSelect extends React.Component<
     super(props, state);
 
     this.state = {
-      cursor: 0,
       discTouchstartPositionX: null,
       discTouchmovePositionX: 0,
       discTouchmovePreviousPositionX: 0,
-      selectedMusicId: 'm1',
     };
 
-    // TODO: musicList を本物に置き換え
-    this.props.sampleMusicPlay({
-      musicIds: musicList[0].map((musicInfo) => {
-        return musicInfo.meta.musicId;
-      }),
-      faderGainValues: [1, 0],
-    });
-
-    // TODO: デコードが複数同時に立たけるようにする。キューイングなどで！
+    props.getMusicList();
   }
 
   componentDidMount() {
@@ -64,6 +49,8 @@ export class MusicSelect extends React.Component<
         'touchstart',
         (e) => {
           e.preventDefault();
+          const { musicSelect } = this.props;
+          const { cursor, musicList } = musicSelect;
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
           switch (target) {
@@ -71,6 +58,22 @@ export class MusicSelect extends React.Component<
               if (this.state.discTouchstartPositionX === null) {
                 this.setDiscTouchstartPositionX(e.touches[0].clientX);
               }
+              break;
+            case MUSIC_SELECT_PLAY_BUTTON:
+              this.props.goToPlayer(musicSelect.selectedMusicId);
+              this.props.sampleMusicFadeOut(
+                musicList[cursor].map((musicInfo) => {
+                  return musicInfo.meta.musicId;
+                })
+              );
+              break;
+            case MUSIC_SELECT_BACK_BUTTON:
+              this.props.goToMainMenu();
+              this.props.sampleMusicFadeOut(
+                musicList[cursor].map((musicInfo) => {
+                  return musicInfo.meta.musicId;
+                })
+              );
               break;
           }
         },
@@ -103,17 +106,6 @@ export class MusicSelect extends React.Component<
               this.setDiscTouchstartPositionX(null);
               this.setDiscTouchmovePositionX(0);
               break;
-            case MUSIC_SELECT_PLAY_BUTTON:
-              this.props.goToPlayer(this.state.selectedMusicId);
-              break;
-            case MUSIC_SELECT_BACK_BUTTON:
-              this.props.goToMainMenu();
-              this.props.sampleMusicFadeOut(
-                musicList[this.state.cursor].map((musicInfo) => {
-                  return musicInfo.meta.musicId;
-                })
-              );
-              break;
           }
         },
         passiveSupported ? { passive: false } : false
@@ -122,23 +114,26 @@ export class MusicSelect extends React.Component<
   }
 
   calcDiscMove(x: number) {
+    const { musicSelect, setSelectedMusicId } = this.props;
+    const { discSide, cursor, musicList } = musicSelect;
+
     if (this.state.discTouchstartPositionX !== null) {
       const moveX = x - this.state.discTouchstartPositionX;
       const acc =
         Math.abs(this.state.discTouchmovePreviousPositionX - moveX) / 2;
       const amountX = moveX + acc * moveX * 0.075;
-      if (amountX <= -170 && this.state.cursor < musicList.length - 1) {
-        // TODO: musicList を本物に置き換え
-
-        this.setCursor(this.state.cursor + 1);
-        this.setSelectedMusicId(musicList[this.state.cursor][0].meta.musicId);
-        // TODO: musicList を本物に置き換え
+      if (amountX <= -170 && cursor < musicList.length - 1) {
+        this.setCursor(cursor + 1);
+        setSelectedMusicId(
+          musicList[cursor + 1][discSide[cursor] || 0].meta.musicId
+        );
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
-      } else if (170 <= amountX && 0 < this.state.cursor) {
-        this.setCursor(this.state.cursor - 1);
-        this.setSelectedMusicId(musicList[this.state.cursor][0].meta.musicId);
-        // TODO: musicList を本物に置き換え
+      } else if (170 <= amountX && 0 < cursor) {
+        this.setCursor(cursor - 1);
+        setSelectedMusicId(
+          musicList[cursor - 1][discSide[cursor] || 0].meta.musicId
+        );
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
       } else {
@@ -151,20 +146,18 @@ export class MusicSelect extends React.Component<
   }
 
   async setCursor(newCursor: number) {
-    const { musicSelect } = this.props;
+    const { musicSelect, setCursor } = this.props;
+    const { cursor, musicList } = musicSelect;
 
     this.props.sampleMusicFadeOut(
-      musicList[this.state.cursor].map((musicInfo) => {
+      musicList[cursor].map((musicInfo) => {
         return musicInfo.meta.musicId;
       })
     );
 
-    this.setState({
-      cursor: newCursor,
-    });
+    setCursor(newCursor);
 
     setTimeout(() => {
-      // TODO: musicList を本物に置き換え
       this.props.sampleMusicPlay({
         musicIds: musicList[newCursor].map(
           (musicInfo) => musicInfo.meta.musicId
@@ -192,17 +185,14 @@ export class MusicSelect extends React.Component<
     });
   }
 
-  setSelectedMusicId(musicId: string) {
-    this.setState({
-      selectedMusicId: musicId,
-    });
-  }
-
   render() {
+    const { musicSelect, fadeDiscMusic, changeDiscSide } = this.props;
+    const { selectedMusicId, cursor, musicList } = musicSelect;
+
     const discListStyle: React.CSSProperties = {
       transform: `translate3d(calc(${this.state.discTouchmovePositionX *
-        0.8}px - ${this.state.cursor * 100}vh), calc(${this.state
-        .discTouchmovePositionX * 0.8}px - ${this.state.cursor * 100}vh), 0px)`,
+        0.8}px - ${cursor * 100}vh), calc(${this.state.discTouchmovePositionX *
+        0.8}px - ${cursor * 100}vh), 0px)`,
     };
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
@@ -228,8 +218,9 @@ export class MusicSelect extends React.Component<
                 key={`music-disc-${idx}`}
                 discInfo={discInfo}
                 customStyle={customStyle}
-                selectedMusicId={this.state.selectedMusicId}
-                fadeDiscMusic={this.props.fadeDiscMusic.bind(this, idx)}
+                selectedMusicId={selectedMusicId}
+                fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
+                changeDiscSide={changeDiscSide.bind(this, idx)}
               />
             );
           })}

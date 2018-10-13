@@ -44,6 +44,10 @@ export const initialState: State = {
     musicInfo: null,
   },
   musicSelect: {
+    musicList: [],
+    selectedMusicId: 'm1',
     discFaders: [],
+    discSide: [],
+    cursor: 0,
   },
 };
