@@ -165,20 +165,24 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
     const { customStyle, discInfo, selectedMusicId } = this.props;
     const { discSide } = this.state;
 
-    const discCustomStyle = {
-      backgroundImage: `url(/assets/images/disc-images/${
-        discInfo[discSide].meta.discImage
-      })`,
+    let imageACustomStyle: React.CSSProperties = {
+      opacity: 1,
     };
-
+    let imageBCustomStyle: React.CSSProperties = {
+      opacity: 0,
+    };
     let pickerCustomStyle: React.CSSProperties;
+
     if (this.fader) {
+      const faderBRatio =
+        (this.state.faderBarPositionX + this.state.faderBarTouchmovePositionX) /
+        parseFloat(getComputedStyle(this.fader).width);
       pickerCustomStyle = {
-        marginLeft: `${((this.state.faderBarPositionX +
-          this.state.faderBarTouchmovePositionX) /
-          parseFloat(getComputedStyle(this.fader).width)) *
-          100}%`,
+        marginLeft: `${faderBRatio * 100}%`,
       };
+
+      imageACustomStyle.opacity = 1;
+      imageBCustomStyle.opacity = 1;
     }
 
     return (
@@ -187,11 +191,20 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         className={styles.container}
         style={customStyle}
       >
-        <div
-          className={styles.disc}
-          style={discCustomStyle}
-          data-target={DISC_LABEL}
-        />
+        <div className={styles.disc} data-target={DISC_LABEL}>
+          {discInfo.map((info, idx) => {
+            return (
+              <img
+                key={`disc-image-${idx}`}
+                src={`/assets/images/disc-images/${info.meta.discImage}`}
+                className={`${
+                  selectedMusicId === info.meta.musicId ? styles.imageShow : ''
+                }`}
+                data-target={DISC_LABEL}
+              />
+            );
+          })}
+        </div>
         <div className={styles.details}>
           <div
             className={`${styles.values} ${

@@ -1,4 +1,5 @@
 export const container: string;
+export const imageShow: string;
 export const show: string;
 export const disc: string;
 export const details: string;
