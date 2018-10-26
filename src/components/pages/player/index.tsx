@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import * as styles from './style.css';
 import { PlayerViewProps } from './player-container';
 import { SoundPlayer } from '../../commons/sound-player';
-import { NotesPlayer } from '../../commons/notes-player/index';
+import { NotesPlayerV2 } from '../../commons/notes-player-v2';
 
 interface MatchParams {
   musicId: string;
@@ -42,7 +42,7 @@ export class Player extends React.Component<
           </div>
         ) : null}
         {player.isMusicPlaying ? (
-          <NotesPlayer
+          <NotesPlayerV2
             scores={player.musicInfo.scores}
             source={player.source}
             meta={player.musicInfo.meta}
