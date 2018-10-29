@@ -5,8 +5,9 @@ import * as MusicSelectAction from './music-select-actions';
 import * as TitleAction from '../title/title-actions';
 
 export interface MusicSelectProps {
+  mode: MusicSelectMode;
   musicSelect: MusicSelectState;
-  goToPlayer: (musicId: string) => void;
+  goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
   goToMainMenu: () => void;
   sampleMusicPlay: (
     { musicIds, faderGainValues }: MusicSelectAction.SampleMusicPlayPayload
@@ -19,6 +20,12 @@ export interface MusicSelectProps {
   setCursor: (cursor: number) => void;
 }
 
+export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
+export const MUSIC_SELECT_DJ_MODE = 'MUSIC_SELECT_DJ_MODE';
+export type MusicSelectMode =
+  | typeof MUSIC_SELECT_PLAY
+  | typeof MUSIC_SELECT_DJ_MODE;
+
 export const MusicSelectView = connect(
   (state: MusicSelectProps) => {
     const { musicSelect } = state;
@@ -27,8 +34,8 @@ export const MusicSelectView = connect(
     };
   },
   (dispatch) => ({
-    goToPlayer: (musicId: string) => {
-      dispatch(MusicSelectAction.goToPlayer(musicId));
+    goToPlayer: (mode: MusicSelectMode, musicId: string) => {
+      dispatch(MusicSelectAction.goToPlayer(mode, musicId));
     },
     goToMainMenu: () => {
       dispatch(TitleAction.goToMainMenu());

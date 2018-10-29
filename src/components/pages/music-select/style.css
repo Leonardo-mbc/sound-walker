@@ -5,6 +5,18 @@
   height: 100%;
   overflow: hidden;
 
+  :local(.title) {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    display: block;
+    font-weight: bold;
+    font-size: xx-large;
+    user-select: none;
+    cursor: pointer;
+    z-index: 10;
+  }
+
   :local(.play-button) {
     position: absolute;
     bottom: 5%;

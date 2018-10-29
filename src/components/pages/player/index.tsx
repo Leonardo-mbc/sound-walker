@@ -4,6 +4,11 @@ import * as styles from './style.css';
 import { PlayerViewProps } from './player-container';
 import { SoundPlayer } from '../../commons/sound-player';
 import { NotesPlayerV2 } from '../../commons/notes-player-v2';
+import {
+  MUSIC_SELECT_PLAY,
+  MUSIC_SELECT_DJ_MODE,
+} from '../music-select/music-select-container';
+import { DJPlayer } from '../../commons/dj-palyer';
 
 interface MatchParams {
   musicId: string;
@@ -21,7 +26,7 @@ export class Player extends React.Component<
   }
 
   render() {
-    const { match, player } = this.props;
+    const { match, player, mode } = this.props;
     const { loadMusic } = this.props;
     const { musicId } = match.params;
     return (
@@ -42,12 +47,22 @@ export class Player extends React.Component<
           </div>
         ) : null}
         {player.isMusicPlaying ? (
-          <NotesPlayerV2
-            scores={player.musicInfo.scores}
-            source={player.source}
-            meta={player.musicInfo.meta}
-            offsetCurrentTime={player.offsetCurrentTime}
-          />
+          (() => {
+            switch (mode) {
+              case MUSIC_SELECT_PLAY:
+                return (
+                  <NotesPlayerV2
+                    scores={player.musicInfo.scores}
+                    source={player.source}
+                    meta={player.musicInfo.meta}
+                    offsetCurrentTime={player.offsetCurrentTime}
+                  />
+                );
+
+              case MUSIC_SELECT_DJ_MODE:
+                return <DJPlayer meta={player.musicInfo.meta} />;
+            }
+          })()
         ) : (
           <div className={styles.loadState}>
             SYSTEM: {this.props.player.isSystemReady ? 'READY' : '...'}

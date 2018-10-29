@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
 import { RouteProps } from 'react-router';
-import { Player } from ".";
+import { Player } from '.';
 import { PlayerState } from './player-interfaces';
 import * as PlayerAction from './player-actions';
-
+import { MusicSelectMode } from '../music-select/music-select-container';
 
 export interface PlayerViewProps {
+  mode: MusicSelectMode;
   player: PlayerState;
   router: RouteProps;
   loadMusic: (url: string) => void;
@@ -13,20 +14,23 @@ export interface PlayerViewProps {
   loadMusicInfo: (musicId: string) => void;
 }
 
-export const PlayerView = connect((state: PlayerViewProps) => {
-  const { player, router } = state;
-  return {
-    player,
-    router
-  };
-}, (dispatch) => ({
-  loadMusic: (url: string) => {
-    dispatch(PlayerAction.loadMusic(url));
+export const PlayerView = connect(
+  (state: PlayerViewProps) => {
+    const { player, router } = state;
+    return {
+      player,
+      router,
+    };
   },
-  startMusic: () => {
-    dispatch(PlayerAction.startMusic());
-  },
-  loadMusicInfo: (musicId: string) => {
-    dispatch(PlayerAction.loadMusicInfo(musicId));
-  }
-}))(Player);
+  (dispatch) => ({
+    loadMusic: (url: string) => {
+      dispatch(PlayerAction.loadMusic(url));
+    },
+    startMusic: () => {
+      dispatch(PlayerAction.startMusic());
+    },
+    loadMusicInfo: (musicId: string) => {
+      dispatch(PlayerAction.loadMusicInfo(musicId));
+    },
+  })
+)(Player);

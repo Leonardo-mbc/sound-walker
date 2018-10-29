@@ -8,13 +8,24 @@ import { AudioUtils } from '../../../utilities/audio-utils';
 import { Sound } from '../../../systems/system-interfaces';
 import { musicList } from '../../../constant/music-list';
 import { MusicSelectState } from './music-select-interfaces';
+import {
+  MUSIC_SELECT_PLAY,
+  MUSIC_SELECT_DJ_MODE,
+} from './music-select-container';
 
 const musicSelectSaga = [
   takeEvery(MusicSelectAction.GO_TO_PLAYER, function*(
     action: MusicSelectAction.GoToPlayer
   ) {
     // yield delay(800);
-    yield put(push(`/player/${action.payload.musicId}`));
+    switch (action.payload.mode) {
+      case MUSIC_SELECT_PLAY:
+        yield put(push(`/player/${action.payload.musicId}`));
+        break;
+      case MUSIC_SELECT_DJ_MODE:
+        yield put(push(`/dj-player/${action.payload.musicId}`));
+        break;
+    }
   }),
 
   takeEvery(MusicSelectAction.SAMPLE_MUSIC_PLAY, function*(

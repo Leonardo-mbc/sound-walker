@@ -11,6 +11,7 @@ export interface TitleViewProps {
   goToMainMenu: () => void;
   jumpTitleSound: () => void;
   goToMusicSelect: () => void;
+  goToDJMode: () => void;
 }
 
 export const TitleView = connect(
@@ -33,6 +34,9 @@ export const TitleView = connect(
     },
     goToMusicSelect: () => {
       dispatch(TitleAction.goToMusicSelect());
+    },
+    goToDJMode: () => {
+      dispatch(TitleAction.goToDJMode());
     },
   })
 )(Title);

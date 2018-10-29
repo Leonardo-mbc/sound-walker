@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as styles from './style.css';
-import { MusicSelectProps } from './music-select-container';
+import {
+  MusicSelectProps,
+  MUSIC_SELECT_DJ_MODE,
+} from './music-select-container';
 import { MusicDisc } from '../../commons/music-disc';
 import {
   DISC_LABEL,
@@ -49,7 +52,7 @@ export class MusicSelect extends React.Component<
         'touchstart',
         (e) => {
           e.preventDefault();
-          const { musicSelect } = this.props;
+          const { musicSelect, mode } = this.props;
           const { cursor, musicList } = musicSelect;
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
@@ -60,7 +63,7 @@ export class MusicSelect extends React.Component<
               }
               break;
             case MUSIC_SELECT_PLAY_BUTTON:
-              this.props.goToPlayer(musicSelect.selectedMusicId);
+              this.props.goToPlayer(mode, musicSelect.selectedMusicId);
               this.props.sampleMusicFadeOut(
                 musicList[cursor].map((musicInfo) => {
                   return musicInfo.meta.musicId;
@@ -186,7 +189,7 @@ export class MusicSelect extends React.Component<
   }
 
   render() {
-    const { musicSelect, fadeDiscMusic, changeDiscSide } = this.props;
+    const { musicSelect, fadeDiscMusic, changeDiscSide, mode } = this.props;
     const { selectedMusicId, cursor, musicList } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
@@ -196,6 +199,9 @@ export class MusicSelect extends React.Component<
     };
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
+        <div className={styles.title}>
+          {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
+        </div>
         <div
           className={styles.playButton}
           data-target={MUSIC_SELECT_PLAY_BUTTON}

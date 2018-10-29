@@ -61,6 +61,25 @@ const titleSaga = [
     yield delay(800);
     yield put(push('/music-select'));
   }),
+
+  takeEvery(TitleAction.GO_TO_DJ_MODE, function*(
+    _action: TitleAction.GoToDJMode
+  ) {
+    const { system } = yield select();
+    const { systemGainNode, sources } = system.sound as Sound;
+
+    new TWEEN.Tween(systemGainNode.gain)
+      .to({ value: 0.0 }, 1000)
+      .onComplete(() => {
+        sources.title.stop();
+        // 次 title を鳴らすときは remakeSystemSounds しなくてはならない
+
+        systemGainNode.gain.value = 1.0;
+      })
+      .start();
+    yield delay(800);
+    yield put(push('/dj-mode'));
+  }),
 ];
 
 export default titleSaga;

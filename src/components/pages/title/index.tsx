@@ -14,6 +14,7 @@ export class Title extends React.Component<TitleViewProps, {}> {
       goToMainMenu,
       jumpTitleSound,
       goToMusicSelect,
+      goToDJMode,
     } = this.props;
 
     return (
@@ -26,6 +27,7 @@ export class Title extends React.Component<TitleViewProps, {}> {
                 isLoadComplete={title.isLoadComplete}
                 jumpTitleSound={jumpTitleSound}
                 goToMusicSelect={goToMusicSelect}
+                goToDJMode={goToDJMode}
               />
             )}
           />

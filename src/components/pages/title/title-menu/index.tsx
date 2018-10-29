@@ -12,6 +12,7 @@ interface TitleMenuProps {
   isLoadComplete: boolean;
   jumpTitleSound: () => void;
   goToMusicSelect: () => void;
+  goToDJMode: () => void;
 }
 
 interface TitleMenuState {
@@ -80,6 +81,9 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     switch (state) {
       case MENU_MUSIC_SELECT:
         this.props.goToMusicSelect();
+        break;
+      case MENU_DJ_MODE:
+        this.props.goToDJMode();
         break;
     }
   }

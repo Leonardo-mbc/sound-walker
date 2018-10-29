@@ -1,4 +1,5 @@
 import { DiscInfo } from '../../commons/music-disc/music-disc-interface';
+import { MusicSelectMode } from './music-select-container';
 
 export type ActionTypes =
   | GoToPlayer
@@ -28,12 +29,17 @@ export const SET_CURSOR = 'SET_CURSOR';
 export interface GoToPlayer {
   type: typeof GO_TO_PLAYER;
   payload: {
+    mode: MusicSelectMode;
     musicId: string;
   };
 }
-export const goToPlayer = (musicId: string): GoToPlayer => ({
+export const goToPlayer = (
+  mode: MusicSelectMode,
+  musicId: string
+): GoToPlayer => ({
   type: GO_TO_PLAYER,
   payload: {
+    mode,
     musicId,
   },
 });
