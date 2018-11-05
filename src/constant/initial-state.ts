@@ -42,6 +42,8 @@ export const initialState: State = {
     source: null,
     offsetCurrentTime: 0,
     musicInfo: null,
+    filterNode: null,
+    gainNode: null,
   },
   musicSelect: {
     musicList: [],

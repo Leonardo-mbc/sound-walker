@@ -1,3 +1,5 @@
+import { FilterNode } from '../../../systems/system-interfaces';
+
 export interface PlayerState {
   isSystemReady: boolean;
   isSourceReady: boolean;
@@ -6,6 +8,8 @@ export interface PlayerState {
   source: AudioBufferSourceNode;
   offsetCurrentTime: number;
   musicInfo: MusicInfo;
+  filterNode: FilterNode;
+  gainNode: GainNode;
 }
 
 export interface MusicInfo {

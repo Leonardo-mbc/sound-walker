@@ -1,0 +1,124 @@
+@import '../../../assets/styles/constant.css';
+
+:local(.container) {
+  width: 20vh;
+  height: 20vh;
+  margin: 5vh;
+
+  position: relative;
+
+  &:local(.whit-label) {
+    margin: 5vh 5vh calc(5vh + 1em) 5vh;
+  }
+
+  :local(.indicators) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20vh;
+    height: 20vh;
+    border-radius: 100%;
+
+    :local(.indicator) {
+      width: 140%;
+      height: 0.5vh;
+      transform-origin: center;
+      display: flex;
+      justify-content: flex-start;
+      position: absolute;
+      transform: rotate3d(0, 0, 1, 0deg);
+
+      &::before {
+        content: '';
+        display: block;
+        width: 3vh;
+        height: 100%;
+        background-color: #1d1d1d;
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, #1d1d1d 0 0 10px;
+      }
+
+      &:local(.on)::before {
+        background-color: #79ffb0;
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--green) 0 0 1px;
+      }
+    }
+
+    :local(.knob) {
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      background-color: #1d1d1d;
+      border: 5px solid black;
+      position: absolute;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &::before {
+        content: attr(data-value);
+        font-weight: bold;
+      }
+
+      &::after {
+        content: '';
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border-radius: 50%;
+        box-sizing: border-box;
+        background-color: transparent;
+        box-sizing: border-box;
+        border: 2px solid var(--white);
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--white) 0 0 10px inset;
+      }
+
+      &:local(.orange)::after {
+        border: 2px solid var(--orange);
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--orange) 0 0 10px inset;
+      }
+      &:local(.orange)::before {
+        color: var(--orange);
+        text-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--orange) 0 0 10px;
+      }
+
+      &:local(.red)::after {
+        border: 2px solid var(--red);
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--red) 0 0 10px inset;
+      }
+      &:local(.red)::before {
+        color: var(--red);
+        text-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--red) 0 0 10px;
+      }
+
+      &:local(.purple)::after {
+        border: 2px solid var(--purple);
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--purple) 0 0 10px inset;
+      }
+      &:local(.purple)::before {
+        color: var(--purple);
+        text-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--purple) 0 0 10px;
+      }
+
+      &:local(.blue)::after {
+        border: 2px solid var(--blue);
+        box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--blue) 0 0 10px inset;
+      }
+      &:local(.blue)::before {
+        color: var(--blue);
+        text-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, var(--blue) 0 0 10px;
+      }
+    }
+  }
+
+  :local(.label) {
+    width: 150%;
+    font-size: smaller;
+    margin-left: -25%;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

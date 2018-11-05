@@ -7,7 +7,7 @@ import { request } from '../../../utilities/request';
 import { PlayerState } from './player-interfaces';
 
 const playerSaga = [
-  takeEvery(PlayerAction.LOAD_MUSIC, function* (action: PlayerAction.LoadMusic) {
+  takeEvery(PlayerAction.LOAD_MUSIC, function*(action: PlayerAction.LoadMusic) {
     yield put(SystemAction.setLoadingCircleVisible(true));
 
     const { url } = action.payload;
@@ -30,20 +30,24 @@ const playerSaga = [
     yield put(SystemAction.setLoadingCircleVisible(false));
   }),
 
-  takeEvery(PlayerAction.START_MUSIC, function* (_action: PlayerAction.StartMusic) {
+  takeEvery(PlayerAction.START_MUSIC, function*(
+    _action: PlayerAction.StartMusic
+  ) {
     const { player } = yield select();
     const { source } = player as PlayerState;
-    
+
     source.start(0, 0);
     yield put(PlayerAction.setOffsetCurrentTime(source.context.currentTime));
 
     source.onended = (e) => {
       console.log('onended', e);
       source.stop();
-    }
+    };
   }),
 
-  takeEvery(PlayerAction.LOAD_MUSIC_INFO, function* (action: PlayerAction.LoadMusicInfo) {
+  takeEvery(PlayerAction.LOAD_MUSIC_INFO, function*(
+    action: PlayerAction.LoadMusicInfo
+  ) {
     const { musicId } = action.payload;
 
     const scoreJson = yield call(async () => {
@@ -54,7 +58,16 @@ const playerSaga = [
     });
 
     yield put(PlayerAction.setMusicInfo(scoreJson));
-  })
+  }),
+
+  takeEvery(PlayerAction.LOAD_SOUND_NODES, function*(
+    _action: PlayerAction.LoadSoundNodes
+  ) {
+    const { system } = yield select();
+    const { filterNode, systemGainNode } = system.sound as Sound;
+
+    yield put(PlayerAction.setSoundNodes({ filterNode, systemGainNode }));
+  }),
 ];
 
 export default playerSaga;

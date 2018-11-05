@@ -19,9 +19,10 @@ export class Player extends React.Component<
   {}
 > {
   componentWillMount() {
-    const { match, loadMusicInfo } = this.props;
+    const { match, loadMusicInfo, loadSoundNodes } = this.props;
     const { musicId } = match.params;
 
+    loadSoundNodes();
     loadMusicInfo(musicId);
   }
 
@@ -60,7 +61,13 @@ export class Player extends React.Component<
                 );
 
               case MUSIC_SELECT_DJ_MODE:
-                return <DJPlayer meta={player.musicInfo.meta} />;
+                return (
+                  <DJPlayer
+                    meta={player.musicInfo.meta}
+                    filterNode={player.filterNode}
+                    gainNode={player.gainNode}
+                  />
+                );
             }
           })()
         ) : (

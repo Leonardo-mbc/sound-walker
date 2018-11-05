@@ -6,12 +6,13 @@ import * as PlayerAction from './player-actions';
 import { MusicSelectMode } from '../music-select/music-select-container';
 
 export interface PlayerViewProps {
-  mode: MusicSelectMode;
   player: PlayerState;
   router: RouteProps;
+  mode: MusicSelectMode;
   loadMusic: (url: string) => void;
   startMusic: () => void;
   loadMusicInfo: (musicId: string) => void;
+  loadSoundNodes: () => void;
 }
 
 export const PlayerView = connect(
@@ -31,6 +32,9 @@ export const PlayerView = connect(
     },
     loadMusicInfo: (musicId: string) => {
       dispatch(PlayerAction.loadMusicInfo(musicId));
+    },
+    loadSoundNodes: () => {
+      dispatch(PlayerAction.loadSoundNodes());
     },
   })
 )(Player);

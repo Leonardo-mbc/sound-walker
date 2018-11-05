@@ -17,6 +17,7 @@ export function systemReducer(
   switch (action.type) {
     case CREATE_SOUNDS_LINE:
       const { context } = AudioUtils.instance;
+      console.log(context.sampleRate);
       const systemGainNode = context.createGain();
       const cueAGainNode = context.createGain();
       const cueBGainNode = context.createGain();
@@ -24,7 +25,17 @@ export function systemReducer(
       const lowPassFilterNode = context.createBiquadFilter();
       const highPassFilterNode = context.createBiquadFilter();
 
-      systemGainNode.connect(analyserNode);
+      highPassFilterNode.type = 'highpass' as any;
+      highPassFilterNode.frequency.value = 0;
+      lowPassFilterNode.type = 'lowpass' as any;
+      lowPassFilterNode.frequency.value = 44100 * 0.5;
+
+      systemGainNode.connect(highPassFilterNode);
+
+      // FilterNode の接続
+      highPassFilterNode.connect(lowPassFilterNode);
+      lowPassFilterNode.connect(analyserNode);
+
       cueAGainNode.connect(analyserNode);
       cueBGainNode.connect(analyserNode);
       analyserNode.connect(context.destination);
