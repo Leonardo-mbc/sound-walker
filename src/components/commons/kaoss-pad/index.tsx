@@ -17,6 +17,7 @@ interface CursorStyle {
   opacity: number;
   top: number;
   left: number;
+  filter: number;
 }
 
 export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
@@ -31,6 +32,7 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
         opacity: 0,
         left: 0,
         top: 0,
+        filter: 0,
       },
     };
   }
@@ -63,6 +65,8 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
     if (touch) {
       let cursorX = touch.clientX - this.container.offsetLeft;
       let cursorY = touch.clientY - this.container.offsetTop;
+      const ratioX = cursorX / this.container.clientWidth;
+      const ratioY = cursorY / this.container.clientHeight;
 
       if (cursorX < 0) {
         cursorX = 0;
@@ -76,34 +80,37 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
         cursorY = this.container.clientHeight;
       }
 
-      console.log(
-        1 - cursorX / this.container.clientWidth,
-        44100 * 0.25 * (1 - cursorX / this.container.clientWidth) + 70,
-        cursorY / this.container.clientHeight,
-        44100 * 0.25 * (cursorY / this.container.clientHeight)
-      );
       this.props.filterNode.highPassFilterNode.frequency.value =
-        44100 * 0.25 * (cursorY / this.container.clientHeight);
+        44100 * 0.25 * ratioY;
 
       this.props.filterNode.lowPassFilterNode.frequency.value =
-        44100 * 0.25 * (1 - cursorX / this.container.clientWidth) + 70;
+        44100 * 0.25 * (1 - ratioX) + 70;
 
+      console.log(ratioX, ratioY);
       this.setState({
         cursorStyle: {
           opacity: 1,
           top: cursorY - this.cursor.clientHeight / 2,
           left: cursorX - this.cursor.clientWidth / 2,
+          filter: 60 * (ratioX - ratioY),
         },
       });
     }
   }
 
   render() {
-    const { cursorStyle } = this.state;
+    const { opacity, top, left, filter } = this.state.cursorStyle;
     const vhSize = this.props.vhSize || 20;
     const containerStyle = {
       width: `${vhSize}vh`,
       height: `${vhSize}vh`,
+    };
+
+    const cursorStyle = {
+      opacity,
+      top: `${top}px`,
+      left: `${left}px`,
+      filter: `hue-rotate(${filter}deg)`,
     };
 
     return (
