@@ -65,9 +65,21 @@ const playerSaga = [
     _action: PlayerAction.LoadSoundNodes
   ) {
     const { system } = yield select();
-    const { filterNode, systemGainNode } = system.sound as Sound;
+    const {
+      filterNode,
+      systemGainNode,
+      analyzerNode,
+      analyzerParams,
+    } = system.sound as Sound;
 
-    yield put(PlayerAction.setSoundNodes({ filterNode, systemGainNode }));
+    yield put(
+      PlayerAction.setSoundNodes({
+        filterNode,
+        systemGainNode,
+        analyzerNode,
+        analyzerParams,
+      })
+    );
   }),
 
   takeEvery(PlayerAction.BACK_TO_DJ_MODE, function*(

@@ -21,7 +21,7 @@ export function systemReducer(
       const systemGainNode = context.createGain();
       const cueAGainNode = context.createGain();
       const cueBGainNode = context.createGain();
-      const analyserNode = context.createAnalyser();
+      const analyzerNode = context.createAnalyser();
       const lowPassFilterNode = context.createBiquadFilter();
       const highPassFilterNode = context.createBiquadFilter();
 
@@ -34,11 +34,11 @@ export function systemReducer(
 
       // FilterNode の接続
       highPassFilterNode.connect(lowPassFilterNode);
-      lowPassFilterNode.connect(analyserNode);
+      lowPassFilterNode.connect(analyzerNode);
 
-      cueAGainNode.connect(analyserNode);
-      cueBGainNode.connect(analyserNode);
-      analyserNode.connect(context.destination);
+      cueAGainNode.connect(analyzerNode);
+      cueBGainNode.connect(analyzerNode);
+      analyzerNode.connect(context.destination);
 
       return {
         ...state,
@@ -47,11 +47,15 @@ export function systemReducer(
           systemGainNode,
           cueAGainNode,
           cueBGainNode,
-          analyserNode,
+          analyzerNode,
           filterNode: {
             ...state.sound.filterNode,
             lowPassFilterNode,
             highPassFilterNode,
+          },
+          analyzerParams: {
+            times: new Uint8Array(analyzerNode.frequencyBinCount),
+            freqs: new Uint8Array(48),
           },
         },
       };

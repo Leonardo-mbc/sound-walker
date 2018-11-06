@@ -1,13 +1,13 @@
 @import '../../../assets/styles/constant.css';
 
 :local(.container) {
-  background-color: var(--black);
   border: solid 5px black;
   box-sizing: border-box;
   box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
   border-radius: 3px;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(3px);
 
   :local(.chip-cursor) {
     width: 40vh;

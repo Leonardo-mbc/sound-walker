@@ -1,4 +1,4 @@
-import { FilterNode } from '../../../systems/system-interfaces';
+import { FilterNode, AnalyserParams } from '../../../systems/system-interfaces';
 
 export interface PlayerState {
   isSystemReady: boolean;
@@ -10,6 +10,8 @@ export interface PlayerState {
   musicInfo: MusicInfo;
   filterNode: FilterNode;
   gainNode: GainNode;
+  analyzerNode: AnalyserNode;
+  analyzerParams: AnalyserParams;
 }
 
 export interface MusicInfo {

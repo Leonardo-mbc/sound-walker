@@ -9,9 +9,9 @@ export interface Sound {
   systemGainNode: GainNode;
   cueAGainNode: GainNode;
   cueBGainNode: GainNode;
-  analyserNode: AnalyserNode;
+  analyzerNode: AnalyserNode;
   filterNode: FilterNode;
-  analyserParams: analyserParams;
+  analyzerParams: AnalyserParams;
 }
 
 export interface SoundSources {
@@ -24,9 +24,10 @@ export interface SoundSources {
 export interface FilterNode {
   lowPassFilterNode: BiquadFilterNode;
   highPassFilterNode: BiquadFilterNode;
+  bandpassFilterNode: BiquadFilterNode;
 }
 
-export interface analyserParams {
+export interface AnalyserParams {
   times: Uint8Array;
   freqs: Uint8Array;
 }

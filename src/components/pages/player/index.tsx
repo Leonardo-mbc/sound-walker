@@ -66,6 +66,8 @@ export class Player extends React.Component<
                     meta={player.musicInfo.meta}
                     filterNode={player.filterNode}
                     gainNode={player.gainNode}
+                    analyzerNode={player.analyzerNode}
+                    analyzerParams={player.analyzerParams}
                     backToDJMode={() => backToDJMode()}
                   />
                 );

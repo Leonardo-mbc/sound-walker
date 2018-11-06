@@ -53,6 +53,8 @@ export function playerReducer(
         ...state,
         filterNode: action.payload.filterNode,
         gainNode: action.payload.systemGainNode,
+        analyzerNode: action.payload.analyzerNode,
+        analyzerParams: action.payload.analyzerParams,
       };
 
     case BACK_TO_DJ_MODE:

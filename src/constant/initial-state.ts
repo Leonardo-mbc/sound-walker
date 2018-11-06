@@ -21,9 +21,9 @@ export const initialState: State = {
       systemGainNode: null,
       cueAGainNode: null,
       cueBGainNode: null,
-      analyserNode: null,
+      analyzerNode: null,
       filterNode: null,
-      analyserParams: null,
+      analyzerParams: null,
     },
     display: {
       isPortrait: false,
@@ -44,6 +44,8 @@ export const initialState: State = {
     musicInfo: null,
     filterNode: null,
     gainNode: null,
+    analyzerNode: null,
+    analyzerParams: null,
   },
   musicSelect: {
     musicList: [],

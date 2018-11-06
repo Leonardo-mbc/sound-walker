@@ -47,7 +47,6 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
 
   onTouchEnd(_e: React.TouchEvent<HTMLElement>) {
     this.props.filterNode.lowPassFilterNode.frequency.value = 44100 * 0.5;
-
     this.props.filterNode.highPassFilterNode.frequency.value = 0;
 
     this.setState({

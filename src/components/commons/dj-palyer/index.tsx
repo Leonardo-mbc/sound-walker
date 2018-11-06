@@ -1,15 +1,18 @@
 import * as React from 'react';
 import * as styles from './style.css';
 import { MusicMetaData } from '../../pages/player/player-interfaces';
-import { FilterNode } from '../../../systems/system-interfaces';
+import { FilterNode, AnalyserParams } from '../../../systems/system-interfaces';
 import { Knob } from '../knob';
 import { KaossPad } from '../kaoss-pad';
 import { BACK_TO_DJ_MODE } from '../../../constant/target-name';
+import { CircleVisualizer } from '../circle-visualizer';
 
 interface DJPlayerProps {
   meta: MusicMetaData;
   filterNode: FilterNode;
   gainNode: GainNode;
+  analyzerNode: AnalyserNode;
+  analyzerParams: AnalyserParams;
   backToDJMode: () => void;
 }
 
@@ -91,8 +94,16 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
   }
 
   render() {
+    const { analyzerNode, analyzerParams } = this.props;
+
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
+        <div className={styles.circleVisualizerContainer}>
+          <CircleVisualizer
+            analyzerNode={analyzerNode}
+            analyzerParams={analyzerParams}
+          />
+        </div>
         <div className={styles.effectorContainer}>
           <div className={styles.knobContainer}>
             <Knob

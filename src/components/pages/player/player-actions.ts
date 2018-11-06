@@ -1,5 +1,5 @@
 import { MusicInfo } from './player-interfaces';
-import { FilterNode } from '../../../systems/system-interfaces';
+import { FilterNode, AnalyserParams } from '../../../systems/system-interfaces';
 
 export type ActionTypes =
   | SetSystemReady
@@ -123,6 +123,8 @@ export const loadSoundNodes = (): LoadSoundNodes => ({
 export interface SoundNodes {
   filterNode: FilterNode;
   systemGainNode: GainNode;
+  analyzerNode: AnalyserNode;
+  analyzerParams: AnalyserParams;
 }
 
 export interface SetSoundNodes {
@@ -132,11 +134,15 @@ export interface SetSoundNodes {
 export const setSoundNodes = ({
   filterNode,
   systemGainNode,
+  analyzerNode,
+  analyzerParams,
 }: SoundNodes): SetSoundNodes => ({
   type: SET_SOUND_NODES,
   payload: {
     filterNode,
     systemGainNode,
+    analyzerNode,
+    analyzerParams,
   },
 });
 
