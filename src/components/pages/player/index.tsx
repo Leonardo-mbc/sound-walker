@@ -28,7 +28,7 @@ export class Player extends React.Component<
 
   render() {
     const { match, player, mode } = this.props;
-    const { loadMusic } = this.props;
+    const { loadMusic, backToDJMode } = this.props;
     const { musicId } = match.params;
     return (
       <div className={styles.container}>
@@ -66,6 +66,7 @@ export class Player extends React.Component<
                     meta={player.musicInfo.meta}
                     filterNode={player.filterNode}
                     gainNode={player.gainNode}
+                    backToDJMode={() => backToDJMode()}
                   />
                 );
             }

@@ -9,6 +9,7 @@ import {
   SET_SOUND_NODES,
 } from './player-actions';
 import { PlayerState } from './player-interfaces';
+import { BACK_TO_DJ_MODE } from '../../../constant/target-name';
 
 export function playerReducer(
   state = initialState.player,
@@ -52,6 +53,13 @@ export function playerReducer(
         ...state,
         filterNode: action.payload.filterNode,
         gainNode: action.payload.systemGainNode,
+      };
+
+    case BACK_TO_DJ_MODE:
+      return {
+        ...state,
+        isSourceReady: false,
+        isMusicPlaying: false,
       };
 
     default:

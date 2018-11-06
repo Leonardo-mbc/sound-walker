@@ -10,7 +10,8 @@ export type ActionTypes =
   | SetMusicInfo
   | SetOffsetCurrentTime
   | LoadSoundNodes
-  | SetSoundNodes;
+  | SetSoundNodes
+  | BackToDJMode;
 
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
 export const LOAD_MUSIC = 'LOAD_MUSIC';
@@ -21,6 +22,7 @@ export const SET_MUSIC_INFO = 'SET_MUSIC_INFO';
 export const SET_OFFSET_CURRENT_TIME = 'SET_OFFSET_CURRENT_TIME';
 export const LOAD_SOUND_NODES = 'LOAD_SOUND_NODES';
 export const SET_SOUND_NODES = 'SET_SOUND_NODES';
+export const BACK_TO_DJ_MODE = 'BACK_TO_DJ_MODE';
 
 export interface SetSystemReady {
   type: typeof SET_SYSTEM_READY;
@@ -136,4 +138,11 @@ export const setSoundNodes = ({
     filterNode,
     systemGainNode,
   },
+});
+
+export interface BackToDJMode {
+  type: typeof BACK_TO_DJ_MODE;
+}
+export const backToDJMode = (): BackToDJMode => ({
+  type: BACK_TO_DJ_MODE,
 });

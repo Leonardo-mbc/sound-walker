@@ -5,6 +5,7 @@ import { Sound } from '../../../systems/system-interfaces';
 import { AudioUtils } from '../../../utilities/audio-utils';
 import { request } from '../../../utilities/request';
 import { PlayerState } from './player-interfaces';
+import { push } from 'react-router-redux';
 
 const playerSaga = [
   takeEvery(PlayerAction.LOAD_MUSIC, function*(action: PlayerAction.LoadMusic) {
@@ -67,6 +68,16 @@ const playerSaga = [
     const { filterNode, systemGainNode } = system.sound as Sound;
 
     yield put(PlayerAction.setSoundNodes({ filterNode, systemGainNode }));
+  }),
+
+  takeEvery(PlayerAction.BACK_TO_DJ_MODE, function*(
+    _action: PlayerAction.BackToDJMode
+  ) {
+    const { player } = yield select();
+    const { source } = player as PlayerState;
+
+    source.stop();
+    yield put(push(`/dj-mode`));
   }),
 ];
 

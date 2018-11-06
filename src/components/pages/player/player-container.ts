@@ -13,6 +13,7 @@ export interface PlayerViewProps {
   startMusic: () => void;
   loadMusicInfo: (musicId: string) => void;
   loadSoundNodes: () => void;
+  backToDJMode: () => void;
 }
 
 export const PlayerView = connect(
@@ -35,6 +36,9 @@ export const PlayerView = connect(
     },
     loadSoundNodes: () => {
       dispatch(PlayerAction.loadSoundNodes());
+    },
+    backToDJMode: () => {
+      dispatch(PlayerAction.backToDJMode());
     },
   })
 )(Player);

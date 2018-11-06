@@ -63,22 +63,22 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
     const touch = getTouchByTarget(e.touches, target);
 
     if (touch) {
-      let cursorX = touch.clientX - this.container.offsetLeft;
-      let cursorY = touch.clientY - this.container.offsetTop;
-      const ratioX = cursorX / this.container.clientWidth;
-      const ratioY = cursorY / this.container.clientHeight;
-
-      if (cursorX < 0) {
-        cursorX = 0;
-      } else if (this.container.clientWidth < cursorX) {
-        cursorX = this.container.clientWidth;
-      }
-
-      if (cursorY < 0) {
-        cursorY = 0;
-      } else if (this.container.clientHeight < cursorY) {
-        cursorY = this.container.clientHeight;
-      }
+      const cursorX = Math.min(
+        Math.max(0, touch.clientX - this.container.offsetLeft),
+        this.container.clientWidth
+      );
+      const cursorY = Math.min(
+        Math.max(0, touch.clientY - this.container.offsetTop),
+        this.container.clientHeight
+      );
+      const ratioX = Math.min(
+        Math.max(0, cursorX / this.container.clientWidth),
+        1
+      );
+      const ratioY = Math.min(
+        Math.max(0, cursorY / this.container.clientHeight),
+        1
+      );
 
       this.props.filterNode.highPassFilterNode.frequency.value =
         44100 * 0.25 * ratioY;
@@ -86,7 +86,6 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
       this.props.filterNode.lowPassFilterNode.frequency.value =
         44100 * 0.25 * (1 - ratioX) + 70;
 
-      console.log(ratioX, ratioY);
       this.setState({
         cursorStyle: {
           opacity: 1,

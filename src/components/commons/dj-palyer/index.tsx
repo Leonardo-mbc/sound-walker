@@ -4,11 +4,13 @@ import { MusicMetaData } from '../../pages/player/player-interfaces';
 import { FilterNode } from '../../../systems/system-interfaces';
 import { Knob } from '../knob';
 import { KaossPad } from '../kaoss-pad';
+import { BACK_TO_DJ_MODE } from '../../../constant/target-name';
 
 interface DJPlayerProps {
   meta: MusicMetaData;
   filterNode: FilterNode;
   gainNode: GainNode;
+  backToDJMode: () => void;
 }
 
 interface DJPlayerState {}
@@ -40,7 +42,8 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
           switch (target) {
-            default:
+            case BACK_TO_DJ_MODE:
+              this.props.backToDJMode();
               break;
           }
         },
@@ -90,25 +93,30 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
   render() {
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
-        <div className={styles.knobContainer}>
-          <Knob
-            min={0}
-            max={100}
-            initialValue={100}
-            color="orange"
-            label="VOLUME"
-            onChange={(v: number) => this.setVolume(v)}
-          />
-          <Knob
-            min={0}
-            max={30}
-            initialValue={0}
-            color="blue"
-            label="RESONANCE"
-            onChange={(v: number) => this.setResonance(v)}
-          />
+        <div className={styles.effectorContainer}>
+          <div className={styles.knobContainer}>
+            <Knob
+              min={0}
+              max={100}
+              initialValue={100}
+              color="orange"
+              label="VOLUME"
+              onChange={(v: number) => this.setVolume(v)}
+            />
+            <Knob
+              min={0}
+              max={30}
+              initialValue={0}
+              color="blue"
+              label="RESONANCE"
+              onChange={(v: number) => this.setResonance(v)}
+            />
+          </div>
+          <KaossPad vhSize={80} filterNode={this.props.filterNode} />
         </div>
-        <KaossPad vhSize={80} filterNode={this.props.filterNode} />
+        <div className={styles.systemButtons} data-target={BACK_TO_DJ_MODE}>
+          <span data-target={BACK_TO_DJ_MODE}>Back</span>
+        </div>
       </div>
     );
   }
