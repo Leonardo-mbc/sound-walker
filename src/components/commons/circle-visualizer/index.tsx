@@ -5,8 +5,10 @@ import * as styles from './style.css';
 import { circleSpectrumFactory } from './materials/circle-spectrum';
 import { speakerConeFactory } from './materials/speaker-cone';
 import { AnalyserParams } from '../../../systems/system-interfaces';
+import { waveFormFactory } from './materials/wave-form';
 let circleSpectrum: THREE.Object3D;
 let speakerCone: THREE.Object3D;
+let waveForm: THREE.Object3D;
 
 interface CircleVisualizerProps {
   analyzerNode: AnalyserNode;
@@ -58,6 +60,10 @@ export class CircleVisualizer extends React.Component<
     speakerCone = speakerConeFactory();
     speakerCone.visible = true;
     scene.add(speakerCone);
+
+    waveForm = waveFormFactory();
+    waveForm.visible = true;
+    scene.add(waveForm);
   }
 
   componentDidMount() {
@@ -66,9 +72,23 @@ export class CircleVisualizer extends React.Component<
   }
 
   frameAction() {
+    this.calcWaveForm();
     this.calcSpectrum();
     this.composer.render();
     requestAnimationFrame(this.frameAction.bind(this));
+  }
+
+  calcWaveForm() {
+    const { analyzerParams } = this.props;
+
+    const waveFormMesh = waveForm as THREE.Mesh;
+    const waveFormGeometry = waveFormMesh.geometry as THREE.Geometry;
+
+    for (var i = 0; i < 1024; i++) {
+      waveFormGeometry.vertices[i].y = analyzerParams.times[i] * 1;
+    }
+
+    waveFormGeometry.verticesNeedUpdate = true;
   }
 
   getSpectrum() {
