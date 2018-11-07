@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as THREE from 'three';
-import * as OrbitControls from 'three-orbitcontrols';
 import { EffectComposer, RenderPass } from 'postprocessing';
 import * as styles from './style.css';
 import { circleSpectrumFactory } from './materials/circle-spectrum';
@@ -23,7 +22,6 @@ export class CircleVisualizer extends React.Component<
   private container: HTMLDivElement;
   private renderer: THREE.WebGLRenderer;
   private composer: typeof EffectComposer;
-  private controls: typeof OrbitControls;
 
   constructor(props: CircleVisualizerProps, state: CircleVisualizerState) {
     super(props, state);
@@ -52,8 +50,6 @@ export class CircleVisualizer extends React.Component<
     renderPass.renderToScreen = true;
     this.composer.addPass(renderPass);
 
-    // this.controls = new OrbitControls(camera, this.renderer.domElement);
-
     // materialの追加
     circleSpectrum = circleSpectrumFactory();
     circleSpectrum.visible = true;
@@ -71,7 +67,6 @@ export class CircleVisualizer extends React.Component<
 
   frameAction() {
     this.calcSpectrum();
-    this.controls.update();
     this.composer.render();
     requestAnimationFrame(this.frameAction.bind(this));
   }
@@ -86,68 +81,59 @@ export class CircleVisualizer extends React.Component<
     const { analyzerParams } = this.props;
     this.getSpectrum();
 
-    const theta = Math.PI / analyzerParams.freqs.length;
-
-    for (let i = 0; i < analyzerParams.freqs.length; i++) {
-      const value = analyzerParams.freqs[i] * 0.05;
+    const freqsLength = analyzerParams.freqs.length;
+    const theta = Math.PI / freqsLength;
+    for (let i = 0; i < freqsLength; i++) {
+      const value = Math.sqrt(analyzerParams.freqs[i]);
       const width = value * 0.15 < 1 ? 1 : value * 0.15;
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[2].x =
-        value * Math.cos(theta * i) +
-        width * 0.5 * Math.cos(theta * i + Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[2].y =
-        value * Math.sin(theta * i) +
-        width * 0.5 * Math.sin(theta * i + Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[3].x =
-        value * Math.cos(theta * i) +
-        width * 0.5 * Math.cos(theta * i - Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[3].y =
-        value * Math.sin(theta * i) +
-        width * 0.5 * Math.sin(theta * i - Math.PI / 2);
+      const halfWidth = width * 0.25;
+      const spectrumMeth = circleSpectrum.children[i] as THREE.Mesh;
+      const spectrumGeometry = spectrumMeth.geometry as THREE.ShapeGeometry;
+      const spectrumMaterial = spectrumMeth.material as THREE.MeshBasicMaterial;
+      const spectrumVertices = spectrumGeometry.vertices;
 
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).verticesNeedUpdate = true;
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .material as THREE.MeshBasicMaterial).color.setHSL(
-        analyzerParams.freqs[i] / 256,
-        1.0,
-        0.5
-      );
+      const thetaMuli = theta * i;
+      const thetaPlusPI = thetaMuli + Math.PI / 2;
+      const thetaSubPI = thetaMuli - Math.PI / 2;
+
+      spectrumVertices[2].x =
+        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaPlusPI);
+      spectrumVertices[2].y =
+        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaPlusPI);
+      spectrumVertices[3].x =
+        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaSubPI);
+      spectrumVertices[3].y =
+        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaSubPI);
+
+      spectrumGeometry.verticesNeedUpdate = true;
+      spectrumMaterial.color.setHSL(analyzerParams.freqs[i] / 256, 1.0, 0.5);
     }
 
-    for (
-      let i = analyzerParams.freqs.length;
-      i < analyzerParams.freqs.length * 2;
-      i++
-    ) {
-      const value =
-        analyzerParams.freqs[i - analyzerParams.freqs.length] * 0.05;
+    for (let i = freqsLength; i < freqsLength * 2; i++) {
+      const value = Math.sqrt(analyzerParams.freqs[i - freqsLength]);
       const width = value * 0.15 < 1 ? 1 : value * 0.15;
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[2].x =
-        value * Math.cos(theta * i) +
-        width * 0.5 * Math.cos(theta * i + Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[2].y =
-        value * Math.sin(theta * i) +
-        width * 0.5 * Math.sin(theta * i + Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[3].x =
-        value * Math.cos(theta * i) +
-        width * 0.5 * Math.cos(theta * i - Math.PI / 2);
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).vertices[3].y =
-        value * Math.sin(theta * i) +
-        width * 0.5 * Math.sin(theta * i - Math.PI / 2);
+      const halfWidth = width * 0.25;
+      const spectrumMeth = circleSpectrum.children[i] as THREE.Mesh;
+      const spectrumGeometry = spectrumMeth.geometry as THREE.ShapeGeometry;
+      const spectrumMaterial = spectrumMeth.material as THREE.MeshBasicMaterial;
+      const spectrumVertices = spectrumGeometry.vertices;
 
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .geometry as THREE.ShapeGeometry).verticesNeedUpdate = true;
-      ((circleSpectrum.children[i] as THREE.Mesh)
-        .material as THREE.MeshBasicMaterial).color.setHSL(
-        analyzerParams.freqs[i - analyzerParams.freqs.length] / 256,
+      const thetaMuli = theta * i;
+      const thetaPlusPI = thetaMuli + Math.PI / 2;
+      const thetaSubPI = thetaMuli - Math.PI / 2;
+
+      spectrumVertices[2].x =
+        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaPlusPI);
+      spectrumVertices[2].y =
+        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaPlusPI);
+      spectrumVertices[3].x =
+        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaSubPI);
+      spectrumVertices[3].y =
+        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaSubPI);
+
+      spectrumGeometry.verticesNeedUpdate = true;
+      spectrumMaterial.color.setHSL(
+        analyzerParams.freqs[i - freqsLength] / 256,
         1.0,
         0.5
       );

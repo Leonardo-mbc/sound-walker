@@ -2,12 +2,12 @@
 
 :local(.container) {
   border: solid 5px black;
+  background-color: rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
   border-radius: 3px;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(3px);
 
   :local(.chip-cursor) {
     width: 40vh;
