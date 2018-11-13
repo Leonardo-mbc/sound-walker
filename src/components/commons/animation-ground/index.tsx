@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as THREE from 'three';
-import * as OrbitControls from 'three-orbitcontrols';
 import { EffectComposer, RenderPass, GlitchPass } from 'postprocessing';
 import * as styles from './style.css';
 import * as TWEEN from 'tween.js';
@@ -32,7 +31,6 @@ export class AnimationGround extends React.Component<
   private container: HTMLDivElement;
   private renderer: THREE.WebGLRenderer;
   private composer: typeof EffectComposer;
-  private controls: typeof OrbitControls;
 
   constructor(props: AnimationGroundProps, state: AnimationGroundState) {
     super(props, state);
@@ -68,8 +66,6 @@ export class AnimationGround extends React.Component<
     glitchPass.renderToScreen = true;
     this.composer.addPass(glitchPass);
 
-    this.controls = new OrbitControls(camera, this.renderer.domElement);
-
     // materialの追加
     const triangleParticles = triangleParticlesFactory();
     triangleParticlesChildren = triangleParticles.children;
@@ -99,7 +95,6 @@ export class AnimationGround extends React.Component<
   }
 
   frameAction() {
-    this.controls.update();
     this.composer.render();
     requestAnimationFrame(this.frameAction.bind(this));
   }
