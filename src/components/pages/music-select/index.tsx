@@ -117,8 +117,8 @@ export class MusicSelect extends React.Component<
   }
 
   calcDiscMove(x: number) {
-    const { musicSelect, setSelectedMusicId } = this.props;
-    const { discSide, cursor, musicList } = musicSelect;
+    const { musicSelect } = this.props;
+    const { cursor, musicList } = musicSelect;
 
     if (this.state.discTouchstartPositionX !== null) {
       const moveX = x - this.state.discTouchstartPositionX;
@@ -127,16 +127,10 @@ export class MusicSelect extends React.Component<
       const amountX = moveX + acc * moveX * 0.075;
       if (amountX <= -170 && cursor < musicList.length - 1) {
         this.setCursor(cursor + 1);
-        setSelectedMusicId(
-          musicList[cursor + 1][discSide[cursor] || 0].meta.musicId
-        );
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
       } else if (170 <= amountX && 0 < cursor) {
         this.setCursor(cursor - 1);
-        setSelectedMusicId(
-          musicList[cursor - 1][discSide[cursor] || 0].meta.musicId
-        );
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
       } else {
@@ -149,8 +143,8 @@ export class MusicSelect extends React.Component<
   }
 
   async setCursor(newCursor: number) {
-    const { musicSelect, setCursor } = this.props;
-    const { cursor, musicList } = musicSelect;
+    const { musicSelect, setCursor, setSelectedMusicId } = this.props;
+    const { cursor, musicList, discSide } = musicSelect;
 
     this.props.sampleMusicFadeOut(
       musicList[cursor].map((musicInfo) => {
@@ -159,6 +153,9 @@ export class MusicSelect extends React.Component<
     );
 
     setCursor(newCursor);
+    setSelectedMusicId(
+      musicList[newCursor][discSide[newCursor] || 0].meta.musicId
+    );
 
     setTimeout(() => {
       this.props.sampleMusicPlay({
@@ -190,7 +187,7 @@ export class MusicSelect extends React.Component<
 
   render() {
     const { musicSelect, fadeDiscMusic, changeDiscSide, mode } = this.props;
-    const { selectedMusicId, cursor, musicList } = musicSelect;
+    const { cursor, musicList, discSide } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
       transform: `translate3d(calc(${this.state.discTouchmovePositionX *
@@ -223,8 +220,8 @@ export class MusicSelect extends React.Component<
               <MusicDisc
                 key={`music-disc-${idx}`}
                 discInfo={discInfo}
+                discSide={discSide[idx]}
                 customStyle={customStyle}
-                selectedMusicId={selectedMusicId}
                 fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
                 changeDiscSide={changeDiscSide.bind(this, idx)}
               />

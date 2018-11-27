@@ -5,8 +5,8 @@ import { DISC_LABEL, FADER_BAR } from '../../../constant/target-name';
 
 interface MusicDiscProps {
   discInfo: DiscInfo;
+  discSide: number;
   customStyle: React.CSSProperties;
-  selectedMusicId: string;
   isLevelVisible?: boolean;
   fadeDiscMusic?: (values: number[]) => void;
   changeDiscSide?: (discSide: number) => void;
@@ -30,11 +30,13 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
       faderBarTouchstartPositionX: null,
       faderBarTouchmovePositionX: 0,
       faderBarPositionX: 0,
-      discSide: 0,
+      discSide: this.props.discSide | 0,
     };
   }
 
   componentDidMount() {
+    this.adjustFader();
+
     let passiveSupported = false;
     try {
       document.addEventListener(
@@ -161,8 +163,17 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
     }
   }
 
+  adjustFader() {
+    const { discSide } = this.state;
+    this.setState({
+      faderBarPositionX:
+        discSide === 0 ? 0 : parseFloat(getComputedStyle(this.fader).width),
+    });
+    this.props.fadeDiscMusic([discSide === 0 ? 1 : 0, discSide === 1 ? 1 : 0]);
+  }
+
   render() {
-    const { customStyle, discInfo, selectedMusicId } = this.props;
+    const { customStyle, discInfo } = this.props;
     const { discSide } = this.state;
 
     let imageACustomStyle: React.CSSProperties = {
@@ -197,9 +208,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
               <img
                 key={`disc-image-${idx}`}
                 src={`/assets/images/disc-images/${info.meta.discImage}`}
-                className={`${
-                  selectedMusicId === info.meta.musicId ? styles.imageShow : ''
-                }`}
+                className={`${discSide === idx ? styles.imageShow : ''}`}
                 data-target={DISC_LABEL}
               />
             );
@@ -208,9 +217,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         <div className={styles.details}>
           <div
             className={`${styles.values} ${
-              selectedMusicId === discInfo[discSide].meta.musicId
-                ? styles.show
-                : ''
+              this.props.discSide === discSide ? styles.show : ''
             }`}
           >
             <div className={styles.title}>{discInfo[discSide].meta.title}</div>
