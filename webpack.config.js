@@ -7,7 +7,7 @@ console.log('IS_DEBUG', IS_DEBUG);
 
 const DEBUG_PLUGINS = [
   new HtmlWebpackPlugin({
-    title: '[debug] Sound Walker - .miximum',
+    title: '[debug] Sound Walker',
     filename: 'index.html',
     template: './src/assets/index.template.html',
   }),
@@ -15,7 +15,7 @@ const DEBUG_PLUGINS = [
 const PUBLISH_PLUGINS = [
   new ExtractTextPlugin('style.css'),
   new HtmlWebpackPlugin({
-    title: 'Sound Walker - .miximum',
+    title: 'Sound Walker',
     filename: 'index.html',
     template: './src/assets/index.template.html',
     minify: {
@@ -74,7 +74,6 @@ module.exports = {
   output: {
     filename: 'app.js',
     path: path.resolve(__dirname, 'public'),
-    publicPath: '/public',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.css'],
