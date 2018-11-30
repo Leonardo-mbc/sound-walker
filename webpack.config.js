@@ -36,8 +36,34 @@ const PUBLISH_PLUGINS = [
     precacheManifestFilename: 'precache-manifest/[manifestHash].js',
     runtimeCaching: [
       {
-        urlPattern: /assets/,
+        urlPattern: /assets\/images/,
         handler: 'cacheFirst',
+        options: {
+          cacheName: 'images',
+          expiration: {
+            maxAgeSeconds: 60 * 60 * 24, // 24 hours
+          },
+        },
+      },
+      {
+        urlPattern: /assets\/sounds/,
+        handler: 'cacheFirst',
+        options: {
+          cacheName: 'sounds',
+          expiration: {
+            maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          },
+        },
+      },
+      {
+        urlPattern: /musics/,
+        handler: 'cacheFirst',
+        options: {
+          cacheName: 'musics',
+          expiration: {
+            maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          },
+        },
       },
     ],
   }),
