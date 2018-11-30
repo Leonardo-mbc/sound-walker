@@ -98,6 +98,21 @@ const musicSelectSaga = [
     cueAGainNode.gain.value = faderGainValues[0];
     cueBGainNode.gain.value = faderGainValues[1];
 
+    for (let key in samples) {
+      try {
+        // 再生前にすべての samples を stop() する
+        // このとき、正常に stop 出来た sample は 1度鳴ってしまっているので remakeSampleSounds する
+        samples[key].stop();
+        yield put(
+          MusicSelectAction.remakeSampleSounds({
+            key,
+            bufferNode: sources.samples[key],
+            gainNode: key.indexOf('r') < 0 ? cueAGainNode : cueBGainNode,
+          })
+        );
+      } catch (e) {}
+    }
+
     samples[musicAId].start(0, 0);
     samples[musicBId].start(0, 0);
   }),
@@ -109,8 +124,9 @@ const musicSelectSaga = [
     const { sources, cueAGainNode, cueBGainNode } = system.sound as Sound;
     const [musicAId, musicBId] = action.payload.musicIds;
 
+    const fadeTime = 250;
     new TWEEN.Tween(cueAGainNode.gain)
-      .to({ value: 0.0 }, 250)
+      .to({ value: 0.0 }, fadeTime)
       .onComplete(() => {
         try {
           sources.samples[musicAId].stop();
@@ -119,7 +135,7 @@ const musicSelectSaga = [
       .start();
 
     new TWEEN.Tween(cueBGainNode.gain)
-      .to({ value: 0.0 }, 250)
+      .to({ value: 0.0 }, fadeTime)
       .onComplete(() => {
         try {
           sources.samples[musicBId].stop();
@@ -127,48 +143,58 @@ const musicSelectSaga = [
       })
       .start();
 
-    yield delay(250);
-    yield put(
-      MusicSelectAction.remakeSampleSounds({
-        key: musicAId,
-        bufferNode: sources.samples[musicAId],
-        gainNode: cueAGainNode,
-      })
-    );
-    yield put(
-      MusicSelectAction.remakeSampleSounds({
-        key: musicBId,
-        bufferNode: sources.samples[musicBId],
-        gainNode: cueBGainNode,
-      })
-    );
+    yield delay(fadeTime);
+
+    if (sources.samples[musicAId]) {
+      // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう
+      yield put(
+        MusicSelectAction.remakeSampleSounds({
+          key: musicAId,
+          bufferNode: sources.samples[musicAId],
+          gainNode: cueAGainNode,
+        })
+      );
+    }
+
+    if (sources.samples[musicBId]) {
+      // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう、特に musicB
+      yield put(
+        MusicSelectAction.remakeSampleSounds({
+          key: musicBId,
+          bufferNode: sources.samples[musicBId],
+          gainNode: cueBGainNode,
+        })
+      );
+    }
   }),
 
   takeEvery(MusicSelectAction.REMAKE_SAMPLE_SOUNDS, function*(
     action: MusicSelectAction.RemakeSampleSounds
   ) {
-    try {
-      action.payload.bufferNode.stop(0);
-    } catch (e) {}
+    if (action.payload.bufferNode) {
+      try {
+        action.payload.bufferNode.stop(0);
+      } catch (e) {}
 
-    const audioUtils = AudioUtils.instance;
-    const buffer = action.payload.bufferNode.buffer;
-    const bufferNode = audioUtils.context.createBufferSource();
+      const audioUtils = AudioUtils.instance;
+      const buffer = action.payload.bufferNode.buffer;
+      const bufferNode = audioUtils.context.createBufferSource();
 
-    bufferNode.buffer = buffer;
-    bufferNode.loop = true;
-    bufferNode.connect(action.payload.gainNode);
+      bufferNode.buffer = buffer;
+      bufferNode.loop = true;
+      bufferNode.connect(action.payload.gainNode);
 
-    if (action.payload.soonToPlay) {
-      bufferNode.start(0, action.payload.startTime);
+      if (action.payload.soonToPlay) {
+        bufferNode.start(0, action.payload.startTime);
+      }
+
+      yield put(
+        SystemAction.setSampleSource({
+          key: action.payload.key,
+          bufferNode,
+        })
+      );
     }
-
-    yield put(
-      SystemAction.setSampleSource({
-        key: action.payload.key,
-        bufferNode,
-      })
-    );
   }),
 
   takeEvery(MusicSelectAction.FADE_DISC_MUSIC, function*(

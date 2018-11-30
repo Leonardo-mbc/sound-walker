@@ -6,4 +6,5 @@ export interface MusicSelectState {
   discFaders: number[][];
   discSide: number[];
   cursor: number;
+  isCursorLocked: boolean;
 }

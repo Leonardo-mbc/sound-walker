@@ -12,7 +12,8 @@ export type ActionTypes =
   | SetSelectedMusicId
   | GetMusicList
   | SetMusicList
-  | SetCursor;
+  | SetCursor
+  | SetCursorLock;
 
 export const GO_TO_PLAYER = 'GO_TO_PLAYER';
 export const SAMPLE_MUSIC_LOAD = 'SAMPLE_MUSIC_LOAD';
@@ -25,6 +26,7 @@ export const SET_SELECTED_MUSIC_ID = 'SET_SELECTED_MUSIC_ID';
 export const GET_MUSIC_LIST = 'GET_MUSIC_LIST';
 export const SET_MUSIC_LIST = 'SET_MUSIC_LIST';
 export const SET_CURSOR = 'SET_CURSOR';
+export const SET_CURSOR_LOCK = 'SET_CURSOR_LOCK';
 
 export interface GoToPlayer {
   type: typeof GO_TO_PLAYER;
@@ -202,5 +204,18 @@ export const setCursor = (cursor: number): SetCursor => ({
   type: SET_CURSOR,
   payload: {
     cursor,
+  },
+});
+
+export interface SetCursorLock {
+  type: typeof SET_CURSOR_LOCK;
+  payload: {
+    isCursorLocked: boolean;
+  };
+}
+export const setCursorLock = (isCursorLocked: boolean): SetCursorLock => ({
+  type: SET_CURSOR_LOCK,
+  payload: {
+    isCursorLocked,
   },
 });

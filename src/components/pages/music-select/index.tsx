@@ -164,7 +164,7 @@ export class MusicSelect extends React.Component<
         ),
         faderGainValues: musicSelect.discFaders[newCursor] || [1, 0],
       });
-    }, 500);
+    }, 500); // 前の曲を止めるまでにかかる時間
   }
 
   setDiscTouchstartPositionX(x: number) {

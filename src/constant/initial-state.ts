@@ -53,5 +53,6 @@ export const initialState: State = {
     discFaders: [],
     discSide: [],
     cursor: 0,
+    isCursorLocked: false,
   },
 };

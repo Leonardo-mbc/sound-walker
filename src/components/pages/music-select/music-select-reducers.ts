@@ -6,6 +6,7 @@ import {
   SET_SELECTED_MUSIC_ID,
   SET_MUSIC_LIST,
   SET_CURSOR,
+  SET_CURSOR_LOCK,
 } from './music-select-actions';
 import { MusicSelectState } from './music-select-interfaces';
 
@@ -50,6 +51,12 @@ export function musicSelectReducer(
       return {
         ...state,
         cursor: action.payload.cursor,
+      };
+
+    case SET_CURSOR_LOCK:
+      return {
+        ...state,
+        isCursorLocked: action.payload.isCursorLocked,
       };
 
     default:
