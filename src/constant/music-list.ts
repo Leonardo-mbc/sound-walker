@@ -216,10 +216,10 @@ export const musicList: MusicList = [
   [
     {
       meta: {
-        title: 'Animal (ft. Jex)',
-        artist: 'Debris & RudeLies',
+        title: 'Popsicle',
+        artist: 'LFZ',
         musicId: 'm9',
-        bpm: 126.0,
+        bpm: 128.0,
         offsetTime: 0.0,
         level: 5,
         discImage: 'm9/1.jpg',
@@ -228,13 +228,39 @@ export const musicList: MusicList = [
     },
     {
       meta: {
-        title: 'Eclipse',
-        artist: 'Jim Yosef',
+        title: 'Skyline',
+        artist: 'Kovan & Electro Light',
         musicId: 'r9',
-        bpm: 125.0,
+        bpm: 128.0,
         offsetTime: 0.0,
         level: 5,
         discImage: 'm9/2.jpg',
+      },
+      scores: [[], []],
+    },
+  ],
+  [
+    {
+      meta: {
+        title: 'Animal (ft. Jex)',
+        artist: 'Debris & RudeLies',
+        musicId: 'm10',
+        bpm: 126.0,
+        offsetTime: 0.0,
+        level: 5,
+        discImage: 'm10/1.jpg',
+      },
+      scores: [[], []],
+    },
+    {
+      meta: {
+        title: 'Eclipse',
+        artist: 'Jim Yosef',
+        musicId: 'r10',
+        bpm: 125.0,
+        offsetTime: 0.0,
+        level: 5,
+        discImage: 'm10/2.jpg',
       },
       scores: [[], []],
     },
