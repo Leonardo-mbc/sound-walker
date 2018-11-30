@@ -17,7 +17,6 @@ export class App extends React.Component<State, {}> {
     const { system } = this.props;
     return (
       <div className={styles.container}>
-        cccc
         <Switch>
           <Route
             path="/player/:musicId"

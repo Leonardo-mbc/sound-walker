@@ -17,6 +17,7 @@ const DEBUG_PLUGINS = [
     clientsClaim: true,
     precacheManifestFilename: 'precache-manifest-debug/[manifestHash].js',
     ignoreUrlParametersMatching: [/.*/],
+    exclude: [/.*/],
   }),
 ];
 const PUBLISH_PLUGINS = [
