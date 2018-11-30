@@ -1,6 +1,7 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { GenerateSW } = require('workbox-webpack-plugin');
 
 const IS_DEBUG = process.env.production !== 'true';
 console.log('IS_DEBUG', IS_DEBUG);
@@ -10,6 +11,12 @@ const DEBUG_PLUGINS = [
     title: '[debug] Sound Walker',
     filename: 'index.html',
     template: './src/assets/index.template.html',
+  }),
+  new GenerateSW({
+    skipWaiting: true,
+    clientsClaim: true,
+    precacheManifestFilename: 'precache-manifest-debug/[manifestHash].js',
+    ignoreUrlParametersMatching: [/.*/],
   }),
 ];
 const PUBLISH_PLUGINS = [
@@ -21,6 +28,17 @@ const PUBLISH_PLUGINS = [
     minify: {
       collapseWhitespace: true,
     },
+  }),
+  new GenerateSW({
+    skipWaiting: true,
+    clientsClaim: true,
+    precacheManifestFilename: 'precache-manifest/[manifestHash].js',
+    runtimeCaching: [
+      {
+        urlPattern: /assets/,
+        handler: 'cacheFirst',
+      },
+    ],
   }),
 ];
 
@@ -77,9 +95,6 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.css'],
-    alias: {
-      'widget:styles': path.join(__dirname, 'src', 'styles'),
-    },
   },
   devtool: 'source-map',
   devServer: {

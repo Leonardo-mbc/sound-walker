@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "production=true webpack",
+    "build-debug": "production=false webpack",
     "serve-debug": "run-p tcm-watch start-dev-server",
     "start-dev-server": "webpack-dev-server --history-api-fallback",
     "tcm": "tcm ./src -c",
@@ -62,6 +63,7 @@
     "url-loader": "^1.1.1",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-dev-server": "^3.1.5",
+    "workbox-webpack-plugin": "^3.6.3"
   }
 }
