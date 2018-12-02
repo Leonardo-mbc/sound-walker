@@ -7,8 +7,7 @@ export type ActionTypes =
   | SetDisplayVertically
   | RemakeSystemSounds
   | SetSystemSource
-  | SetSampleSource
-  | SetLogoTransition;
+  | SetSampleSource;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -19,7 +18,6 @@ export const SET_DISPLAY_VERTICALLY = 'SET_DISPLAY_VERTICALLY';
 export const REMAKE_SYSTEM_SOUNDS = 'REMAKE_SYSTEM_SOUNDS';
 export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
 export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
-export const SET_LOGO_TRANSITION = 'SET_LOGO_TRANSITION';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -148,24 +146,5 @@ export const setSampleSource = ({
   payload: {
     key,
     bufferNode,
-  },
-});
-
-export interface SetLogoTransitionPayload {
-  isVisible: boolean;
-  duration?: number;
-}
-export interface SetLogoTransition {
-  type: typeof SET_LOGO_TRANSITION;
-  payload: SetLogoTransitionPayload;
-}
-export const setLogoTransition = ({
-  isVisible,
-  duration,
-}: SetLogoTransitionPayload): SetLogoTransition => ({
-  type: SET_LOGO_TRANSITION,
-  payload: {
-    isVisible,
-    duration,
   },
 });

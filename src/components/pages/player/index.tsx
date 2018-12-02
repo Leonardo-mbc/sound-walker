@@ -14,16 +14,27 @@ interface MatchParams {
   musicId: string;
 }
 
+interface PlayerViewState {
+  isTransitionVisible: boolean;
+}
+
 export class Player extends React.Component<
   PlayerViewProps & RouteComponentProps<MatchParams>,
-  {}
+  PlayerViewState
 > {
-  componentWillMount() {
+  constructor(
+    props: PlayerViewProps & RouteComponentProps<MatchParams>,
+    state: PlayerViewState
+  ) {
+    super(props, state);
+
     const { match, loadMusicInfo, loadSoundNodes } = this.props;
     const { musicId } = match.params;
 
     loadSoundNodes();
     loadMusicInfo(musicId);
+
+    this.state = { isTransitionVisible: true };
   }
 
   render() {

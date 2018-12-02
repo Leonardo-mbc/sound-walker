@@ -11,11 +11,7 @@ function animate() {
 }
 requestAnimationFrame(animate);
 
-export interface AppProps {
-  setLogoTransition: (
-    { isVisible, duration }: SystemAction.SetLogoTransitionPayload
-  ) => void;
-}
+export interface AppProps {}
 
 export const AppView = connect(
   (state: State) => {
@@ -28,13 +24,6 @@ export const AppView = connect(
       );
     });
 
-    return {
-      setLogoTransition: ({
-        isVisible,
-        duration = 2000,
-      }: SystemAction.SetLogoTransitionPayload) => {
-        dispatch(SystemAction.setLogoTransition({ isVisible, duration }));
-      },
-    };
+    return {};
   }
 )(App);

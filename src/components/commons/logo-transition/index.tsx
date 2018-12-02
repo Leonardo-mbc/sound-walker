@@ -5,15 +5,13 @@ import { EffectComposer, RenderPass } from 'postprocessing';
 import * as styles from './style.css';
 import { Transition } from './transition';
 import { SimpleScene } from './simple-scene';
-import { logoPlateWhiteFactory } from './materials/logo-plate-white';
-import * as SystemAction from '../../../systems/system-actions';
+import { logoPlateFactory } from '../animation-ground/materials/logo-plate';
 
 let logoPlate: THREE.Object3D;
 
 interface LogoTransitionProps {
-  setLogoTransition: (
-    { isVisible, duration }: SystemAction.SetLogoTransitionPayload
-  ) => void;
+  direction?: 'fade-out' | 'fade-in';
+  transitionEnd?: () => void;
   duration?: number;
 }
 
@@ -55,9 +53,9 @@ export class LogoTransition extends React.Component<
     this._composer.addPass(renderPass);
 
     const SceneA = new SimpleScene(0x212121, 1);
-    const SceneB = new SimpleScene(0xffffff, 0);
+    const SceneB = new SimpleScene(0x212121, 0);
 
-    logoPlate = logoPlateWhiteFactory();
+    logoPlate = logoPlateFactory();
     SceneA.scene.add(logoPlate);
 
     this._transition = new Transition(SceneA, SceneB, {
@@ -69,7 +67,7 @@ export class LogoTransition extends React.Component<
     });
 
     this.state = {
-      transitionValue: 0.0,
+      transitionValue: props.direction === 'fade-out' ? 1.0 : 0.0,
     };
   }
 
@@ -80,50 +78,57 @@ export class LogoTransition extends React.Component<
   }
 
   animationScheduler() {
-    const params = { value: 0.0 };
+    const { direction, duration, transitionEnd } = this.props;
+    const params = { value: direction === 'fade-out' ? 1.0 : 0.0 };
 
-    new TWEEN.Tween(logoPlate.position)
-      .to({ z: -650 }, this.props.duration * 0.5 || 1000)
-      .easing(TWEEN.Easing.Exponential.Out)
-      .onStart(() => {
-        logoPlate.visible = true;
-        logoPlate.position.set(0, 0, -300);
-      })
-      .onComplete(() => {
-        logoPlate.visible = false;
-        logoPlate.position.set(0, 0, -300);
-      })
-      .start();
+    if (direction === 'fade-out') {
+      new TWEEN.Tween(params)
+        .to({ value: 0.0 }, duration || 1000)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onStart(() => {
+          this.setState({ transitionValue: 1.0 });
+          logoPlate.visible = true;
+          logoPlate.position.set(0, 0, -650);
+        })
+        .onUpdate(() => {
+          this.setState({ transitionValue: params.value });
+        })
+        .onComplete(() => {
+          if (transitionEnd) {
+            transitionEnd();
+          }
+        })
+        .start();
+    } else {
+      new TWEEN.Tween(logoPlate.position)
+        .to({ z: -650 }, duration || 1000)
+        .easing(TWEEN.Easing.Exponential.Out)
+        .onStart(() => {
+          logoPlate.visible = true;
+          logoPlate.position.set(0, 0, -300);
+        })
+        .onComplete(() => {
+          logoPlate.visible = false;
+          logoPlate.position.set(0, 0, -300);
+        })
+        .start();
 
-    const fadeInAnim = new TWEEN.Tween(params)
-      .to({ value: 1.0 }, this.props.duration * 0.5 || 1000)
-      .easing(TWEEN.Easing.Cubic.InOut)
-      .onStart(() => {
-        this.setState({ transitionValue: 0.0 });
-      })
-      .onUpdate(() => {
-        this.setState({ transitionValue: params.value });
-      })
-      .onComplete(() => {
-        this.setState({ transitionValue: 1.0 });
-      })
-      .start();
-
-    const fadeOutAnim = new TWEEN.Tween(params)
-      .to({ value: 0.0 }, this.props.duration * 0.5 || 1000)
-      .easing(TWEEN.Easing.Cubic.InOut)
-      .onStart(() => {
-        this.setState({ transitionValue: 1.0 });
-      })
-      .onUpdate(() => {
-        this.setState({ transitionValue: params.value });
-      })
-      .onComplete(() => {
-        this.setState({ transitionValue: 0.0 });
-        this.props.setLogoTransition({ isVisible: false });
-      });
-
-    fadeInAnim.chain(fadeOutAnim);
+      new TWEEN.Tween(params)
+        .to({ value: 1.0 }, duration || 1000)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onStart(() => {
+          this.setState({ transitionValue: 0.0 });
+        })
+        .onUpdate(() => {
+          this.setState({ transitionValue: params.value });
+        })
+        .onComplete(() => {
+          if (transitionEnd) {
+            transitionEnd();
+          }
+        })
+        .start();
+    }
   }
 
   frameAction() {

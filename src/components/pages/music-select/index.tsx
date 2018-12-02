@@ -15,12 +15,14 @@ import {
 import { getMusicMetaByIds } from '../../../utilities/get-music-info';
 import { LoaderCurtain } from '../../commons/loader-curtain';
 import { SamplePlayer } from './sample-player';
+import { LogoTransition } from '../../commons/logo-transition';
 
 interface MusicSelectState {
   discTouchstartPositionX: number;
   discTouchmovePositionX: number;
   discTouchmovePreviousPositionX: number;
   isConfirmationVisible: boolean;
+  isTransitionVisible: boolean;
 }
 
 export class MusicSelect extends React.Component<
@@ -37,6 +39,7 @@ export class MusicSelect extends React.Component<
       discTouchmovePositionX: 0,
       discTouchmovePreviousPositionX: 0,
       isConfirmationVisible: false,
+      isTransitionVisible: false,
     };
 
     props.getMusicList();
@@ -74,10 +77,9 @@ export class MusicSelect extends React.Component<
               break;
             case MUSIC_SELECT_CONFIRM_CANCEL:
               this.setState({ isConfirmationVisible: false });
-
               break;
             case MUSIC_SELECT_PLAY_BUTTON:
-              this.props.setLogoTransition({ isVisible: true });
+              this.showTransition();
               this.props.sampleMusicFadeOut(
                 musicList[cursor].map((musicInfo) => {
                   return musicInfo.meta.musicId;
@@ -188,6 +190,12 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  showTransition() {
+    this.setState({
+      isTransitionVisible: true,
+    });
+  }
+
   render() {
     const {
       musicSelect,
@@ -290,6 +298,9 @@ export class MusicSelect extends React.Component<
                   </div>
                 </div>
               </div>
+            ) : null}
+            {this.state.isTransitionVisible ? (
+              <LogoTransition duration={1000} />
             ) : null}
           </>
         ) : (

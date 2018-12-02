@@ -11,12 +11,11 @@ import {
   MUSIC_SELECT_DJ_MODE,
   MUSIC_SELECT_PLAY,
 } from '../music-select/music-select-container';
-import { LogoTransition } from '../../commons/logo-transition';
 import { AppProps } from './app-container';
 
 export class App extends React.Component<State & AppProps, {}> {
   render() {
-    const { system, setLogoTransition } = this.props;
+    const { system } = this.props;
     const { isSystemReady, display } = system;
     return (
       <div className={styles.container}>
@@ -61,12 +60,6 @@ export class App extends React.Component<State & AppProps, {}> {
           />
           <Route path="/" component={TitleView} />
         </Switch>
-        {display.logoTransition.isVisible ? (
-          <LogoTransition
-            duration={display.logoTransition.duration}
-            setLogoTransition={setLogoTransition}
-          />
-        ) : null}
         <LoadingCircle isVisible={display.isLoadingCircleVisible} />
         <VerticalAnnounce isVisible={!display.isPortrait} />
       </div>

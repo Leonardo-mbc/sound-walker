@@ -9,7 +9,7 @@ export const logoPlateFactory = () => {
 
   const geometry = new THREE.PlaneBufferGeometry(2048, 2048, 1, 1);
   const material = new THREE.MeshBasicMaterial({
-    color: 0x212121,
+    color: 0xffffff,
     map: texture,
     fog: false,
     transparent: false,
