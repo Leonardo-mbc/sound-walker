@@ -124,7 +124,7 @@ const musicSelectSaga = [
     const { sources, cueAGainNode, cueBGainNode } = system.sound as Sound;
     const [musicAId, musicBId] = action.payload.musicIds;
 
-    const fadeTime = 250;
+    const fadeTime = action.payload.duration || 250;
     new TWEEN.Tween(cueAGainNode.gain)
       .to({ value: 0.0 }, fadeTime)
       .onComplete(() => {

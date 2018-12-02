@@ -3,6 +3,7 @@ import { MusicSelect } from '.';
 import { MusicSelectState } from './music-select-interfaces';
 import * as MusicSelectAction from './music-select-actions';
 import * as TitleAction from '../title/title-actions';
+import * as SystemAction from '../../../systems/system-actions';
 
 export interface MusicSelectProps {
   mode: MusicSelectMode;
@@ -12,12 +13,15 @@ export interface MusicSelectProps {
   sampleMusicPlay: (
     { musicIds, faderGainValues }: MusicSelectAction.SampleMusicPlayPayload
   ) => void;
-  sampleMusicFadeOut: (musicIds: string[]) => void;
+  sampleMusicFadeOut: (musicIds: string[], duration?: number) => void;
   fadeDiscMusic: (cursor: number, values: number[]) => void;
   changeDiscSide: (cursor: number, discSide: number) => void;
   setSelectedMusicId: (musicId: string) => void;
   getMusicList: () => void;
   setCursor: (cursor: number) => void;
+  setLogoTransition: (
+    { isVisible, duration }: SystemAction.SetLogoTransitionPayload
+  ) => void;
 }
 
 export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
@@ -48,8 +52,8 @@ export const MusicSelectView = connect(
         MusicSelectAction.sampleMusicPlay({ musicIds, faderGainValues })
       );
     },
-    sampleMusicFadeOut: (musicIds: string[]) => {
-      dispatch(MusicSelectAction.sampleMusicFadeOut(musicIds));
+    sampleMusicFadeOut: (musicIds: string[], duration?: number) => {
+      dispatch(MusicSelectAction.sampleMusicFadeOut(musicIds, duration));
     },
     fadeDiscMusic: (cursor: number, values: number[]) => {
       dispatch(MusicSelectAction.fadeDiscMusic(cursor, values));
@@ -65,6 +69,12 @@ export const MusicSelectView = connect(
     },
     setCursor: (cursor: number) => {
       dispatch(MusicSelectAction.setCursor(cursor));
+    },
+    setLogoTransition: ({
+      isVisible,
+      duration = 2000,
+    }: SystemAction.SetLogoTransitionPayload) => {
+      dispatch(SystemAction.setLogoTransition({ isVisible, duration }));
     },
   })
 )(MusicSelect);

@@ -88,12 +88,17 @@ export interface SampleMusicFadeOut {
   type: typeof SAMPLE_MUSIC_FADE_OUT;
   payload: {
     musicIds: string[];
+    duration?: number;
   };
 }
-export const sampleMusicFadeOut = (musicIds: string[]): SampleMusicFadeOut => ({
+export const sampleMusicFadeOut = (
+  musicIds: string[],
+  duration?: number
+): SampleMusicFadeOut => ({
   type: SAMPLE_MUSIC_FADE_OUT,
   payload: {
     musicIds,
+    duration,
   },
 });
 

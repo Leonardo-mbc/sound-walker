@@ -75,12 +75,16 @@ export class MusicSelect extends React.Component<
 
               break;
             case MUSIC_SELECT_PLAY_BUTTON:
-              this.props.goToPlayer(mode, musicSelect.selectedMusicId);
+              this.props.setLogoTransition({ isVisible: true });
               this.props.sampleMusicFadeOut(
                 musicList[cursor].map((musicInfo) => {
                   return musicInfo.meta.musicId;
-                })
+                }),
+                1000
               );
+              setTimeout(() => {
+                this.props.goToPlayer(mode, musicSelect.selectedMusicId);
+              }, 1000 /* wait LogoTransition */);
               break;
             case MUSIC_SELECT_BACK_BUTTON:
               this.props.goToMainMenu();

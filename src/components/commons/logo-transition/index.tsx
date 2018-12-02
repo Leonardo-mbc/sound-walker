@@ -45,7 +45,7 @@ export class LogoTransition extends React.Component<
 
     this._renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this._renderer.setSize(width, height);
-    this._renderer.setClearColor(0x000000, 0);
+    this._renderer.setClearColor(0x212121, 0);
     this._renderer.shadowMap.enabled = false;
     this._renderer.setPixelRatio(devicePixelRatio);
 
@@ -54,7 +54,7 @@ export class LogoTransition extends React.Component<
     renderPass.renderToScreen = true;
     this._composer.addPass(renderPass);
 
-    const SceneA = new SimpleScene(0x000000, 1);
+    const SceneA = new SimpleScene(0x212121, 1);
     const SceneB = new SimpleScene(0xffffff, 0);
 
     logoPlate = logoPlateWhiteFactory();
@@ -83,7 +83,7 @@ export class LogoTransition extends React.Component<
     const params = { value: 0.0 };
 
     new TWEEN.Tween(logoPlate.position)
-      .to({ z: -650 }, (this.props.duration * 0.5) | 2000)
+      .to({ z: -650 }, this.props.duration * 0.5 || 1000)
       .easing(TWEEN.Easing.Exponential.Out)
       .onStart(() => {
         logoPlate.visible = true;
@@ -96,7 +96,7 @@ export class LogoTransition extends React.Component<
       .start();
 
     const fadeInAnim = new TWEEN.Tween(params)
-      .to({ value: 1.0 }, (this.props.duration * 0.5) | 2000)
+      .to({ value: 1.0 }, this.props.duration * 0.5 || 1000)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onStart(() => {
         this.setState({ transitionValue: 0.0 });
@@ -110,7 +110,7 @@ export class LogoTransition extends React.Component<
       .start();
 
     const fadeOutAnim = new TWEEN.Tween(params)
-      .to({ value: 0.0 }, (this.props.duration * 0.5) | 2000)
+      .to({ value: 0.0 }, this.props.duration * 0.5 || 1000)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onStart(() => {
         this.setState({ transitionValue: 1.0 });
