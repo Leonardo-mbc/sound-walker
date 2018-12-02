@@ -1,7 +1,6 @@
 import { FilterNode, AnalyserParams } from '../../../systems/system-interfaces';
 
 export interface PlayerState {
-  isSystemReady: boolean;
   isSourceReady: boolean;
   isMusicInfoReady: boolean;
   isMusicPlaying: boolean;

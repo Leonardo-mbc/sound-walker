@@ -7,6 +7,7 @@ import * as SystemAction from '../../../systems/system-actions';
 
 export interface MusicSelectProps {
   mode: MusicSelectMode;
+  isSystemReady: boolean;
   musicSelect: MusicSelectState;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
   goToMainMenu: () => void;

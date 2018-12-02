@@ -27,12 +27,12 @@ export class Player extends React.Component<
   }
 
   render() {
-    const { match, player, mode } = this.props;
+    const { match, player, mode, isSystemReady } = this.props;
     const { loadMusic, backToDJMode } = this.props;
     const { musicId } = match.params;
     return (
       <div className={styles.container}>
-        {player.isSystemReady ? (
+        {isSystemReady ? (
           <SoundPlayer musicId={musicId} loadMusic={loadMusic} />
         ) : (
           <div id="system-loading-bar" />
@@ -75,7 +75,7 @@ export class Player extends React.Component<
           })()
         ) : (
           <div className={styles.loadState}>
-            SYSTEM: {this.props.player.isSystemReady ? 'READY' : '...'}
+            SYSTEM: {this.props.isSystemReady ? 'READY' : '...'}
             <br />
             MUSIC: {this.props.player.isSourceReady ? 'READY' : '...'}
             <br />

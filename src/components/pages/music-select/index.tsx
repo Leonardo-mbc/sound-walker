@@ -13,6 +13,8 @@ import {
   MUSIC_SELECT_CONFIRM,
 } from '../../../constant/target-name';
 import { getMusicMetaByIds } from '../../../utilities/get-music-info';
+import { LoaderCurtain } from '../../commons/loader-curtain';
+import { SamplePlayer } from './sample-player';
 
 interface MusicSelectState {
   discTouchstartPositionX: number;
@@ -160,27 +162,12 @@ export class MusicSelect extends React.Component<
 
   async setCursor(newCursor: number) {
     const { musicSelect, setCursor, setSelectedMusicId } = this.props;
-    const { cursor, musicList, discSide } = musicSelect;
-
-    this.props.sampleMusicFadeOut(
-      musicList[cursor].map((musicInfo) => {
-        return musicInfo.meta.musicId;
-      })
-    );
+    const { musicList, discSide } = musicSelect;
 
     setCursor(newCursor);
     setSelectedMusicId(
       musicList[newCursor][discSide[newCursor] || 0].meta.musicId
     );
-
-    setTimeout(() => {
-      this.props.sampleMusicPlay({
-        musicIds: musicList[newCursor].map(
-          (musicInfo) => musicInfo.meta.musicId
-        ),
-        faderGainValues: musicSelect.discFaders[newCursor] || [1, 0],
-      });
-    }, 500); // 前の曲を止めるまでにかかる時間
   }
 
   setDiscTouchstartPositionX(x: number) {
@@ -202,7 +189,13 @@ export class MusicSelect extends React.Component<
   }
 
   render() {
-    const { musicSelect, fadeDiscMusic, changeDiscSide, mode } = this.props;
+    const {
+      musicSelect,
+      fadeDiscMusic,
+      changeDiscSide,
+      mode,
+      isSystemReady,
+    } = this.props;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
@@ -214,62 +207,94 @@ export class MusicSelect extends React.Component<
     const selectedDiscMeta = getMusicMetaByIds([selectedMusicId], musicList)[0];
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
-        <div className={styles.title}>
-          {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
-        </div>
-        <div className={styles.playButton} data-target={MUSIC_SELECT_CONFIRM}>
-          Play
-        </div>
-        <div
-          className={styles.backButton}
-          data-target={MUSIC_SELECT_BACK_BUTTON}
-        >
-          Back
-        </div>
-        <div className={styles.discList} style={discListStyle}>
-          {musicList.map((discInfo, idx) => {
-            const customStyle: React.CSSProperties = {
-              marginLeft: `${idx * 200}vh`,
-            };
-            return (
-              <MusicDisc
-                key={`music-disc-${idx}`}
-                discInfo={discInfo}
-                discSide={discSide[idx]}
-                customStyle={customStyle}
-                fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
-                changeDiscSide={changeDiscSide.bind(this, idx)}
-              />
-            );
-          })}
-        </div>
-        {this.state.isConfirmationVisible ? (
-          <div
-            className={styles.confirmCover}
-            data-target={MUSIC_SELECT_CONFIRM_CANCEL}
-          >
-            <div className={styles.confirm}>
-              <span className={styles.discTitle}>
-                「{selectedDiscMeta ? selectedDiscMeta.title : ''}
-                」を再生します よろしいですか？
-              </span>
-              <div className={styles.answerSet}>
-                <span
-                  className={`${styles.answer} ${styles.play}`}
-                  data-target={MUSIC_SELECT_PLAY_BUTTON}
-                >
-                  Play
-                </span>
-                <span
-                  className={styles.answer}
-                  data-target={MUSIC_SELECT_CONFIRM_CANCEL}
-                >
-                  CANCEL
-                </span>
-              </div>
+        {isSystemReady ? (
+          <>
+            <div className={styles.title}>
+              {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
             </div>
-          </div>
-        ) : null}
+            <div
+              className={styles.playButton}
+              data-target={MUSIC_SELECT_CONFIRM}
+            >
+              Play
+            </div>
+            <div
+              className={styles.backButton}
+              data-target={MUSIC_SELECT_BACK_BUTTON}
+            >
+              Back
+            </div>
+            <div className={styles.discList} style={discListStyle}>
+              {musicList.map((discInfo, idx) => {
+                const customStyle: React.CSSProperties = {
+                  marginLeft: `${idx * 200}vh`,
+                };
+                return (
+                  <MusicDisc
+                    key={`music-disc-${idx}`}
+                    discInfo={discInfo}
+                    discSide={discSide[idx]}
+                    customStyle={customStyle}
+                    fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
+                    changeDiscSide={changeDiscSide.bind(this, idx)}
+                  >
+                    {cursor === idx ? (
+                      <SamplePlayer
+                        key={`sample-player-${idx}`}
+                        sampleMusicPlay={() => {
+                          setTimeout(() => {
+                            this.props.sampleMusicPlay({
+                              musicIds: discInfo.map(
+                                (info) => info.meta.musicId
+                              ),
+                              faderGainValues: musicSelect.discFaders[
+                                cursor
+                              ] || [1, 0],
+                            });
+                          }, 500); // 前の曲を止めるまでにかかる時間
+                        }}
+                        sampleMusicFadeOut={() => {
+                          this.props.sampleMusicFadeOut(
+                            discInfo.map((info) => info.meta.musicId)
+                          );
+                        }}
+                      />
+                    ) : null}
+                  </MusicDisc>
+                );
+              })}
+            </div>
+            {this.state.isConfirmationVisible ? (
+              <div
+                className={styles.confirmCover}
+                data-target={MUSIC_SELECT_CONFIRM_CANCEL}
+              >
+                <div className={styles.confirm}>
+                  <span className={styles.discTitle}>
+                    「{selectedDiscMeta ? selectedDiscMeta.title : ''}
+                    」を再生します よろしいですか？
+                  </span>
+                  <div className={styles.answerSet}>
+                    <span
+                      className={`${styles.answer} ${styles.play}`}
+                      data-target={MUSIC_SELECT_PLAY_BUTTON}
+                    >
+                      Play
+                    </span>
+                    <span
+                      className={styles.answer}
+                      data-target={MUSIC_SELECT_CONFIRM_CANCEL}
+                    >
+                      CANCEL
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <LoaderCurtain />
+        )}
       </div>
     );
   }

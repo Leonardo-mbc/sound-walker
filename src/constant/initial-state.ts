@@ -12,6 +12,7 @@ export interface State {
 
 export const initialState: State = {
   system: {
+    isSystemReady: false,
     sound: {
       sources: {
         title: null,
@@ -39,7 +40,6 @@ export const initialState: State = {
     isLoadComplete: false,
   },
   player: {
-    isSystemReady: false,
     isSourceReady: false,
     isMusicInfoReady: false,
     isMusicPlaying: false,

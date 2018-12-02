@@ -1,7 +1,6 @@
 import { call, put, takeEvery, select } from 'redux-saga/effects';
 import * as SystemAction from './system-actions';
 import * as TitleAction from '../components/pages/title/title-actions';
-import * as PlayerAction from '../components/pages/player/player-actions';
 import { AudioUtils } from '../utilities/audio-utils';
 import { Sound } from '../systems/system-interfaces';
 
@@ -19,6 +18,7 @@ const systemSaga = [
   takeEvery(SystemAction.LOAD_SYSTEM_SOUNDS, function*(
     _action: SystemAction.LoadSystemSounds
   ) {
+    yield put(SystemAction.setLoadingCircleVisible(true));
     const titleSource = yield call(async () => {
       const audioUtils = AudioUtils.instance;
       const audioBuffer = await audioUtils.loadAudioBufferFromUrl({
@@ -50,7 +50,8 @@ const systemSaga = [
       })
     );
     yield put(TitleAction.setLoadComplete());
-    yield put(PlayerAction.setSystemReady(true));
+    yield put(SystemAction.setSystemReady(true));
+    yield put(SystemAction.setLoadingCircleVisible(false));
   }),
 
   takeEvery(SystemAction.REMAKE_SYSTEM_SOUNDS, function*(

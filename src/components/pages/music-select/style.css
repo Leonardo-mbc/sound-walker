@@ -27,7 +27,7 @@
     user-select: none;
     cursor: pointer;
     z-index: 10;
-    transform: perspective(180px) rotateY(23deg);
+    /* transform: perspective(180px) rotateY(23deg); */
   }
 
   :local(.back-button) {
@@ -40,7 +40,7 @@
     user-select: none;
     cursor: pointer;
     z-index: 10;
-    transform: perspective(180px) rotateY(-23deg);
+    /* transform: perspective(180px) rotateY(-23deg); */
   }
 
   :local(.disc-list) {

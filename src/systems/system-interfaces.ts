@@ -1,4 +1,5 @@
 export interface SystemState {
+  isSystemReady: boolean;
   sound: Sound;
   display: Display;
 }

@@ -2,7 +2,6 @@ import { MusicInfo } from './player-interfaces';
 import { FilterNode, AnalyserParams } from '../../../systems/system-interfaces';
 
 export type ActionTypes =
-  | SetSystemReady
   | LoadMusic
   | SetMusicSource
   | StartMusic
@@ -13,7 +12,6 @@ export type ActionTypes =
   | SetSoundNodes
   | BackToDJMode;
 
-export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
 export const LOAD_MUSIC = 'LOAD_MUSIC';
 export const SET_MUSIC_SOURCE = 'SET_MUSIC_SOURCE';
 export const START_MUSIC = 'START_MUSIC';
@@ -23,19 +21,6 @@ export const SET_OFFSET_CURRENT_TIME = 'SET_OFFSET_CURRENT_TIME';
 export const LOAD_SOUND_NODES = 'LOAD_SOUND_NODES';
 export const SET_SOUND_NODES = 'SET_SOUND_NODES';
 export const BACK_TO_DJ_MODE = 'BACK_TO_DJ_MODE';
-
-export interface SetSystemReady {
-  type: typeof SET_SYSTEM_READY;
-  payload: {
-    isSystemReady: boolean;
-  };
-}
-export const setSystemReady = (isSystemReady: boolean): SetSystemReady => ({
-  type: SET_SYSTEM_READY,
-  payload: {
-    isSystemReady,
-  },
-});
 
 export interface LoadMusic {
   type: typeof LOAD_MUSIC;

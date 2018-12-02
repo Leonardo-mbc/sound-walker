@@ -1,0 +1,21 @@
+:local(.container) {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  :local(.loading-text) {
+    width: 100%;
+    text-align: center;
+  }
+
+  :local(.loading-bar) {
+    height: 3px;
+    width: 0%;
+    background-color: #efefef;
+  }
+}

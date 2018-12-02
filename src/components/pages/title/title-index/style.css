@@ -14,19 +14,4 @@
     cursor: pointer;
     user-select: none;
   }
-
-  :local(.loader-container) {
-    width: 100%;
-
-    :local(.loading-text) {
-      width: 100%;
-      text-align: center;
-    }
-
-    :local(.loading-bar) {
-      height: 3px;
-      width: 0%;
-      background-color: #efefef;
-    }
-  }
 }

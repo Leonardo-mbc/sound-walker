@@ -1,7 +1,6 @@
 import { initialState } from '../../../constant/initial-state';
 import {
   ActionTypes,
-  SET_SYSTEM_READY,
   SET_MUSIC_SOURCE,
   SET_MUSIC_INFO,
   START_MUSIC,
@@ -16,12 +15,6 @@ export function playerReducer(
   action: ActionTypes
 ): PlayerState {
   switch (action.type) {
-    case SET_SYSTEM_READY:
-      return {
-        ...state,
-        isSystemReady: action.payload.isSystemReady,
-      };
-
     case SET_MUSIC_SOURCE:
       return {
         ...state,

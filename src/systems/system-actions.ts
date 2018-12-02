@@ -1,5 +1,6 @@
 export type ActionTypes =
   | InitialRun
+  | SetSystemReady
   | CreateSoundsLine
   | LoadSystemSounds
   | SetLoadingCircleVisible
@@ -10,6 +11,7 @@ export type ActionTypes =
   | SetLogoTransition;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
+export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
 export const LOAD_SYSTEM_SOUNDS = 'LOAD_SYSTEM_SOUNDS';
 export const CREATE_SOUNDS_LINE = 'CREATE_SOUNDS_LINE';
 export const SET_LOADING_CIRCLE_VISIBLE = 'SET_LOADING_CIRCLE_VISIBLE';
@@ -24,6 +26,19 @@ export interface InitialRun {
 }
 export const initialRun = (): InitialRun => ({
   type: INITIAL_RUN,
+});
+
+export interface SetSystemReady {
+  type: typeof SET_SYSTEM_READY;
+  payload: {
+    isSystemReady: boolean;
+  };
+}
+export const setSystemReady = (isSystemReady: boolean): SetSystemReady => ({
+  type: SET_SYSTEM_READY,
+  payload: {
+    isSystemReady,
+  },
 });
 
 export interface CreateSoundsLine {

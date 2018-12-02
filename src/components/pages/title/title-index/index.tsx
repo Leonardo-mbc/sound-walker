@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as styles from './style.css';
+import { LoaderCurtain } from '../../../commons/loader-curtain';
 
 interface TitleIndexProps {
   isLoadComplete: boolean;
@@ -52,10 +53,7 @@ export class TitleIndex extends React.Component<TitleIndexProps, {}> {
         {isLoadComplete ? (
           <div className={styles.touchToStart}>タッチしてスタート</div>
         ) : (
-          <div className={styles.loaderContainer}>
-            <div className={styles.loadingText}>LOADING</div>
-            <div id="system-loading-bar" className={styles.loadingBar} />
-          </div>
+          <LoaderCurtain />
         )}
       </div>
     );

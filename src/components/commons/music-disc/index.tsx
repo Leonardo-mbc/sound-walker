@@ -241,6 +241,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
             <span className={styles.b}>B</span>
           </div>
         </div>
+        {this.props.children}
       </div>
     );
   }

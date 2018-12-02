@@ -9,6 +9,7 @@ export interface PlayerViewProps {
   player: PlayerState;
   router: RouteProps;
   mode: MusicSelectMode;
+  isSystemReady: boolean;
   loadMusic: (url: string) => void;
   startMusic: () => void;
   loadMusicInfo: (musicId: string) => void;

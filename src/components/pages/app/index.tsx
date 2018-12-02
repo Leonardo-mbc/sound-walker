@@ -17,29 +17,47 @@ import { AppProps } from './app-container';
 export class App extends React.Component<State & AppProps, {}> {
   render() {
     const { system, setLogoTransition } = this.props;
-    const { display } = system;
+    const { isSystemReady, display } = system;
     return (
       <div className={styles.container}>
         <Switch>
           <Route
             path="/player/:musicId"
             render={(props) => (
-              <PlayerView mode={MUSIC_SELECT_PLAY} {...props} />
+              <PlayerView
+                mode={MUSIC_SELECT_PLAY}
+                isSystemReady={isSystemReady}
+                {...props}
+              />
             )}
           />
           <Route
             path="/dj-player/:musicId"
             render={(props) => (
-              <PlayerView mode={MUSIC_SELECT_DJ_MODE} {...props} />
+              <PlayerView
+                mode={MUSIC_SELECT_DJ_MODE}
+                isSystemReady={isSystemReady}
+                {...props}
+              />
             )}
           />
           <Route
             path="/music-select"
-            render={() => <MusicSelectView mode={MUSIC_SELECT_PLAY} />}
+            render={() => (
+              <MusicSelectView
+                mode={MUSIC_SELECT_PLAY}
+                isSystemReady={isSystemReady}
+              />
+            )}
           />
           <Route
             path="/dj-mode"
-            render={() => <MusicSelectView mode={MUSIC_SELECT_DJ_MODE} />}
+            render={() => (
+              <MusicSelectView
+                mode={MUSIC_SELECT_DJ_MODE}
+                isSystemReady={isSystemReady}
+              />
+            )}
           />
           <Route path="/" component={TitleView} />
         </Switch>

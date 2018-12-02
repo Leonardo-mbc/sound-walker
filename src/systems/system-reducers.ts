@@ -1,6 +1,7 @@
 import { initialState } from '../constant/initial-state';
 import {
   ActionTypes,
+  SET_SYSTEM_READY,
   CREATE_SOUNDS_LINE,
   SET_LOADING_CIRCLE_VISIBLE,
   SET_DISPLAY_VERTICALLY,
@@ -16,6 +17,12 @@ export function systemReducer(
   action: ActionTypes
 ): SystemState {
   switch (action.type) {
+    case SET_SYSTEM_READY:
+      return {
+        ...state,
+        isSystemReady: action.payload.isSystemReady,
+      };
+
     case CREATE_SOUNDS_LINE:
       const { context } = AudioUtils.instance;
       console.log(context.sampleRate);

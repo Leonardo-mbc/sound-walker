@@ -7,7 +7,6 @@ import { push } from 'react-router-redux';
 import { AudioUtils } from '../../../utilities/audio-utils';
 import { Sound } from '../../../systems/system-interfaces';
 import { musicList } from '../../../constant/music-list';
-import { MusicSelectState } from './music-select-interfaces';
 import {
   MUSIC_SELECT_PLAY,
   MUSIC_SELECT_DJ_MODE,
@@ -113,8 +112,10 @@ const musicSelectSaga = [
       } catch (e) {}
     }
 
-    samples[musicAId].start(0, 0);
-    samples[musicBId].start(0, 0);
+    try {
+      samples[musicAId].start(0, 0);
+      samples[musicBId].start(0, 0);
+    } catch (e) {}
   }),
 
   takeEvery(MusicSelectAction.SAMPLE_MUSIC_FADE_OUT, function*(
@@ -211,23 +212,7 @@ const musicSelectSaga = [
   takeEvery(MusicSelectAction.GET_MUSIC_LIST, function*(
     _action: MusicSelectAction.GetMusicList
   ) {
-    // yield put(SystemAction.setLoadingCircleVisible(true));
-    // yield delay(1000);
-    // yield put(SystemAction.setLoadingCircleVisible(false));
-
     yield put(MusicSelectAction.setMusicList(musicList));
-
-    const { musicSelect } = yield select();
-    const { cursor, discFaders } = musicSelect as MusicSelectState;
-
-    yield put(
-      MusicSelectAction.sampleMusicPlay({
-        musicIds: musicList[cursor].map((musicInfo) => {
-          return musicInfo.meta.musicId;
-        }),
-        faderGainValues: discFaders[cursor] || [1, 0],
-      })
-    );
   }),
 ];
 
