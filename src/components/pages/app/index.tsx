@@ -11,10 +11,13 @@ import {
   MUSIC_SELECT_DJ_MODE,
   MUSIC_SELECT_PLAY,
 } from '../music-select/music-select-container';
+import { LogoTransition } from '../../commons/logo-transition';
+import { AppProps } from './app-container';
 
-export class App extends React.Component<State, {}> {
+export class App extends React.Component<State & AppProps, {}> {
   render() {
-    const { system } = this.props;
+    const { system, setLogoTransition } = this.props;
+    const { display } = system;
     return (
       <div className={styles.container}>
         <Switch>
@@ -40,8 +43,14 @@ export class App extends React.Component<State, {}> {
           />
           <Route path="/" component={TitleView} />
         </Switch>
-        <LoadingCircle isVisible={system.display.isLoadingCircleVisible} />
-        <VerticalAnnounce isVisible={!system.display.isPortrait} />
+        {display.logoTransition.isVisible ? (
+          <LogoTransition
+            duration={display.logoTransition.duration}
+            setLogoTransition={setLogoTransition}
+          />
+        ) : null}
+        <LoadingCircle isVisible={display.isLoadingCircleVisible} />
+        <VerticalAnnounce isVisible={!display.isPortrait} />
       </div>
     );
   }

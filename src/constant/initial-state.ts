@@ -28,6 +28,10 @@ export const initialState: State = {
     display: {
       isPortrait: false,
       isLoadingCircleVisible: false,
+      logoTransition: {
+        isVisible: false,
+        duration: 2000,
+      },
     },
   },
   title: {

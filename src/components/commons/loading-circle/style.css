@@ -1,29 +1,29 @@
 :local(.container) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    left: 10px;
-    top: 10px;
-    width: 70px;
-    height: 70px;
-    position: absolute;
-    border: 2px solid white;
-    border-radius: 50%;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-out;
-    z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 10px;
+  top: 10px;
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  border: 2px solid white;
+  border-radius: 50%;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+  z-index: 100;
 
-    :local {  
-      animation-name: rotate, show;
-    }
+  :local {
+    animation-name: rotate, show;
+  }
 
-    :local(.text) {
-      color: white;
-      font-size: 10px;
-      font-weight: bold;
-      text-align: center;
-    }
+  :local(.text) {
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
 }
 
 @keyframes :local(show) {

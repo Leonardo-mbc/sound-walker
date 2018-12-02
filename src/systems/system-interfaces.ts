@@ -35,4 +35,10 @@ export interface AnalyserParams {
 export interface Display {
   isPortrait: boolean;
   isLoadingCircleVisible: boolean;
+  logoTransition: LogoTransition;
+}
+
+interface LogoTransition {
+  isVisible: boolean;
+  duration: number;
 }

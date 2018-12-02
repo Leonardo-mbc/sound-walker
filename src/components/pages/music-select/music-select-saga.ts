@@ -211,9 +211,9 @@ const musicSelectSaga = [
   takeEvery(MusicSelectAction.GET_MUSIC_LIST, function*(
     _action: MusicSelectAction.GetMusicList
   ) {
-    yield put(SystemAction.setLoadingCircleVisible(true));
-    yield delay(1000);
-    yield put(SystemAction.setLoadingCircleVisible(false));
+    // yield put(SystemAction.setLoadingCircleVisible(true));
+    // yield delay(1000);
+    // yield put(SystemAction.setLoadingCircleVisible(false));
 
     yield put(MusicSelectAction.setMusicList(musicList));
 

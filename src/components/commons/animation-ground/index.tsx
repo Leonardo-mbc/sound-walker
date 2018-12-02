@@ -45,12 +45,7 @@ export class AnimationGround extends React.Component<
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    const cameraBasePositions = { x: 0, y: 0, z: 50 };
-    camera.position.set(
-      cameraBasePositions.x,
-      cameraBasePositions.y,
-      cameraBasePositions.z
-    );
+    camera.position.set(0, 0, 50);
 
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(width, height);

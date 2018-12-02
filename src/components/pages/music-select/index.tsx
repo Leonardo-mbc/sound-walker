@@ -9,12 +9,16 @@ import {
   DISC_LABEL,
   MUSIC_SELECT_PLAY_BUTTON,
   MUSIC_SELECT_BACK_BUTTON,
+  MUSIC_SELECT_CONFIRM_CANCEL,
+  MUSIC_SELECT_CONFIRM,
 } from '../../../constant/target-name';
+import { getMusicMetaByIds } from '../../../utilities/get-music-info';
 
 interface MusicSelectState {
   discTouchstartPositionX: number;
   discTouchmovePositionX: number;
   discTouchmovePreviousPositionX: number;
+  isConfirmationVisible: boolean;
 }
 
 export class MusicSelect extends React.Component<
@@ -30,6 +34,7 @@ export class MusicSelect extends React.Component<
       discTouchstartPositionX: null,
       discTouchmovePositionX: 0,
       discTouchmovePreviousPositionX: 0,
+      isConfirmationVisible: false,
     };
 
     props.getMusicList();
@@ -61,6 +66,13 @@ export class MusicSelect extends React.Component<
               if (this.state.discTouchstartPositionX === null) {
                 this.setDiscTouchstartPositionX(e.touches[0].clientX);
               }
+              break;
+            case MUSIC_SELECT_CONFIRM:
+              this.setState({ isConfirmationVisible: true });
+              break;
+            case MUSIC_SELECT_CONFIRM_CANCEL:
+              this.setState({ isConfirmationVisible: false });
+
               break;
             case MUSIC_SELECT_PLAY_BUTTON:
               this.props.goToPlayer(mode, musicSelect.selectedMusicId);
@@ -187,22 +199,21 @@ export class MusicSelect extends React.Component<
 
   render() {
     const { musicSelect, fadeDiscMusic, changeDiscSide, mode } = this.props;
-    const { cursor, musicList, discSide } = musicSelect;
+    const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
       transform: `translate3d(calc(${this.state.discTouchmovePositionX *
         0.8}px - ${cursor * 100}vh), calc(${this.state.discTouchmovePositionX *
         0.8}px - ${cursor * 100}vh), 0px)`,
     };
+
+    const selectedDiscMeta = getMusicMetaByIds([selectedMusicId], musicList)[0];
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         <div className={styles.title}>
           {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
         </div>
-        <div
-          className={styles.playButton}
-          data-target={MUSIC_SELECT_PLAY_BUTTON}
-        >
+        <div className={styles.playButton} data-target={MUSIC_SELECT_CONFIRM}>
           Play
         </div>
         <div
@@ -228,6 +239,33 @@ export class MusicSelect extends React.Component<
             );
           })}
         </div>
+        {this.state.isConfirmationVisible ? (
+          <div
+            className={styles.confirmCover}
+            data-target={MUSIC_SELECT_CONFIRM_CANCEL}
+          >
+            <div className={styles.confirm}>
+              <span className={styles.discTitle}>
+                「{selectedDiscMeta ? selectedDiscMeta.title : ''}
+                」を再生します よろしいですか？
+              </span>
+              <div className={styles.answerSet}>
+                <span
+                  className={`${styles.answer} ${styles.play}`}
+                  data-target={MUSIC_SELECT_PLAY_BUTTON}
+                >
+                  Play
+                </span>
+                <span
+                  className={styles.answer}
+                  data-target={MUSIC_SELECT_CONFIRM_CANCEL}
+                >
+                  CANCEL
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }

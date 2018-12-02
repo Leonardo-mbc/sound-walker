@@ -6,10 +6,16 @@ import * as SystemAction from '../../../systems/system-actions';
 import * as TWEEN from 'tween.js';
 
 function animate() {
-  requestAnimationFrame(animate);
   TWEEN.update();
+  requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
+
+export interface AppProps {
+  setLogoTransition: (
+    { isVisible, duration }: SystemAction.SetLogoTransitionPayload
+  ) => void;
+}
 
 export const AppView = connect(
   (state: State) => {
@@ -22,6 +28,13 @@ export const AppView = connect(
       );
     });
 
-    return {};
+    return {
+      setLogoTransition: ({
+        isVisible,
+        duration = 2000,
+      }: SystemAction.SetLogoTransitionPayload) => {
+        dispatch(SystemAction.setLogoTransition({ isVisible, duration }));
+      },
+    };
   }
 )(App);

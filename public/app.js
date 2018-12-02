@@ -90826,7 +90826,7 @@ var MusicSelect = /** @class */ (function (_super) {
                         musicIds: musicList[newCursor].map(function (musicInfo) { return musicInfo.meta.musicId; }),
                         faderGainValues: musicSelect.discFaders[newCursor] || [1, 0],
                     });
-                }, 500);
+                }, 500); // 前の曲を止めるまでにかかる時間
                 return [2 /*return*/];
             });
         });
@@ -90894,6 +90894,7 @@ exports.SET_SELECTED_MUSIC_ID = 'SET_SELECTED_MUSIC_ID';
 exports.GET_MUSIC_LIST = 'GET_MUSIC_LIST';
 exports.SET_MUSIC_LIST = 'SET_MUSIC_LIST';
 exports.SET_CURSOR = 'SET_CURSOR';
+exports.SET_CURSOR_LOCK = 'SET_CURSOR_LOCK';
 exports.goToPlayer = function (mode, musicId) { return ({
     type: exports.GO_TO_PLAYER,
     payload: {
@@ -90973,6 +90974,12 @@ exports.setCursor = function (cursor) { return ({
     type: exports.SET_CURSOR,
     payload: {
         cursor: cursor,
+    },
+}); };
+exports.setCursorLock = function (isCursorLocked) { return ({
+    type: exports.SET_CURSOR_LOCK,
+    payload: {
+        isCursorLocked: isCursorLocked,
     },
 }); };
 
@@ -91072,6 +91079,8 @@ function musicSelectReducer(state, action) {
             return __assign({}, state, { musicList: action.payload.musicList });
         case music_select_actions_1.SET_CURSOR:
             return __assign({}, state, { cursor: action.payload.cursor });
+        case music_select_actions_1.SET_CURSOR_LOCK:
+            return __assign({}, state, { isCursorLocked: action.payload.isCursorLocked });
         default:
             return state;
     }
@@ -91160,22 +91169,22 @@ var musicSelectSaga = [
         });
     }),
     effects_1.takeEvery(MusicSelectAction.SAMPLE_MUSIC_PLAY, function (action) {
-        var _a, musicIds, faderGainValues, musicAId, musicBId, system, _b, sources, cueAGainNode, cueBGainNode, audioUtils, sampleSource, sampleSource, store, sound, samples;
+        var _a, musicIds, faderGainValues, musicAId, musicBId, system, _b, sources, cueAGainNode, cueBGainNode, audioUtils, sampleSource, sampleSource, store, sound, samples, _c, _d, _i, key, e_1;
         var _this = this;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0:
                     _a = action.payload, musicIds = _a.musicIds, faderGainValues = _a.faderGainValues;
                     musicAId = musicIds[0], musicBId = musicIds[1];
                     return [4 /*yield*/, effects_1.select()];
                 case 1:
-                    system = (_c.sent()).system;
+                    system = (_e.sent()).system;
                     _b = system.sound, sources = _b.sources, cueAGainNode = _b.cueAGainNode, cueBGainNode = _b.cueBGainNode;
                     audioUtils = audio_utils_1.AudioUtils.instance;
                     if (!!(musicAId in sources.samples)) return [3 /*break*/, 6];
                     return [4 /*yield*/, effects_1.put(SystemAction.setLoadingCircleVisible(true))];
                 case 2:
-                    _c.sent();
+                    _e.sent();
                     return [4 /*yield*/, effects_1.call(function () { return __awaiter(_this, void 0, void 0, function () {
                             var audioBuffer, source;
                             return __generator(this, function (_a) {
@@ -91193,23 +91202,23 @@ var musicSelectSaga = [
                             });
                         }); })];
                 case 3:
-                    sampleSource = _c.sent();
+                    sampleSource = _e.sent();
                     sampleSource.connect(cueAGainNode);
                     return [4 /*yield*/, effects_1.put(SystemAction.setSampleSource({
                             key: musicAId,
                             bufferNode: sampleSource,
                         }))];
                 case 4:
-                    _c.sent();
+                    _e.sent();
                     return [4 /*yield*/, effects_1.put(SystemAction.setLoadingCircleVisible(false))];
                 case 5:
-                    _c.sent();
-                    _c.label = 6;
+                    _e.sent();
+                    _e.label = 6;
                 case 6:
                     if (!!(musicBId in sources.samples)) return [3 /*break*/, 11];
                     return [4 /*yield*/, effects_1.put(SystemAction.setLoadingCircleVisible(true))];
                 case 7:
-                    _c.sent();
+                    _e.sent();
                     return [4 /*yield*/, effects_1.call(function () { return __awaiter(_this, void 0, void 0, function () {
                             var audioBuffer, source;
                             return __generator(this, function (_a) {
@@ -91227,25 +91236,54 @@ var musicSelectSaga = [
                             });
                         }); })];
                 case 8:
-                    sampleSource = _c.sent();
+                    sampleSource = _e.sent();
                     sampleSource.connect(cueBGainNode);
                     return [4 /*yield*/, effects_1.put(SystemAction.setSampleSource({
                             key: musicBId,
                             bufferNode: sampleSource,
                         }))];
                 case 9:
-                    _c.sent();
+                    _e.sent();
                     return [4 /*yield*/, effects_1.put(SystemAction.setLoadingCircleVisible(false))];
                 case 10:
-                    _c.sent();
-                    _c.label = 11;
+                    _e.sent();
+                    _e.label = 11;
                 case 11: return [4 /*yield*/, effects_1.select()];
                 case 12:
-                    store = _c.sent();
+                    store = _e.sent();
                     sound = store.system.sound;
                     samples = sound.sources.samples;
                     cueAGainNode.gain.value = faderGainValues[0];
                     cueBGainNode.gain.value = faderGainValues[1];
+                    _c = [];
+                    for (_d in samples)
+                        _c.push(_d);
+                    _i = 0;
+                    _e.label = 13;
+                case 13:
+                    if (!(_i < _c.length)) return [3 /*break*/, 18];
+                    key = _c[_i];
+                    _e.label = 14;
+                case 14:
+                    _e.trys.push([14, 16, , 17]);
+                    // 再生前にすべての samples を stop() する
+                    // このとき、正常に stop 出来た sample は 1度鳴ってしまっているので remakeSampleSounds する
+                    samples[key].stop();
+                    return [4 /*yield*/, effects_1.put(MusicSelectAction.remakeSampleSounds({
+                            key: key,
+                            bufferNode: sources.samples[key],
+                            gainNode: key.indexOf('r') < 0 ? cueAGainNode : cueBGainNode,
+                        }))];
+                case 15:
+                    _e.sent();
+                    return [3 /*break*/, 17];
+                case 16:
+                    e_1 = _e.sent();
+                    return [3 /*break*/, 17];
+                case 17:
+                    _i++;
+                    return [3 /*break*/, 13];
+                case 18:
                     samples[musicAId].start(0, 0);
                     samples[musicBId].start(0, 0);
                     return [2 /*return*/];
@@ -91253,7 +91291,7 @@ var musicSelectSaga = [
         });
     }),
     effects_1.takeEvery(MusicSelectAction.SAMPLE_MUSIC_FADE_OUT, function (action) {
-        var system, _a, sources, cueAGainNode, cueBGainNode, _b, musicAId, musicBId;
+        var system, _a, sources, cueAGainNode, cueBGainNode, _b, musicAId, musicBId, fadeTime;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, effects_1.select()];
@@ -91261,8 +91299,9 @@ var musicSelectSaga = [
                     system = (_c.sent()).system;
                     _a = system.sound, sources = _a.sources, cueAGainNode = _a.cueAGainNode, cueBGainNode = _a.cueBGainNode;
                     _b = action.payload.musicIds, musicAId = _b[0], musicBId = _b[1];
+                    fadeTime = 250;
                     new TWEEN.Tween(cueAGainNode.gain)
-                        .to({ value: 0.0 }, 250)
+                        .to({ value: 0.0 }, fadeTime)
                         .onComplete(function () {
                         try {
                             sources.samples[musicAId].stop();
@@ -91271,7 +91310,7 @@ var musicSelectSaga = [
                     })
                         .start();
                     new TWEEN.Tween(cueBGainNode.gain)
-                        .to({ value: 0.0 }, 250)
+                        .to({ value: 0.0 }, fadeTime)
                         .onComplete(function () {
                         try {
                             sources.samples[musicBId].stop();
@@ -91279,24 +91318,33 @@ var musicSelectSaga = [
                         catch (e) { }
                     })
                         .start();
-                    return [4 /*yield*/, delay_1.delay(250)];
+                    return [4 /*yield*/, delay_1.delay(fadeTime)];
                 case 2:
                     _c.sent();
+                    if (!sources.samples[musicAId]) return [3 /*break*/, 4];
+                    // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう
                     return [4 /*yield*/, effects_1.put(MusicSelectAction.remakeSampleSounds({
                             key: musicAId,
                             bufferNode: sources.samples[musicAId],
                             gainNode: cueAGainNode,
                         }))];
                 case 3:
+                    // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう
                     _c.sent();
+                    _c.label = 4;
+                case 4:
+                    if (!sources.samples[musicBId]) return [3 /*break*/, 6];
+                    // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう、特に musicB
                     return [4 /*yield*/, effects_1.put(MusicSelectAction.remakeSampleSounds({
                             key: musicBId,
                             bufferNode: sources.samples[musicBId],
                             gainNode: cueBGainNode,
                         }))];
-                case 4:
+                case 5:
+                    // 高速にディスクを変えられると sources.samples にデータが入る前にここにきてしまう、特に musicB
                     _c.sent();
-                    return [2 /*return*/];
+                    _c.label = 6;
+                case 6: return [2 /*return*/];
             }
         });
     }),
@@ -91305,6 +91353,7 @@ var musicSelectSaga = [
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    if (!action.payload.bufferNode) return [3 /*break*/, 2];
                     try {
                         action.payload.bufferNode.stop(0);
                     }
@@ -91324,7 +91373,8 @@ var musicSelectSaga = [
                         }))];
                 case 1:
                     _a.sent();
-                    return [2 /*return*/];
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
             }
         });
     }),
@@ -92585,6 +92635,7 @@ exports.initialState = {
         discFaders: [],
         discSide: [],
         cursor: 0,
+        isCursorLocked: false,
     },
 };
 
@@ -93301,7 +93352,6 @@ var systemSaga = [
                 case 0:
                     try {
                         // タイトル以外の画面から入ってきたときに再生されてないためエラーとなるため
-                        console.log(action.payload);
                         action.payload.bufferNode.stop(0);
                     }
                     catch (e) { }
