@@ -7,7 +7,8 @@ export type ActionTypes =
   | SetDisplayVertically
   | RemakeSystemSounds
   | SetSystemSource
-  | SetSampleSource;
+  | SetSampleSource
+  | GetAchievement;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -18,6 +19,7 @@ export const SET_DISPLAY_VERTICALLY = 'SET_DISPLAY_VERTICALLY';
 export const REMAKE_SYSTEM_SOUNDS = 'REMAKE_SYSTEM_SOUNDS';
 export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
 export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
+export const GET_ACHIEVEMENT = 'GET_ACHIEVEMENT';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -147,4 +149,11 @@ export const setSampleSource = ({
     key,
     bufferNode,
   },
+});
+
+export interface GetAchievement {
+  type: typeof GET_ACHIEVEMENT;
+}
+export const getAchievement = (): GetAchievement => ({
+  type: GET_ACHIEVEMENT,
 });

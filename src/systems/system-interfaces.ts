@@ -2,6 +2,7 @@ export interface SystemState {
   isSystemReady: boolean;
   sound: Sound;
   display: Display;
+  achievement: Achievement;
 }
 
 export interface Sound {
@@ -42,4 +43,13 @@ export interface Display {
 interface LogoTransition {
   isVisible: boolean;
   duration: number;
+}
+
+export interface Achievement {
+  scores: Score[];
+}
+
+interface Score {
+  musicId: string;
+  status: 'LOCKED' | 'ARRIVAL' | 'UNLOCKED';
 }

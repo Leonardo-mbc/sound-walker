@@ -34,6 +34,7 @@ export const initialState: State = {
         duration: 2000,
       },
     },
+    achievement: null,
   },
   title: {
     loadingBarWidth: 0,

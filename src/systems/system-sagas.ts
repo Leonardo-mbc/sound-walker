@@ -2,7 +2,9 @@ import { call, put, takeEvery, select } from 'redux-saga/effects';
 import * as SystemAction from './system-actions';
 import * as TitleAction from '../components/pages/title/title-actions';
 import { AudioUtils } from '../utilities/audio-utils';
-import { Sound } from '../systems/system-interfaces';
+import { Sound, Achievement } from '../systems/system-interfaces';
+import * as localStorage from '../utilities/local-storage';
+import { STORAGE_KEYS } from '../constant/storage-keys';
 
 const systemSaga = [
   takeEvery(SystemAction.INITIAL_RUN, function*(
@@ -13,6 +15,7 @@ const systemSaga = [
     yield put(
       SystemAction.setDisplayVertically(window.innerWidth, window.innerHeight)
     );
+    yield put(SystemAction.getAchievement());
   }),
 
   takeEvery(SystemAction.LOAD_SYSTEM_SOUNDS, function*(
@@ -81,6 +84,32 @@ const systemSaga = [
         bufferNode: bufferNode,
       })
     );
+  }),
+  takeEvery(SystemAction.GET_ACHIEVEMENT, function*(
+    _action: SystemAction.GetAchievement
+  ) {
+    const achievement = yield call(() => {
+      const data = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
+      if (!data.scores) {
+        const emptyScores = {
+          scores: [
+            {
+              musicId: 'm1',
+              status: 'ARRIVAL',
+            },
+          ],
+        } as Achievement;
+        localStorage.write({
+          where: STORAGE_KEYS.ACHIEVEMENT,
+          value: emptyScores,
+        });
+        return emptyScores;
+      } else {
+        return data;
+      }
+    });
+
+    console.log(achievement);
   }),
 ];
 
