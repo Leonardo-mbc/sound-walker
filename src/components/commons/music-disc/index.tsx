@@ -10,6 +10,7 @@ interface MusicDiscProps {
   isLevelVisible?: boolean;
   fadeDiscMusic?: (values: number[]) => void;
   changeDiscSide?: (discSide: number) => void;
+  isSideBLocked?: boolean;
 }
 
 interface MusicDiscState {
@@ -173,8 +174,10 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
   }
 
   render() {
-    const { customStyle, discInfo } = this.props;
+    const { customStyle, discInfo, isSideBLocked } = this.props;
     const { discSide } = this.state;
+
+    const isLocked = isSideBLocked && discSide === 1;
 
     let imageACustomStyle: React.CSSProperties = {
       opacity: 1,
@@ -202,7 +205,10 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         className={styles.container}
         style={customStyle}
       >
-        <div className={styles.disc} data-target={DISC_LABEL}>
+        <div
+          className={`${styles.disc} ${isLocked ? styles.lockedDisc : ''}`}
+          data-target={DISC_LABEL}
+        >
           {discInfo.map((info, idx) => {
             return (
               <img
@@ -241,6 +247,11 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
             <span className={styles.b}>B</span>
           </div>
         </div>
+        {isLocked ? (
+          <div className={styles.locked} data-target={DISC_LABEL}>
+            <span data-target={DISC_LABEL}>UNAVAILABLE</span>
+          </div>
+        ) : null}
         {this.props.children}
       </div>
     );

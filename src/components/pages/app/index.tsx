@@ -16,7 +16,7 @@ import { AppProps } from './app-container';
 export class App extends React.Component<State & AppProps, {}> {
   render() {
     const { system } = this.props;
-    const { isSystemReady, display } = system;
+    const { isSystemReady, display, achievement } = system;
     return (
       <div className={styles.container}>
         <Switch>
@@ -46,6 +46,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <MusicSelectView
                 mode={MUSIC_SELECT_PLAY}
                 isSystemReady={isSystemReady}
+                achievement={achievement}
               />
             )}
           />
@@ -55,6 +56,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <MusicSelectView
                 mode={MUSIC_SELECT_DJ_MODE}
                 isSystemReady={isSystemReady}
+                achievement={achievement}
               />
             )}
           />

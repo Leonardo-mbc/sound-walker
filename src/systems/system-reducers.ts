@@ -7,6 +7,7 @@ import {
   SET_DISPLAY_VERTICALLY,
   SET_SYSTEM_SOURCE,
   SET_SAMPLE_SOURCE,
+  SET_ACHIEVEMENT,
 } from './system-actions';
 import { SystemState } from './system-interfaces';
 import { AudioUtils } from '../utilities/audio-utils';
@@ -110,6 +111,12 @@ export function systemReducer(
           ...state.display,
           isPortrait: action.payload.height <= action.payload.width,
         },
+      };
+
+    case SET_ACHIEVEMENT:
+      return {
+        ...state,
+        achievement: action.payload.achievement,
       };
 
     default:

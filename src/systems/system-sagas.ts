@@ -109,7 +109,7 @@ const systemSaga = [
       }
     });
 
-    console.log(achievement);
+    yield put(SystemAction.setAchievement(achievement));
   }),
 ];
 

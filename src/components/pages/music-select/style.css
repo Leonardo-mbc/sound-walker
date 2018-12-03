@@ -27,7 +27,12 @@
     user-select: none;
     cursor: pointer;
     z-index: 10;
+    transition: opacity 300ms ease-out;
     /* transform: perspective(180px) rotateY(23deg); */
+
+    &:local(.locked) {
+      opacity: 0.3;
+    }
   }
 
   :local(.back-button) {

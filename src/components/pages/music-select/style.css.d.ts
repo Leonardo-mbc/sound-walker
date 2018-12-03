@@ -2,6 +2,7 @@ export const container: string;
 export const confirmShow: string;
 export const title: string;
 export const playButton: string;
+export const locked: string;
 export const backButton: string;
 export const discList: string;
 export const confirmCover: string;

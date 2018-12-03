@@ -9,6 +9,26 @@
   align-items: center;
   flex-direction: column;
 
+  :local(.locked) {
+    margin-top: -15px;
+    display: flex;
+    position: absolute;
+    color: var(--white);
+    justify-content: center;
+    align-items: center;
+    font-size: 10vw;
+    font-weight: bold;
+    text-shadow: 0px 0px 10px var(--orange);
+
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0, 0, 0.15, 1.21);
+    animation-fill-mode: forwards;
+
+    :local {
+      animation-name: locked-show;
+    }
+  }
+
   :local(.disc) {
     width: 50vh;
     height: 50vh;
@@ -18,6 +38,11 @@
     border-radius: 100%;
     overflow: hidden;
     position: relative;
+    transition: opacity 300ms ease-out;
+
+    &:local(.locked-disc) {
+      opacity: 0.3;
+    }
 
     & > img {
       height: 100%;
@@ -159,5 +184,14 @@
   100% {
     opacity: 1;
     transform: rotateZ(0deg);
+  }
+}
+
+@keyframes :local(locked-show) {
+  0% {
+    transform: translate3d(0px, -20px, 0px);
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px);
   }
 }

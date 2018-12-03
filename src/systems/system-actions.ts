@@ -1,3 +1,5 @@
+import { Achievement } from './system-interfaces';
+
 export type ActionTypes =
   | InitialRun
   | SetSystemReady
@@ -8,7 +10,8 @@ export type ActionTypes =
   | RemakeSystemSounds
   | SetSystemSource
   | SetSampleSource
-  | GetAchievement;
+  | GetAchievement
+  | SetAchievement;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -20,6 +23,7 @@ export const REMAKE_SYSTEM_SOUNDS = 'REMAKE_SYSTEM_SOUNDS';
 export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
 export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
 export const GET_ACHIEVEMENT = 'GET_ACHIEVEMENT';
+export const SET_ACHIEVEMENT = 'SET_ACHIEVEMENT';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -156,4 +160,17 @@ export interface GetAchievement {
 }
 export const getAchievement = (): GetAchievement => ({
   type: GET_ACHIEVEMENT,
+});
+
+export interface SetAchievement {
+  type: typeof SET_ACHIEVEMENT;
+  payload: {
+    achievement: Achievement;
+  };
+}
+export const setAchievement = (achievement: Achievement): SetAchievement => ({
+  type: SET_ACHIEVEMENT,
+  payload: {
+    achievement,
+  },
 });

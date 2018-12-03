@@ -3,11 +3,13 @@ import { MusicSelect } from '.';
 import { MusicSelectState } from './music-select-interfaces';
 import * as MusicSelectAction from './music-select-actions';
 import * as TitleAction from '../title/title-actions';
+import { Achievement } from '../../../systems/system-interfaces';
 
 export interface MusicSelectProps {
   mode: MusicSelectMode;
   isSystemReady: boolean;
   musicSelect: MusicSelectState;
+  achievement: Achievement;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
   goToMainMenu: () => void;
   sampleMusicPlay: (

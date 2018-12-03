@@ -137,15 +137,23 @@ export class MusicSelect extends React.Component<
   }
 
   calcDiscMove(x: number) {
-    const { musicSelect } = this.props;
+    const { musicSelect, achievement } = this.props;
     const { cursor, musicList } = musicSelect;
+    const openedMusic = achievement.scores.map((score) => score.musicId);
 
     if (this.state.discTouchstartPositionX !== null) {
       const moveX = x - this.state.discTouchstartPositionX;
       const acc =
         Math.abs(this.state.discTouchmovePreviousPositionX - moveX) / 2;
       const amountX = moveX + acc * moveX * 0.075;
-      if (amountX <= -170 && cursor < musicList.length - 1) {
+      if (
+        amountX <= -170 &&
+        cursor <
+          musicList.filter(
+            (discInfo) => 0 <= openedMusic.indexOf(discInfo[0].meta.musicId)
+          ).length -
+            1
+      ) {
         this.setCursor(cursor + 1);
         this.setDiscTouchstartPositionX(null);
         this.setDiscTouchmovePositionX(0);
@@ -203,6 +211,7 @@ export class MusicSelect extends React.Component<
       changeDiscSide,
       mode,
       isSystemReady,
+      achievement,
     } = this.props;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
@@ -211,7 +220,8 @@ export class MusicSelect extends React.Component<
         0.8}px - ${cursor * 100}vh), calc(${this.state.discTouchmovePositionX *
         0.8}px - ${cursor * 100}vh), 0px)`,
     };
-
+    const openedMusic = achievement.scores.map((score) => score.musicId);
+    const isMusicOpened = 0 <= openedMusic.indexOf(selectedMusicId);
     const selectedDiscMeta = getMusicMetaByIds([selectedMusicId], musicList)[0];
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
@@ -221,8 +231,10 @@ export class MusicSelect extends React.Component<
               {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
             </div>
             <div
-              className={styles.playButton}
-              data-target={MUSIC_SELECT_CONFIRM}
+              className={`${styles.playButton} ${
+                isMusicOpened ? '' : styles.locked
+              }`}
+              data-target={isMusicOpened ? MUSIC_SELECT_CONFIRM : ''}
             >
               Play
             </div>
@@ -233,44 +245,52 @@ export class MusicSelect extends React.Component<
               Back
             </div>
             <div className={styles.discList} style={discListStyle}>
-              {musicList.map((discInfo, idx) => {
-                const customStyle: React.CSSProperties = {
-                  marginLeft: `${idx * 200}vh`,
-                };
-                return (
-                  <MusicDisc
-                    key={`music-disc-${idx}`}
-                    discInfo={discInfo}
-                    discSide={discSide[idx]}
-                    customStyle={customStyle}
-                    fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
-                    changeDiscSide={changeDiscSide.bind(this, idx)}
-                  >
-                    {cursor === idx ? (
-                      <SamplePlayer
-                        key={`sample-player-${idx}`}
-                        sampleMusicPlay={() => {
-                          setTimeout(() => {
-                            this.props.sampleMusicPlay({
-                              musicIds: discInfo.map(
-                                (info) => info.meta.musicId
-                              ),
-                              faderGainValues: musicSelect.discFaders[
-                                cursor
-                              ] || [1, 0],
-                            });
-                          }, 500); // 前の曲を止めるまでにかかる時間
-                        }}
-                        sampleMusicFadeOut={() => {
-                          this.props.sampleMusicFadeOut(
-                            discInfo.map((info) => info.meta.musicId)
-                          );
-                        }}
-                      />
-                    ) : null}
-                  </MusicDisc>
-                );
-              })}
+              {musicList
+                .filter(
+                  (discInfo) =>
+                    0 <= openedMusic.indexOf(discInfo[0].meta.musicId)
+                )
+                .map((discInfo, idx) => {
+                  const customStyle: React.CSSProperties = {
+                    marginLeft: `${idx * 200}vh`,
+                  };
+                  return (
+                    <MusicDisc
+                      key={`music-disc-${idx}`}
+                      discInfo={discInfo}
+                      discSide={discSide[idx]}
+                      customStyle={customStyle}
+                      fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
+                      changeDiscSide={changeDiscSide.bind(this, idx)}
+                      isSideBLocked={
+                        openedMusic.indexOf(discInfo[1].meta.musicId) < 0
+                      }
+                    >
+                      {cursor === idx ? (
+                        <SamplePlayer
+                          key={`sample-player-${idx}`}
+                          sampleMusicPlay={() => {
+                            setTimeout(() => {
+                              this.props.sampleMusicPlay({
+                                musicIds: discInfo.map(
+                                  (info) => info.meta.musicId
+                                ),
+                                faderGainValues: musicSelect.discFaders[
+                                  cursor
+                                ] || [1, 0],
+                              });
+                            }, 500); // 前の曲を止めるまでにかかる時間
+                          }}
+                          sampleMusicFadeOut={() => {
+                            this.props.sampleMusicFadeOut(
+                              discInfo.map((info) => info.meta.musicId)
+                            );
+                          }}
+                        />
+                      ) : null}
+                    </MusicDisc>
+                  );
+                })}
             </div>
             {this.state.isConfirmationVisible ? (
               <div
