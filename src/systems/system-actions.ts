@@ -1,4 +1,4 @@
-import { Achievement } from './system-interfaces';
+import { Achievement, AchievementState } from './system-interfaces';
 
 export type ActionTypes =
   | InitialRun
@@ -11,7 +11,9 @@ export type ActionTypes =
   | SetSystemSource
   | SetSampleSource
   | GetAchievement
-  | SetAchievement;
+  | SetAchievement
+  | SetAchievementState
+  | RingUnlockSound;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -24,6 +26,8 @@ export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
 export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
 export const GET_ACHIEVEMENT = 'GET_ACHIEVEMENT';
 export const SET_ACHIEVEMENT = 'SET_ACHIEVEMENT';
+export const SET_ACHIEVEMENT_STATE = 'SET_ACHIEVEMENT_STATE';
+export const RING_UNLOCK_SOUND = 'RING_UNLOCK_SOUND';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -173,4 +177,30 @@ export const setAchievement = (achievement: Achievement): SetAchievement => ({
   payload: {
     achievement,
   },
+});
+
+export interface SetAchievementStatePayload {
+  musicId: string;
+  status: AchievementState;
+}
+export interface SetAchievementState {
+  type: typeof SET_ACHIEVEMENT_STATE;
+  payload: SetAchievementStatePayload;
+}
+export const setAchievementState = ({
+  musicId,
+  status,
+}: SetAchievementStatePayload): SetAchievementState => ({
+  type: SET_ACHIEVEMENT_STATE,
+  payload: {
+    musicId,
+    status,
+  },
+});
+
+export interface RingUnlockSound {
+  type: typeof RING_UNLOCK_SOUND;
+}
+export const ringUnlockSound = (): RingUnlockSound => ({
+  type: RING_UNLOCK_SOUND,
 });

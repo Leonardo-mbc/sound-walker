@@ -16,6 +16,7 @@ export const initialState: State = {
     sound: {
       sources: {
         title: null,
+        unlocked: null,
         samples: {},
       },
       context: null,

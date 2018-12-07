@@ -5,6 +5,7 @@ import { AudioUtils } from '../utilities/audio-utils';
 import { Sound, Achievement } from '../systems/system-interfaces';
 import * as localStorage from '../utilities/local-storage';
 import { STORAGE_KEYS } from '../constant/storage-keys';
+import { delay } from '../utilities/delay';
 
 const systemSaga = [
   takeEvery(SystemAction.INITIAL_RUN, function*(
@@ -22,9 +23,9 @@ const systemSaga = [
     _action: SystemAction.LoadSystemSounds
   ) {
     yield put(SystemAction.setLoadingCircleVisible(true));
-    const titleSource = yield call(async () => {
+    const [titleSource, unlockedSource] = yield call(async () => {
       const audioUtils = AudioUtils.instance;
-      const audioBuffer = await audioUtils.loadAudioBufferFromUrl({
+      const titleBuffer = await audioUtils.loadAudioBufferFromUrl({
         url: '/assets/sounds/title.mp3',
         onProgress: (loaded: number) => {
           // どうしてもreducerを呼べないため妥協
@@ -34,17 +35,26 @@ const systemSaga = [
           }
         },
       });
+      const unlockedBuffer = await audioUtils.loadAudioBufferFromUrl({
+        url: '/assets/sounds/unlocked.mp3',
+      });
 
-      const source = audioUtils.context.createBufferSource();
-      source.buffer = audioBuffer;
-      source.loop = true;
+      const titleSource = audioUtils.context.createBufferSource();
+      titleSource.buffer = titleBuffer;
+      titleSource.loop = true;
 
-      return source;
+      const unlockedSource = audioUtils.context.createBufferSource();
+      unlockedSource.buffer = unlockedBuffer;
+      unlockedSource.loop = false;
+
+      return [titleSource, unlockedSource];
     });
 
     const { system } = yield select();
     const { systemGainNode } = system.sound as Sound;
+
     titleSource.connect(systemGainNode);
+    unlockedSource.connect(systemGainNode);
 
     yield put(
       SystemAction.setSystemSource({
@@ -52,6 +62,13 @@ const systemSaga = [
         bufferNode: titleSource,
       })
     );
+    yield put(
+      SystemAction.setSystemSource({
+        key: 'unlocked',
+        bufferNode: unlockedSource,
+      })
+    );
+
     yield put(TitleAction.setLoadComplete());
     yield put(SystemAction.setSystemReady(true));
     yield put(SystemAction.setLoadingCircleVisible(false));
@@ -85,6 +102,7 @@ const systemSaga = [
       })
     );
   }),
+
   takeEvery(SystemAction.GET_ACHIEVEMENT, function*(
     _action: SystemAction.GetAchievement
   ) {
@@ -109,6 +127,56 @@ const systemSaga = [
       }
     });
 
+    yield put(SystemAction.setAchievement(achievement));
+  }),
+
+  takeEvery(SystemAction.RING_UNLOCK_SOUND, function*(
+    _action: SystemAction.RingUnlockSound
+  ) {
+    const { system } = yield select();
+    const { systemGainNode, sources } = system.sound as Sound;
+    const { unlocked } = sources;
+
+    try {
+      unlocked.start(0, 0);
+      yield delay(2000);
+      unlocked.stop();
+    } catch {}
+
+    const audioUtils = AudioUtils.instance;
+    const buffer = unlocked.buffer;
+    const bufferNode = audioUtils.context.createBufferSource();
+    bufferNode.buffer = buffer;
+
+    bufferNode.connect(systemGainNode);
+
+    yield put(
+      SystemAction.setSystemSource({
+        key: 'unlocked',
+        bufferNode: bufferNode,
+      })
+    );
+  }),
+
+  takeEvery(SystemAction.SET_ACHIEVEMENT_STATE, function*(
+    action: SystemAction.SetAchievementState
+  ) {
+    const { musicId, status } = action.payload;
+    const { scores } = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
+    const newScores = scores.map((score) => {
+      if (score.musicId === musicId) {
+        return { ...score, status };
+      }
+      return score;
+    });
+
+    const achievement = { scores: newScores };
+    yield call(() => {
+      localStorage.write({
+        where: STORAGE_KEYS.ACHIEVEMENT,
+        value: achievement,
+      });
+    });
     yield put(SystemAction.setAchievement(achievement));
   }),
 ];

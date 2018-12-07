@@ -3,6 +3,7 @@ import { MusicSelect } from '.';
 import { MusicSelectState } from './music-select-interfaces';
 import * as MusicSelectAction from './music-select-actions';
 import * as TitleAction from '../title/title-actions';
+import * as SystemAction from '../../../systems/system-actions';
 import { Achievement } from '../../../systems/system-interfaces';
 
 export interface MusicSelectProps {
@@ -21,6 +22,10 @@ export interface MusicSelectProps {
   setSelectedMusicId: (musicId: string) => void;
   getMusicList: () => void;
   setCursor: (cursor: number) => void;
+  ringUnlockSound: () => void;
+  setAchievementState: (
+    { musicId, status }: SystemAction.SetAchievementStatePayload
+  ) => void;
 }
 
 export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
@@ -68,6 +73,15 @@ export const MusicSelectView = connect(
     },
     setCursor: (cursor: number) => {
       dispatch(MusicSelectAction.setCursor(cursor));
+    },
+    ringUnlockSound: () => {
+      dispatch(SystemAction.ringUnlockSound());
+    },
+    setAchievementState: ({
+      musicId,
+      status,
+    }: SystemAction.SetAchievementStatePayload) => {
+      dispatch(SystemAction.setAchievementState({ musicId, status }));
     },
   })
 )(MusicSelect);

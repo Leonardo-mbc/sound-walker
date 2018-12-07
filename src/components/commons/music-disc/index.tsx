@@ -6,11 +6,13 @@ import { DISC_LABEL, FADER_BAR } from '../../../constant/target-name';
 interface MusicDiscProps {
   discInfo: DiscInfo;
   discSide: number;
-  customStyle: React.CSSProperties;
+  customStyle?: React.CSSProperties;
+  size?: string;
   isLevelVisible?: boolean;
   fadeDiscMusic?: (values: number[]) => void;
   changeDiscSide?: (discSide: number) => void;
   isSideBLocked?: boolean;
+  isDiscImageOnly?: boolean;
 }
 
 interface MusicDiscState {
@@ -36,7 +38,9 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
   }
 
   componentDidMount() {
-    this.adjustFader();
+    if (this.props.fadeDiscMusic) {
+      this.adjustFader();
+    }
 
     let passiveSupported = false;
     try {
@@ -174,9 +178,14 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
   }
 
   render() {
-    const { customStyle, discInfo, isSideBLocked } = this.props;
+    const {
+      customStyle,
+      discInfo,
+      isSideBLocked,
+      isDiscImageOnly,
+      size,
+    } = this.props;
     const { discSide } = this.state;
-
     const isLocked = isSideBLocked && discSide === 1;
 
     let imageACustomStyle: React.CSSProperties = {
@@ -199,15 +208,31 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
       imageBCustomStyle.opacity = 1;
     }
 
+    let customContainerStyle: React.CSSProperties = { ...customStyle };
+    let discSize: React.CSSProperties = {};
+    if (size) {
+      discSize = {
+        width: size,
+        height: size,
+        minWidth: size,
+        minHeight: size,
+      };
+      customContainerStyle = {
+        ...customStyle,
+        ...discSize,
+      };
+    }
+
     return (
       <div
         ref={(elem) => (this.container = elem)}
         className={styles.container}
-        style={customStyle}
+        style={customContainerStyle}
       >
         <div
           className={`${styles.disc} ${isLocked ? styles.lockedDisc : ''}`}
           data-target={DISC_LABEL}
+          style={discSize}
         >
           {discInfo.map((info, idx) => {
             return (
@@ -220,33 +245,42 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
             );
           })}
         </div>
-        <div className={styles.details}>
-          <div
-            className={`${styles.values} ${
-              this.props.discSide === discSide ? styles.show : ''
-            }`}
-          >
-            <div className={styles.title}>{discInfo[discSide].meta.title}</div>
-            <div className={styles.artist}>
-              {discInfo[discSide].meta.artist}
-            </div>
-          </div>
-        </div>
-        <div className={styles.remixes}>
-          <div className={styles.crossFader}>
-            <span className={styles.a}>A</span>
-            <div ref={(elem) => (this.fader = elem)} className={styles.fader}>
+        {!isDiscImageOnly ? (
+          <>
+            <div className={styles.details}>
               <div
-                className={styles.pick}
-                style={pickerCustomStyle}
-                data-target={FADER_BAR}
+                className={`${styles.values} ${
+                  this.props.discSide === discSide ? styles.show : ''
+                }`}
               >
-                <div className={styles.bar} data-target={FADER_BAR} />
+                <div className={styles.title}>
+                  {discInfo[discSide].meta.title}
+                </div>
+                <div className={styles.artist}>
+                  {discInfo[discSide].meta.artist}
+                </div>
               </div>
             </div>
-            <span className={styles.b}>B</span>
-          </div>
-        </div>
+            <div className={styles.remixes}>
+              <div className={styles.crossFader}>
+                <span className={styles.a}>A</span>
+                <div
+                  ref={(elem) => (this.fader = elem)}
+                  className={styles.fader}
+                >
+                  <div
+                    className={styles.pick}
+                    style={pickerCustomStyle}
+                    data-target={FADER_BAR}
+                  >
+                    <div className={styles.bar} data-target={FADER_BAR} />
+                  </div>
+                </div>
+                <span className={styles.b}>B</span>
+              </div>
+            </div>
+          </>
+        ) : null}
         {isLocked ? (
           <div className={styles.locked} data-target={DISC_LABEL}>
             <span data-target={DISC_LABEL}>UNAVAILABLE</span>

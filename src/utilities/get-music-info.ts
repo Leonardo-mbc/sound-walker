@@ -15,3 +15,27 @@ export const getMusicMetaByIds = (
   });
   return findInfo;
 };
+
+export interface MusicPosition {
+  cursor: number;
+  side: number;
+}
+
+export const getMusicPositionById = (
+  musicId: string,
+  musicList: MusicList
+): MusicPosition => {
+  let findPosition: MusicPosition = null;
+  musicList.map((disc, listId) => {
+    disc.map((musicInfo, sideId) => {
+      if (musicInfo.meta.musicId === musicId) {
+        findPosition = {
+          cursor: listId,
+          side: sideId,
+        };
+      }
+    });
+  });
+
+  return findPosition;
+};

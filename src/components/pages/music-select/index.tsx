@@ -11,11 +11,16 @@ import {
   MUSIC_SELECT_BACK_BUTTON,
   MUSIC_SELECT_CONFIRM_CANCEL,
   MUSIC_SELECT_CONFIRM,
+  ARRIVAL_CONTAINER,
 } from '../../../constant/target-name';
-import { getMusicMetaByIds } from '../../../utilities/get-music-info';
+import {
+  getMusicMetaByIds,
+  getMusicPositionById,
+} from '../../../utilities/get-music-info';
 import { LoaderCurtain } from '../../commons/loader-curtain';
 import { SamplePlayer } from './sample-player';
 import { LogoTransition } from '../../commons/logo-transition';
+import { musicList } from '../../../constant/music-list';
 
 interface MusicSelectState {
   discTouchstartPositionX: number;
@@ -23,6 +28,8 @@ interface MusicSelectState {
   discTouchmovePreviousPositionX: number;
   isConfirmationVisible: boolean;
   isTransitionVisible: boolean;
+  isArrivalShow: boolean;
+  arrivalClassState: string;
 }
 
 export class MusicSelect extends React.Component<
@@ -40,6 +47,8 @@ export class MusicSelect extends React.Component<
       discTouchmovePreviousPositionX: 0,
       isConfirmationVisible: false,
       isTransitionVisible: false,
+      isArrivalShow: false,
+      arrivalClassState: '',
     };
 
     props.getMusicList();
@@ -98,6 +107,13 @@ export class MusicSelect extends React.Component<
                 })
               );
               break;
+
+            case ARRIVAL_CONTAINER:
+              const musicId = (e.target as HTMLElement).getAttribute(
+                'data-music-id'
+              );
+              this.hideArrival(musicId);
+              break;
           }
         },
         passiveSupported ? { passive: false } : false
@@ -134,12 +150,16 @@ export class MusicSelect extends React.Component<
         passiveSupported ? { passive: false } : false
       );
     } catch (err) {}
+
+    this.arrivalCheck();
   }
 
   calcDiscMove(x: number) {
     const { musicSelect, achievement } = this.props;
     const { cursor, musicList } = musicSelect;
-    const openedMusic = achievement.scores.map((score) => score.musicId);
+    const openedMusics = achievement.scores
+      .filter(({ status }) => status === 'UNLOCKED')
+      .map(({ musicId }) => musicId);
 
     if (this.state.discTouchstartPositionX !== null) {
       const moveX = x - this.state.discTouchstartPositionX;
@@ -150,7 +170,7 @@ export class MusicSelect extends React.Component<
         amountX <= -170 &&
         cursor <
           musicList.filter(
-            (discInfo) => 0 <= openedMusic.indexOf(discInfo[0].meta.musicId)
+            (discInfo) => 0 <= openedMusics.indexOf(discInfo[0].meta.musicId)
           ).length -
             1
       ) {
@@ -204,6 +224,33 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  arrivalCheck() {
+    const { achievement } = this.props;
+    const arrivalMusics = achievement.scores
+      .filter(({ status }) => status === 'ARRIVAL')
+      .map(({ musicId }) => musicId);
+
+    const arrivalPosition = getMusicPositionById(arrivalMusics[0], musicList); // FIXME: musicList を store の musicList に置き換える
+    this.setState({
+      arrivalClassState: '',
+      isArrivalShow: arrivalPosition ? true : false,
+    });
+  }
+
+  hideArrival(musicId: string) {
+    this.setState({
+      arrivalClassState: 'hide',
+    });
+
+    setTimeout(() => {
+      this.setState({
+        isArrivalShow: false,
+      });
+      this.props.setAchievementState({ musicId, status: 'UNLOCKED' });
+      this.arrivalCheck();
+    }, 200);
+  }
+
   render() {
     const {
       musicSelect,
@@ -212,6 +259,7 @@ export class MusicSelect extends React.Component<
       mode,
       isSystemReady,
       achievement,
+      ringUnlockSound,
     } = this.props;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
@@ -220,9 +268,26 @@ export class MusicSelect extends React.Component<
         0.8}px - ${cursor * 100}vh), calc(${this.state.discTouchmovePositionX *
         0.8}px - ${cursor * 100}vh), 0px)`,
     };
-    const openedMusic = achievement.scores.map((score) => score.musicId);
-    const isMusicOpened = 0 <= openedMusic.indexOf(selectedMusicId);
+    const openedMusics = achievement.scores
+      .filter(({ status }) => status === 'UNLOCKED')
+      .map(({ musicId }) => musicId);
+    const arrivalMusics = achievement.scores
+      .filter(({ status }) => status === 'ARRIVAL')
+      .map(({ musicId }) => musicId);
+    const isMusicOpened = 0 <= openedMusics.indexOf(selectedMusicId);
     const selectedDiscMeta = getMusicMetaByIds([selectedMusicId], musicList)[0];
+
+    let arrivalPosition = null;
+    let arrivalMeta = null;
+
+    if (arrivalMusics.length !== 0) {
+      arrivalPosition = getMusicPositionById(arrivalMusics[0], musicList);
+      if (arrivalPosition) {
+        arrivalMeta =
+          musicList[arrivalPosition.cursor][arrivalPosition.side].meta;
+      }
+    }
+
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         {isSystemReady ? (
@@ -248,7 +313,7 @@ export class MusicSelect extends React.Component<
               {musicList
                 .filter(
                   (discInfo) =>
-                    0 <= openedMusic.indexOf(discInfo[0].meta.musicId)
+                    0 <= openedMusics.indexOf(discInfo[0].meta.musicId)
                 )
                 .map((discInfo, idx) => {
                   const customStyle: React.CSSProperties = {
@@ -263,7 +328,7 @@ export class MusicSelect extends React.Component<
                       fadeDiscMusic={fadeDiscMusic.bind(this, idx)}
                       changeDiscSide={changeDiscSide.bind(this, idx)}
                       isSideBLocked={
-                        openedMusic.indexOf(discInfo[1].meta.musicId) < 0
+                        openedMusics.indexOf(discInfo[1].meta.musicId) < 0
                       }
                     >
                       {cursor === idx ? (
@@ -314,6 +379,43 @@ export class MusicSelect extends React.Component<
                       data-target={MUSIC_SELECT_CONFIRM_CANCEL}
                     >
                       CANCEL
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            {this.state.isArrivalShow ? (
+              <div
+                className={`${styles.arrivalContainer} ${
+                  this.state.arrivalClassState
+                }`}
+                onLoad={() => ringUnlockSound()}
+                data-target={ARRIVAL_CONTAINER}
+                data-music-id={arrivalMeta.musicId}
+              >
+                <div
+                  className={styles.arrivalItems}
+                  data-target={ARRIVAL_CONTAINER}
+                  data-music-id={arrivalMeta.musicId}
+                >
+                  <MusicDisc
+                    isDiscImageOnly
+                    discInfo={musicList[arrivalPosition.cursor]}
+                    discSide={arrivalPosition.side}
+                    size="25vh"
+                    customStyle={{ margin: '20px' }}
+                  />
+                  <div
+                    className={styles.arrivalMessage}
+                    data-target={ARRIVAL_CONTAINER}
+                    data-music-id={arrivalMeta.musicId}
+                  >
+                    <span
+                      className={styles.unlockedText}
+                      data-target={ARRIVAL_CONTAINER}
+                      data-music-id={arrivalMeta.musicId}
+                    >
+                      {arrivalMeta.title}
                     </span>
                   </div>
                 </div>

@@ -100,6 +100,78 @@
       }
     }
   }
+
+  :local(.arrival-container) {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+
+    :local(.arrival-items) {
+      background-color: var(--black-alpha8);
+      width: 100%;
+      height: 50vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      animation-duration: 200ms;
+      animation-fill-mode: backwards;
+      animation-timing-function: ease-out;
+      :local {
+        animation-name: arrival-items-show;
+      }
+    }
+
+    &.hide :local(.arrival-items) {
+      animation-fill-mode: forwards;
+      :local {
+        animation-name: arrival-items-hide;
+      }
+    }
+
+    :local(.arrival-message) {
+      width: 50%;
+      animation-duration: 200ms;
+      animation-offset: 100ms;
+      animation-fill-mode: backwards;
+      animation-timing-function: ease-out;
+      :local {
+        animation-name: arrival-message-show;
+      }
+
+      :local(.unlocked-text) {
+        word-break: break-all;
+
+        &::before {
+          content: '';
+          background-image: url(/assets/images/texts/music-unlocked@x2.png);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 80vh;
+          height: 10vh;
+          display: block;
+        }
+      }
+    }
+
+    &.hide :local(.arrival-message) {
+      animation-fill-mode: forwards;
+      :local {
+        animation-name: arrival-message-hide;
+      }
+    }
+
+    :local(.confirm-text) {
+      font-size: larger;
+    }
+  }
 }
 
 @keyframes :local(confirm-show) {
@@ -112,5 +184,49 @@
     transform: translate3d(0px, 0px, 0px);
     opacity: 1;
     width: 100%;
+  }
+}
+
+@keyframes :local(arrival-items-show) {
+  0% {
+    height: 25vh;
+    opacity: 0;
+  }
+  100% {
+    height: 50vh;
+    opacity: 1;
+  }
+}
+
+@keyframes :local(arrival-items-hide) {
+  0% {
+    height: 50vh;
+    opacity: 1;
+  }
+  100% {
+    height: 25vh;
+    opacity: 0;
+  }
+}
+
+@keyframes :local(arrival-message-show) {
+  0% {
+    transform: translate3d(60px, 0px, 0px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0px, 0px, 0px);
+    opacity: 1;
+  }
+}
+
+@keyframes :local(arrival-message-hide) {
+  0% {
+    transform: translate3d(0px, 0px, 0px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(60px, 0px, 0px);
+    opacity: 0;
   }
 }

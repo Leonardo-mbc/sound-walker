@@ -13,7 +13,7 @@
     margin-top: -15px;
     display: flex;
     position: absolute;
-    color: var(--white);
+    color: var(--white-alpha3);
     justify-content: center;
     align-items: center;
     font-size: 10vw;

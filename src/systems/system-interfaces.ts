@@ -18,6 +18,7 @@ export interface Sound {
 
 export interface SoundSources {
   title: AudioBufferSourceNode;
+  unlocked: AudioBufferSourceNode;
   samples: {
     [key: string]: AudioBufferSourceNode;
   };
@@ -49,7 +50,8 @@ export interface Achievement {
   scores: Score[];
 }
 
+export type AchievementState = 'LOCKED' | 'ARRIVAL' | 'UNLOCKED';
 interface Score {
   musicId: string;
-  status: 'LOCKED' | 'ARRIVAL' | 'UNLOCKED';
+  status: AchievementState;
 }
