@@ -10,7 +10,8 @@ export type ActionTypes =
   | SetOffsetCurrentTime
   | LoadSoundNodes
   | SetSoundNodes
-  | BackToDJMode;
+  | BackToDJMode
+  | UnlockReview;
 
 export const LOAD_MUSIC = 'LOAD_MUSIC';
 export const SET_MUSIC_SOURCE = 'SET_MUSIC_SOURCE';
@@ -21,6 +22,7 @@ export const SET_OFFSET_CURRENT_TIME = 'SET_OFFSET_CURRENT_TIME';
 export const LOAD_SOUND_NODES = 'LOAD_SOUND_NODES';
 export const SET_SOUND_NODES = 'SET_SOUND_NODES';
 export const BACK_TO_DJ_MODE = 'BACK_TO_DJ_MODE';
+export const UNLOCK_REVIEW = 'UNLOCK_REVIEW';
 
 export interface LoadMusic {
   type: typeof LOAD_MUSIC;
@@ -136,4 +138,11 @@ export interface BackToDJMode {
 }
 export const backToDJMode = (): BackToDJMode => ({
   type: BACK_TO_DJ_MODE,
+});
+
+export interface UnlockReview {
+  type: typeof UNLOCK_REVIEW;
+}
+export const unlockReview = (): UnlockReview => ({
+  type: UNLOCK_REVIEW,
 });

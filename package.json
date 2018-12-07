@@ -46,6 +46,7 @@
     "@types/react-router-redux": "^5.0.15",
     "@types/three": "^0.92.18",
     "@types/webaudioapi": "0.0.27",
+    "@types/websql": "0.0.27",
     "awesome-typescript-loader": "^5.2.0",
     "chokidar-cli": "^1.2.0",
     "connect": "^3.6.6",

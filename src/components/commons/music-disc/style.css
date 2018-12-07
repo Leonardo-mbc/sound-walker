@@ -74,6 +74,10 @@
     margin-top: -50px;
     z-index: 10;
 
+    &.locked {
+      opacity: 0.3;
+    }
+
     :local(.values) {
       text-align: center;
       width: 100%;

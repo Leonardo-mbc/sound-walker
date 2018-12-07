@@ -4,8 +4,10 @@ import * as TitleAction from '../components/pages/title/title-actions';
 import { AudioUtils } from '../utilities/audio-utils';
 import { Sound, Achievement } from '../systems/system-interfaces';
 import * as localStorage from '../utilities/local-storage';
-import { STORAGE_KEYS } from '../constant/storage-keys';
+import { STORAGE_KEYS, WEBSQL_TABLES } from '../constant/storage-keys';
 import { delay } from '../utilities/delay';
+import { WebSQL } from '../utilities/web-sql';
+import { achievementReview } from '../utilities/achievement-review';
 
 const systemSaga = [
   takeEvery(SystemAction.INITIAL_RUN, function*(
@@ -113,7 +115,7 @@ const systemSaga = [
           scores: [
             {
               musicId: 'm1',
-              status: 'ARRIVAL',
+              status: 'UNLOCKED',
             },
           ],
         } as Achievement;
@@ -163,12 +165,19 @@ const systemSaga = [
   ) {
     const { musicId, status } = action.payload;
     const { scores } = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
-    const newScores = scores.map((score) => {
-      if (score.musicId === musicId) {
-        return { ...score, status };
-      }
-      return score;
-    });
+    const scoresMusicIds = scores.map(({ musicId }) => musicId);
+
+    let newScores;
+    if (scoresMusicIds.indexOf(musicId) < 0) {
+      newScores = [...scores, { musicId, status }];
+    } else {
+      newScores = scores.map((score) => {
+        if (score.musicId === musicId) {
+          return { ...score, status };
+        }
+        return score;
+      });
+    }
 
     const achievement = { scores: newScores };
     yield call(() => {
@@ -178,6 +187,59 @@ const systemSaga = [
       });
     });
     yield put(SystemAction.setAchievement(achievement));
+  }),
+
+  takeEvery(SystemAction.ADD_PLAY_LOG, function*(
+    action: SystemAction.AddPlayLog
+  ) {
+    const db = new WebSQL();
+    yield call(async () => {
+      try {
+        return await db.insert(WEBSQL_TABLES.PLAY_LOGS, {
+          musicId: action.payload.musicId,
+          datetime: +new Date(),
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }),
+
+  takeEvery(SystemAction.ACHIEVEMENT_REVIEW, function*(
+    _action: SystemAction.AchievementReview
+  ) {
+    const db = new WebSQL();
+    const result = yield call(async () => {
+      try {
+        return await db.select(WEBSQL_TABLES.PLAY_LOGS);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    const achievement = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
+    const newArrivalIds = achievementReview({
+      achievement,
+      playLogs: result.rows,
+    });
+
+    // FIXME: yield must to be in the generator function, can not use map
+    if (newArrivalIds[0]) {
+      yield put(
+        SystemAction.setAchievementState({
+          musicId: newArrivalIds[0],
+          status: 'ARRIVAL',
+        })
+      );
+    }
+    if (newArrivalIds[1]) {
+      yield put(
+        SystemAction.setAchievementState({
+          musicId: newArrivalIds[1],
+          status: 'ARRIVAL',
+        })
+      );
+    }
   }),
 ];
 

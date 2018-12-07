@@ -247,7 +247,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         </div>
         {!isDiscImageOnly ? (
           <>
-            <div className={styles.details}>
+            <div className={`${styles.details} ${isLocked ? 'locked' : ''}`}>
               <div
                 className={`${styles.values} ${
                   this.props.discSide === discSide ? styles.show : ''

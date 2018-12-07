@@ -4,6 +4,7 @@ import { Player } from '.';
 import { PlayerState } from './player-interfaces';
 import * as PlayerAction from './player-actions';
 import { MusicSelectMode } from '../music-select/music-select-container';
+import * as SystemAction from '../../../systems/system-actions';
 
 export interface PlayerViewProps {
   player: PlayerState;
@@ -15,6 +16,8 @@ export interface PlayerViewProps {
   loadMusicInfo: (musicId: string) => void;
   loadSoundNodes: () => void;
   backToDJMode: () => void;
+  addPlayLog: (musicId: string) => void;
+  achievementReview: () => void;
 }
 
 export const PlayerView = connect(
@@ -40,6 +43,12 @@ export const PlayerView = connect(
     },
     backToDJMode: () => {
       dispatch(PlayerAction.backToDJMode());
+    },
+    addPlayLog: (musicId: string) => {
+      dispatch(SystemAction.addPlayLog(musicId));
+    },
+    achievementReview: () => {
+      dispatch(SystemAction.achievementReview());
     },
   })
 )(Player);

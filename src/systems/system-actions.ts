@@ -13,7 +13,9 @@ export type ActionTypes =
   | GetAchievement
   | SetAchievement
   | SetAchievementState
-  | RingUnlockSound;
+  | RingUnlockSound
+  | AddPlayLog
+  | AchievementReview;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -28,6 +30,8 @@ export const GET_ACHIEVEMENT = 'GET_ACHIEVEMENT';
 export const SET_ACHIEVEMENT = 'SET_ACHIEVEMENT';
 export const SET_ACHIEVEMENT_STATE = 'SET_ACHIEVEMENT_STATE';
 export const RING_UNLOCK_SOUND = 'RING_UNLOCK_SOUND';
+export const ADD_PLAY_LOG = 'ADD_PLAY_LOG';
+export const ACHIEVEMENT_REVIEW = 'ACHIEVEMENT_REVIEW';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -203,4 +207,24 @@ export interface RingUnlockSound {
 }
 export const ringUnlockSound = (): RingUnlockSound => ({
   type: RING_UNLOCK_SOUND,
+});
+
+export interface AddPlayLog {
+  type: typeof ADD_PLAY_LOG;
+  payload: {
+    musicId: string;
+  };
+}
+export const addPlayLog = (musicId: string): AddPlayLog => ({
+  type: ADD_PLAY_LOG,
+  payload: {
+    musicId,
+  },
+});
+
+export interface AchievementReview {
+  type: typeof ACHIEVEMENT_REVIEW;
+}
+export const achievementReview = (): AchievementReview => ({
+  type: ACHIEVEMENT_REVIEW,
 });

@@ -384,7 +384,7 @@ export class MusicSelect extends React.Component<
                 </div>
               </div>
             ) : null}
-            {this.state.isArrivalShow ? (
+            {this.state.isArrivalShow && arrivalMeta ? (
               <div
                 className={`${styles.arrivalContainer} ${
                   this.state.arrivalClassState

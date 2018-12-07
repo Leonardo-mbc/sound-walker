@@ -37,6 +37,14 @@ export class Player extends React.Component<
     this.state = { isTransitionVisible: true };
   }
 
+  componentDidMount() {
+    const { match } = this.props;
+    const { musicId } = match.params;
+
+    this.props.addPlayLog(musicId);
+    this.props.achievementReview();
+  }
+
   render() {
     const { match, player, mode, isSystemReady } = this.props;
     const { loadMusic, backToDJMode } = this.props;
