@@ -217,10 +217,15 @@ const systemSaga = [
       }
     });
 
+    let playLogs = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      playLogs.push(result.rows.item(i));
+    }
+
     const achievement = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
     const newArrivalIds = achievementReview({
       achievement,
-      playLogs: result.rows,
+      playLogs,
     });
 
     // FIXME: yield must to be in the generator function, can not use map

@@ -17,7 +17,7 @@ export class WebSQL {
       'sw-database',
       this._version,
       'contain play logs',
-      50 * 1024 * 1024
+      40 * 1024 * 1024
     );
 
     this._db.transaction((tr) => {

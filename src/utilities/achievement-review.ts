@@ -15,7 +15,7 @@ export const achievementReview = ({
     .filter(({ status }) => status === 'UNLOCKED' || status === 'ARRIVAL')
     .map(({ musicId }) => musicId);
 
-  Array.from(playLogs)
+  playLogs
     .map(({ musicId }) => musicId)
     .filter((x, i, self) => self.indexOf(x) === i)
     .map((musicId) => {
