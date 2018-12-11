@@ -97,7 +97,7 @@ export class MusicSelect extends React.Component<
               );
               setTimeout(() => {
                 this.props.goToPlayer(mode, musicSelect.selectedMusicId);
-              }, 1000 /* wait LogoTransition */);
+              }, 2000 /* wait LogoTransition */);
               break;
             case MUSIC_SELECT_BACK_BUTTON:
               this.props.goToMainMenu();

@@ -1,8 +1,17 @@
-html, body, #app {
+html,
+body,
+#app {
   font-family: 'Play', 'Rounded Mplus 1c', sans-serif;
   width: 100%;
   height: 100%;
   margin: 0px;
   background-color: #212121;
+  color: #efefef;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
   color: #efefef;
 }

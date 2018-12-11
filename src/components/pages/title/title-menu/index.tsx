@@ -5,6 +5,11 @@ import {
   MENU_MUSIC_SELECT,
   MENU_DJ_MODE,
   MENU_OPTIONS,
+  CREDIT_BUTTON,
+  CREDIT_CONTAINER,
+  GITHUB_BUTTON,
+  NCS_LINK,
+  LEONARDO_LINK,
 } from '../../../../constant/target-name';
 import { AnimationGround } from '../../../commons/animation-ground';
 
@@ -18,6 +23,8 @@ interface TitleMenuProps {
 interface TitleMenuState {
   selectedItem: string;
   animationGroundFadeOut: boolean;
+  creditShow: boolean;
+  creditClass: string;
 }
 
 export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
@@ -33,6 +40,8 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     this.state = {
       selectedItem: null,
       animationGroundFadeOut: false,
+      creditShow: false,
+      creditClass: '',
     };
   }
 
@@ -55,8 +64,27 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
           e.preventDefault();
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
-          if (target) {
-            this.selectMenu(target);
+          switch (target) {
+            case MENU_DJ_MODE:
+              this.selectMenu(target);
+              break;
+            case CREDIT_BUTTON:
+              this.showCredit();
+              break;
+            case GITHUB_BUTTON:
+              this.openGithub();
+              break;
+            case CREDIT_CONTAINER:
+              this.turnOffCredit();
+              break;
+              case NCS_LINK:
+            this.openNCS();
+              break;
+            case LEONARDO_LINK:
+              this.openLeonardo();
+
+            case MENU_MUSIC_SELECT:
+            case MENU_OPTIONS:
           }
         },
         passiveSupported ? { passive: false } : false
@@ -88,6 +116,30 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
     }
   }
 
+  showCredit() {
+    this.setState({ creditClass: 'show', creditShow: true });
+  }
+
+  turnOffCredit() {
+    this.setState({ creditClass: 'hide' });
+  }
+
+  hideCredit() {
+    this.setState({ creditClass: '', creditShow: false });
+  }
+
+  openGithub() {
+    location.href='https://github.com/Leonardo-mbc/sound-walker';
+  }
+
+  openNCS() {
+    location.href='http://spoti.fi/NCS';
+  }
+
+  openLeonardo() {
+    location.href='https://twitter.com/Leonardo_engr';
+  }
+
   render() {
     return this.props.isLoadComplete ? (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
@@ -106,9 +158,13 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
                 ? styles.hideMenuText
                 : ''
             }
-            onClick={() => this.selectMenu(MENU_MUSIC_SELECT)}
           >
-            <p data-target={MENU_MUSIC_SELECT}>Music Select</p>
+            <p
+              className={styles.underDevelopment}
+              data-target={MENU_MUSIC_SELECT}
+            >
+              Music Select
+            </p>
           </span>
           <span
             className={
@@ -117,21 +173,51 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
                 ? styles.hideMenuText
                 : ''
             }
-            onClick={() => this.selectMenu(MENU_DJ_MODE)}
           >
             <p data-target={MENU_DJ_MODE}>Dj Mode</p>
           </span>
-          <span
-            className={
-              this.state.selectedItem &&
-              this.state.selectedItem !== MENU_OPTIONS
-                ? styles.hideMenuText
-                : ''
+          {false ? (
+            <span
+              className={
+                this.state.selectedItem &&
+                this.state.selectedItem !== MENU_OPTIONS
+                  ? styles.hideMenuText
+                  : ''
+              }
+              onClick={() => this.selectMenu(MENU_OPTIONS)}
+            >
+              <p data-target={MENU_OPTIONS}>Options</p>
+            </span>
+          ) : null}
+        </div>
+        {this.state.creditShow ? (
+          <div
+            className={`${styles.creditContainer} ${this.state.creditClass}`}
+            data-target={CREDIT_CONTAINER}
+            onAnimationEnd={() =>
+              this.state.creditClass === 'hide' ? this.hideCredit() : null
             }
-            onClick={() => this.selectMenu(MENU_OPTIONS)}
           >
-            <p data-target={MENU_OPTIONS}>Options</p>
+            <div className={styles.creditBody} data-target={CREDIT_CONTAINER}>
+              <div className={styles.ncs}>
+                <img src="/assets/images/ncs-jacket.jpg" />
+                <div>
+                  <p>Music provided by NoCopyrightSounds.</p>
+                  <p data-target={NCS_LINK}>Watch: http://spoti.fi/NCS</p>
+                </div>
+              </div>
+              <div>
+                <p>Program, Design</p>
+                <p data-target={LEONARDO_LINK}>Leonardo (@Leonardo_engr)</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
+        <div className={styles.footer}>
+          <span data-target={GITHUB_BUTTON}>
+            <span data-target={GITHUB_BUTTON} className={styles.githubIcon} />
           </span>
+          <span data-target={CREDIT_BUTTON}>Credit</span>
         </div>
       </div>
     ) : (

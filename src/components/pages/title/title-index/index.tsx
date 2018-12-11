@@ -27,7 +27,11 @@ export class TitleIndex extends React.Component<TitleIndexProps, {}> {
         'touchstart',
         (e) => {
           e.preventDefault();
-          this.props.startGameTitle();
+
+          const { isLoadComplete } = this.props;
+          if (isLoadComplete) {
+            this.props.startGameTitle();
+          }
         },
         passiveSupported ? { passive: false } : false
       );
