@@ -20,7 +20,7 @@
   :local(.play-button) {
     position: absolute;
     bottom: 5%;
-    left: 5%;
+    right: 5%;
     display: block;
     font-weight: bold;
     font-size: xx-large;
@@ -38,7 +38,7 @@
   :local(.back-button) {
     position: absolute;
     bottom: 5%;
-    right: 5%;
+    left: 5%;
     display: block;
     font-weight: bold;
     font-size: xx-large;

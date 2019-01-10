@@ -296,18 +296,18 @@ export class MusicSelect extends React.Component<
               {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
             </div>
             <div
+              className={styles.backButton}
+              data-target={MUSIC_SELECT_BACK_BUTTON}
+            >
+              Back
+            </div>
+            <div
               className={`${styles.playButton} ${
                 isMusicOpened ? '' : styles.locked
               }`}
               data-target={isMusicOpened ? MUSIC_SELECT_CONFIRM : ''}
             >
               Play
-            </div>
-            <div
-              className={styles.backButton}
-              data-target={MUSIC_SELECT_BACK_BUTTON}
-            >
-              Back
             </div>
             <div className={styles.discList} style={discListStyle}>
               {musicList
