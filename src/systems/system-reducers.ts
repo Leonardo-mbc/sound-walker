@@ -8,6 +8,7 @@ import {
   SET_SYSTEM_SOURCE,
   SET_SAMPLE_SOURCE,
   SET_ACHIEVEMENT,
+  SET_TOUCHED_FOR_PLAY,
 } from './system-actions';
 import { SystemState } from './system-interfaces';
 import { AudioUtils } from '../utilities/audio-utils';
@@ -25,7 +26,6 @@ export function systemReducer(
 
     case CREATE_SOUNDS_LINE:
       const { context } = AudioUtils.instance;
-      console.log(context.sampleRate);
       const systemGainNode = context.createGain();
       const cueAGainNode = context.createGain();
       const cueBGainNode = context.createGain();
@@ -52,6 +52,7 @@ export function systemReducer(
         ...state,
         sound: {
           ...state.sound,
+          context,
           systemGainNode,
           cueAGainNode,
           cueBGainNode,
@@ -117,6 +118,12 @@ export function systemReducer(
       return {
         ...state,
         achievement: action.payload.achievement,
+      };
+
+    case SET_TOUCHED_FOR_PLAY:
+      return {
+        ...state,
+        isTouchedForPlay: action.payload.isTouchedForPlay,
       };
 
     default:

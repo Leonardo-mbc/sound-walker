@@ -15,7 +15,9 @@ export type ActionTypes =
   | SetAchievementState
   | RingUnlockSound
   | AddPlayLog
-  | AchievementReview;
+  | AchievementReview
+  | SetTouchedForPlay
+  | ResumeAudioContext;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -32,6 +34,8 @@ export const SET_ACHIEVEMENT_STATE = 'SET_ACHIEVEMENT_STATE';
 export const RING_UNLOCK_SOUND = 'RING_UNLOCK_SOUND';
 export const ADD_PLAY_LOG = 'ADD_PLAY_LOG';
 export const ACHIEVEMENT_REVIEW = 'ACHIEVEMENT_REVIEW';
+export const SET_TOUCHED_FOR_PLAY = 'SET_TOUCHED_FOR_PLAY';
+export const RESUME_AUDIO_CONTEXT = 'RESUME_AUDIO_CONTEXT';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -227,4 +231,26 @@ export interface AchievementReview {
 }
 export const achievementReview = (): AchievementReview => ({
   type: ACHIEVEMENT_REVIEW,
+});
+
+export interface SetTouchedForPlay {
+  type: typeof SET_TOUCHED_FOR_PLAY;
+  payload: {
+    isTouchedForPlay: boolean;
+  };
+}
+export const setTouchedForPlay = (
+  isTouchedForPlay: boolean
+): SetTouchedForPlay => ({
+  type: SET_TOUCHED_FOR_PLAY,
+  payload: {
+    isTouchedForPlay,
+  },
+});
+
+export interface ResumeAudioContext {
+  type: typeof RESUME_AUDIO_CONTEXT;
+}
+export const resumeAudioContext = (): ResumeAudioContext => ({
+  type: RESUME_AUDIO_CONTEXT,
 });

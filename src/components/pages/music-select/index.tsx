@@ -30,6 +30,7 @@ interface MusicSelectState {
   isTransitionVisible: boolean;
   isArrivalShow: boolean;
   arrivalClassState: string;
+  isAudioEnablerVisible: boolean;
 }
 
 export class MusicSelect extends React.Component<
@@ -49,6 +50,7 @@ export class MusicSelect extends React.Component<
       isTransitionVisible: false,
       isArrivalShow: false,
       arrivalClassState: '',
+      isAudioEnablerVisible: !props.isTouchedForPlay,
     };
 
     props.getMusicList();
@@ -251,6 +253,13 @@ export class MusicSelect extends React.Component<
     }, 200);
   }
 
+  hideAudioEnaber() {
+    this.props.resumeAudioContext();
+    this.setState({
+      isAudioEnablerVisible: false,
+    });
+  }
+
   render() {
     const {
       musicSelect,
@@ -261,6 +270,7 @@ export class MusicSelect extends React.Component<
       achievement,
       ringUnlockSound,
     } = this.props;
+    const { isAudioEnablerVisible } = this.state;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
@@ -292,6 +302,15 @@ export class MusicSelect extends React.Component<
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         {isSystemReady ? (
           <>
+            <div
+              className={`${styles.audioEnabler} ${
+                isAudioEnablerVisible ? styles.show : ''
+              }`}
+              onTouchStart={() => this.hideAudioEnaber()}
+            >
+              <img src="/assets/images/mute@x2.png" />
+              画面をタップしてミュートを解除
+            </div>
             <div className={styles.title}>
               {mode === MUSIC_SELECT_DJ_MODE ? 'DJ MODE' : 'PLAY MODE'}
             </div>

@@ -1,4 +1,5 @@
 export interface SystemState {
+  isTouchedForPlay: boolean;
   isSystemReady: boolean;
   sound: Sound;
   display: Display;
@@ -19,6 +20,7 @@ export interface Sound {
 export interface SoundSources {
   title: AudioBufferSourceNode;
   unlocked: AudioBufferSourceNode;
+  dummy: AudioBufferSourceNode;
   samples: {
     [key: string]: AudioBufferSourceNode;
   };

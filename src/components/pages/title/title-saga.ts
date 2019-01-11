@@ -12,6 +12,13 @@ const titleSaga = [
   ) {
     const { system } = yield select();
     const { sources } = system.sound as Sound;
+
+    if (!system.isTouchedForPlay) {
+      yield put(SystemAction.createSoundsLine());
+      yield put(SystemAction.setTouchedForPlay(true));
+      yield delay(100);
+    }
+
     sources.title.start(0, 0);
 
     yield put(push('/title/intro'));

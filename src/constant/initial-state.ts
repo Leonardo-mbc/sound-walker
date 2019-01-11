@@ -12,11 +12,13 @@ export interface State {
 
 export const initialState: State = {
   system: {
+    isTouchedForPlay: false,
     isSystemReady: false,
     sound: {
       sources: {
         title: null,
         unlocked: null,
+        dummy: null,
         samples: {},
       },
       context: null,

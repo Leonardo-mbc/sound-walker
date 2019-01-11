@@ -9,6 +9,7 @@ import { Achievement } from '../../../systems/system-interfaces';
 export interface MusicSelectProps {
   mode: MusicSelectMode;
   isSystemReady: boolean;
+  isTouchedForPlay: boolean;
   musicSelect: MusicSelectState;
   achievement: Achievement;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
@@ -26,6 +27,7 @@ export interface MusicSelectProps {
   setAchievementState: (
     { musicId, status }: SystemAction.SetAchievementStatePayload
   ) => void;
+  resumeAudioContext: () => void;
 }
 
 export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
@@ -82,6 +84,9 @@ export const MusicSelectView = connect(
       status,
     }: SystemAction.SetAchievementStatePayload) => {
       dispatch(SystemAction.setAchievementState({ musicId, status }));
+    },
+    resumeAudioContext: () => {
+      dispatch(SystemAction.resumeAudioContext());
     },
   })
 )(MusicSelect);

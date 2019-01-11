@@ -4,6 +4,8 @@ export const arrivalItemsShow: string;
 export const arrivalItemsHide: string;
 export const arrivalMessageShow: string;
 export const arrivalMessageHide: string;
+export const audioEnabler: string;
+export const show: string;
 export const title: string;
 export const playButton: string;
 export const locked: string;

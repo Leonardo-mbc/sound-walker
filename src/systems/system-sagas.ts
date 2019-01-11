@@ -25,7 +25,7 @@ const systemSaga = [
     _action: SystemAction.LoadSystemSounds
   ) {
     yield put(SystemAction.setLoadingCircleVisible(true));
-    const [titleSource, unlockedSource] = yield call(async () => {
+    const [titleSource, unlockedSource, dummySource] = yield call(async () => {
       const audioUtils = AudioUtils.instance;
       const titleBuffer = await audioUtils.loadAudioBufferFromUrl({
         url: '/assets/sounds/title.mp3',
@@ -40,6 +40,9 @@ const systemSaga = [
       const unlockedBuffer = await audioUtils.loadAudioBufferFromUrl({
         url: '/assets/sounds/unlocked.mp3',
       });
+      const dummyBuffer = await audioUtils.loadAudioBufferFromUrl({
+        url: '/assets/sounds/dummy.mp3',
+      });
 
       const titleSource = audioUtils.context.createBufferSource();
       titleSource.buffer = titleBuffer;
@@ -49,7 +52,11 @@ const systemSaga = [
       unlockedSource.buffer = unlockedBuffer;
       unlockedSource.loop = false;
 
-      return [titleSource, unlockedSource];
+      const dummySource = audioUtils.context.createBufferSource();
+      dummySource.buffer = dummyBuffer;
+      dummySource.loop = false;
+
+      return [titleSource, unlockedSource, dummySource];
     });
 
     const { system } = yield select();
@@ -68,6 +75,12 @@ const systemSaga = [
       SystemAction.setSystemSource({
         key: 'unlocked',
         bufferNode: unlockedSource,
+      })
+    );
+    yield put(
+      SystemAction.setSystemSource({
+        key: 'dummy',
+        bufferNode: dummySource,
       })
     );
 
@@ -245,6 +258,20 @@ const systemSaga = [
         })
       );
     }
+  }),
+
+  takeEvery(SystemAction.RESUME_AUDIO_CONTEXT, function*(
+    _action: SystemAction.ResumeAudioContext
+  ) {
+    const { system } = yield select();
+    const { context } = system.sound as Sound;
+
+    // AudioContext の作成を待つ
+    yield delay(200);
+
+    yield call(async () => {
+      await context.resume();
+    });
   }),
 ];
 

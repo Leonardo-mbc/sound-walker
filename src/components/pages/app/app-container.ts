@@ -11,7 +11,9 @@ function animate() {
 }
 requestAnimationFrame(animate);
 
-export interface AppProps {}
+export interface AppProps {
+  audioEnable: () => void;
+}
 
 export const AppView = connect(
   (state: State) => {
@@ -24,6 +26,11 @@ export const AppView = connect(
       );
     });
 
-    return {};
+    return {
+      audioEnable: () => {
+        dispatch(SystemAction.createSoundsLine());
+        dispatch(SystemAction.setTouchedForPlay(true));
+      },
+    };
   }
 )(App);
