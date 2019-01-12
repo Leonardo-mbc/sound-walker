@@ -388,16 +388,16 @@ export class MusicSelect extends React.Component<
                   </span>
                   <div className={styles.answerSet}>
                     <span
-                      className={`${styles.answer} ${styles.play}`}
-                      data-target={MUSIC_SELECT_PLAY_BUTTON}
-                    >
-                      Play
-                    </span>
-                    <span
                       className={styles.answer}
                       data-target={MUSIC_SELECT_CONFIRM_CANCEL}
                     >
                       CANCEL
+                    </span>
+                    <span
+                      className={`${styles.answer} ${styles.play}`}
+                      data-target={MUSIC_SELECT_PLAY_BUTTON}
+                    >
+                      Play
                     </span>
                   </div>
                 </div>

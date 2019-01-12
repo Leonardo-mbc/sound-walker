@@ -14,7 +14,17 @@ const playerSaga = [
     const { url } = action.payload;
     const musicSource = yield call(async () => {
       const audioUtils = AudioUtils.instance;
-      const audioBuffer = await audioUtils.loadAudioBufferFromUrl({ url });
+      const audioBuffer = await audioUtils.loadAudioBufferFromUrl({
+        url,
+        onProgress: (loaded: number) => {
+          const playerMusicProgress = document.getElementById(
+            'player-music-progress'
+          );
+          if (playerMusicProgress) {
+            playerMusicProgress.innerText = `${Math.floor(loaded * 100.0)}%`;
+          }
+        },
+      });
       const source = audioUtils.context.createBufferSource();
 
       source.buffer = audioBuffer;

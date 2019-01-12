@@ -94,9 +94,19 @@ export class Player extends React.Component<
           })()
         ) : (
           <div className={styles.loadState}>
-            SYSTEM: {this.props.isSystemReady ? 'READY' : '...'}
+            SYSTEM:{' '}
+            {this.props.isSystemReady ? (
+              'READY'
+            ) : (
+              <span id="player-system-progress">...</span>
+            )}
             <br />
-            MUSIC: {this.props.player.isSourceReady ? 'READY' : '...'}
+            MUSIC:{' '}
+            {this.props.player.isSourceReady ? (
+              'READY'
+            ) : (
+              <span id="player-music-progress">...</span>
+            )}
             <br />
             SCORE: {this.props.player.isMusicInfoReady ? 'READY' : '...'}
             <br />

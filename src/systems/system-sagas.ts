@@ -35,6 +35,13 @@ const systemSaga = [
           if (loadingBar) {
             loadingBar.style.width = `${loaded * 100.0}%`;
           }
+
+          const playerSystemProgress = document.getElementById(
+            'player-system-progress'
+          );
+          if (playerSystemProgress) {
+            playerSystemProgress.innerText = `${Math.floor(loaded * 100.0)}%`;
+          }
         },
       });
       const unlockedBuffer = await audioUtils.loadAudioBufferFromUrl({
