@@ -38,6 +38,7 @@ export const initialState: State = {
       },
     },
     achievement: null,
+    configs: null,
   },
   title: {
     loadingBarWidth: 0,

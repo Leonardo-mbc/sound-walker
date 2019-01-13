@@ -44,7 +44,13 @@ export class App extends React.Component<State & AppProps, {}> {
 
   render() {
     const { system } = this.props;
-    const { isSystemReady, isTouchedForPlay, display, achievement } = system;
+    const {
+      isSystemReady,
+      isTouchedForPlay,
+      display,
+      achievement,
+      configs,
+    } = system;
     return (
       <div ref={(elem) => (this.container = elem)} className={styles.container}>
         <Switch>
@@ -54,6 +60,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <PlayerView
                 mode={MUSIC_SELECT_PLAY}
                 isSystemReady={isSystemReady}
+                skipTutorial={configs.skipTutorial.playMode}
                 {...props}
               />
             )}
@@ -64,6 +71,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <PlayerView
                 mode={MUSIC_SELECT_DJ_MODE}
                 isSystemReady={isSystemReady}
+                skipTutorial={configs.skipTutorial.djMode}
                 {...props}
               />
             )}

@@ -8,6 +8,7 @@ interface WebSQLKeys {
 
 export const STORAGE_KEYS: StorageKeys = {
   ACHIEVEMENT: 'sw-achievement-0',
+  CONFIGS: 'sw-configs-0',
 };
 
 export const WEBSQL_TABLES: WebSQLKeys = {

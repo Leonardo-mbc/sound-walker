@@ -9,6 +9,8 @@ import {
   MUSIC_SELECT_DJ_MODE,
 } from '../music-select/music-select-container';
 import { DJPlayer } from '../../commons/dj-palyer';
+import { PlayerTutorial } from './player-tutorial';
+import { PLAYER_START_MUSIC } from '../../../constant/target-name';
 
 interface MatchParams {
   musicId: string;
@@ -16,12 +18,15 @@ interface MatchParams {
 
 interface PlayerViewState {
   isTransitionVisible: boolean;
+  showTutorial: boolean;
 }
 
 export class Player extends React.Component<
   PlayerViewProps & RouteComponentProps<MatchParams>,
   PlayerViewState
 > {
+  private container: HTMLDivElement;
+
   constructor(
     props: PlayerViewProps & RouteComponentProps<MatchParams>,
     state: PlayerViewState
@@ -34,7 +39,10 @@ export class Player extends React.Component<
     loadSoundNodes();
     loadMusicInfo(musicId);
 
-    this.state = { isTransitionVisible: true };
+    this.state = {
+      isTransitionVisible: true,
+      showTutorial: !props.skipTutorial,
+    };
   }
 
   componentDidMount() {
@@ -43,27 +51,96 @@ export class Player extends React.Component<
 
     this.props.addPlayLog(musicId);
     this.props.achievementReview();
+
+    let passiveSupported = false;
+    try {
+      document.addEventListener(
+        'test',
+        null,
+        Object.defineProperty({}, 'passive', {
+          get: function() {
+            passiveSupported = true;
+          },
+        })
+      );
+
+      this.container.addEventListener(
+        'touchstart',
+        (e) => {
+          e.preventDefault();
+
+          const target = (e.target as HTMLElement).getAttribute('data-target');
+          switch (target) {
+            case PLAYER_START_MUSIC:
+              this.props.startMusic();
+              break;
+          }
+        },
+        passiveSupported ? { passive: false } : false
+      );
+
+      this.container.addEventListener(
+        'touchmove',
+        (e) => {
+          e.preventDefault();
+        },
+        passiveSupported ? { passive: false } : false
+      );
+
+      this.container.addEventListener(
+        'touchend',
+        (e) => {
+          e.preventDefault();
+        },
+        passiveSupported ? { passive: false } : false
+      );
+    } catch (err) {}
+  }
+
+  hideTutorial() {
+    this.setState({
+      showTutorial: false,
+    });
   }
 
   render() {
-    const { match, player, mode, isSystemReady } = this.props;
-    const { loadMusic, backToDJMode } = this.props;
+    const {
+      match,
+      player,
+      mode,
+      isSystemReady,
+      loadMusic,
+      backToDJMode,
+      setSkipTutorialState,
+    } = this.props;
+    const { showTutorial } = this.state;
     const { musicId } = match.params;
     return (
-      <div className={styles.container}>
+      <div
+        ref={(elem) => (this.container = elem)}
+        className={`${styles.container} ${
+          showTutorial ? styles.tutorialShow : ''
+        }`}
+      >
+        {showTutorial ? (
+          <div className={styles.tutorialContainer}>
+            <PlayerTutorial
+              mode={mode}
+              setSkipTutorialState={setSkipTutorialState}
+              hideTutorial={() => this.hideTutorial()}
+            />
+          </div>
+        ) : null}
         {isSystemReady ? (
           <SoundPlayer musicId={musicId} loadMusic={loadMusic} />
         ) : (
           <div id="system-loading-bar" />
         )}
         {player.isSourceReady && !player.isMusicPlaying ? (
-          <div
-            className={styles.touchToStart}
-            onClick={() => {
-              this.props.startMusic();
-            }}
-          >
-            <span className={styles.text}>START TO PLAY</span>
+          <div className={styles.touchToStart} data-target={PLAYER_START_MUSIC}>
+            <span className={styles.text} data-target={PLAYER_START_MUSIC}>
+              START TO PLAY
+            </span>
           </div>
         ) : null}
         {player.isMusicPlaying ? (

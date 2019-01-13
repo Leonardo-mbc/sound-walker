@@ -5,12 +5,14 @@ import { PlayerState } from './player-interfaces';
 import * as PlayerAction from './player-actions';
 import { MusicSelectMode } from '../music-select/music-select-container';
 import * as SystemAction from '../../../systems/system-actions';
+import { Configs } from '../../../systems/system-interfaces';
 
 export interface PlayerViewProps {
   player: PlayerState;
   router: RouteProps;
   mode: MusicSelectMode;
   isSystemReady: boolean;
+  skipTutorial: boolean;
   loadMusic: (url: string) => void;
   startMusic: () => void;
   loadMusicInfo: (musicId: string) => void;
@@ -18,6 +20,7 @@ export interface PlayerViewProps {
   backToDJMode: () => void;
   addPlayLog: (musicId: string) => void;
   achievementReview: () => void;
+  setSkipTutorialState: (value: Partial<Configs>) => void;
 }
 
 export const PlayerView = connect(
@@ -49,6 +52,9 @@ export const PlayerView = connect(
     },
     achievementReview: () => {
       dispatch(SystemAction.achievementReview());
+    },
+    setSkipTutorialState: (value: Partial<Configs>) => {
+      dispatch(SystemAction.setConfigsState('skipTutorial', value));
     },
   })
 )(Player);

@@ -4,6 +4,7 @@ export interface SystemState {
   sound: Sound;
   display: Display;
   achievement: Achievement;
+  configs: Configs;
 }
 
 export interface Sound {
@@ -56,4 +57,11 @@ export type AchievementState = 'LOCKED' | 'ARRIVAL' | 'UNLOCKED';
 interface Score {
   musicId: string;
   status: AchievementState;
+}
+
+export interface Configs {
+  skipTutorial: {
+    djMode: boolean;
+    playMode: boolean;
+  };
 }

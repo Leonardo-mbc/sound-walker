@@ -1,4 +1,4 @@
-import { Achievement, AchievementState } from './system-interfaces';
+import { Achievement, AchievementState, Configs } from './system-interfaces';
 
 export type ActionTypes =
   | InitialRun
@@ -12,7 +12,10 @@ export type ActionTypes =
   | SetSampleSource
   | GetAchievement
   | SetAchievement
+  | GetConfigs
+  | SetConfigs
   | SetAchievementState
+  | SetConfigsState
   | RingUnlockSound
   | AddPlayLog
   | AchievementReview
@@ -30,7 +33,10 @@ export const SET_SYSTEM_SOURCE = 'SET_SYSTEM_SOURCE';
 export const SET_SAMPLE_SOURCE = 'SET_SAMPLE_SOURCE';
 export const GET_ACHIEVEMENT = 'GET_ACHIEVEMENT';
 export const SET_ACHIEVEMENT = 'SET_ACHIEVEMENT';
+export const GET_CONFIGS = 'GET_CONFIGS';
+export const SET_CONFIGS = 'SET_CONFIGS';
 export const SET_ACHIEVEMENT_STATE = 'SET_ACHIEVEMENT_STATE';
+export const SET_CONFIGS_STATE = 'SET_CONFIGS_STATE';
 export const RING_UNLOCK_SOUND = 'RING_UNLOCK_SOUND';
 export const ADD_PLAY_LOG = 'ADD_PLAY_LOG';
 export const ACHIEVEMENT_REVIEW = 'ACHIEVEMENT_REVIEW';
@@ -187,6 +193,26 @@ export const setAchievement = (achievement: Achievement): SetAchievement => ({
   },
 });
 
+export interface GetConfigs {
+  type: typeof GET_CONFIGS;
+}
+export const getConfigs = (): GetConfigs => ({
+  type: GET_CONFIGS,
+});
+
+export interface SetConfigs {
+  type: typeof SET_CONFIGS;
+  payload: {
+    configs: Configs;
+  };
+}
+export const setConfigs = (configs: Configs): SetConfigs => ({
+  type: SET_CONFIGS,
+  payload: {
+    configs,
+  },
+});
+
 export interface SetAchievementStatePayload {
   musicId: string;
   status: AchievementState;
@@ -203,6 +229,24 @@ export const setAchievementState = ({
   payload: {
     musicId,
     status,
+  },
+});
+
+export interface SetConfigsState {
+  type: typeof SET_CONFIGS_STATE;
+  payload: {
+    key: string;
+    value: Partial<Configs>;
+  };
+}
+export const setConfigsState = (
+  key: string,
+  value: Partial<Configs>
+): SetConfigsState => ({
+  type: SET_CONFIGS_STATE,
+  payload: {
+    key,
+    value,
   },
 });
 

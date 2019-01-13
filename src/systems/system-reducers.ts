@@ -9,6 +9,7 @@ import {
   SET_SAMPLE_SOURCE,
   SET_ACHIEVEMENT,
   SET_TOUCHED_FOR_PLAY,
+  SET_CONFIGS,
 } from './system-actions';
 import { SystemState } from './system-interfaces';
 import { AudioUtils } from '../utilities/audio-utils';
@@ -118,6 +119,12 @@ export function systemReducer(
       return {
         ...state,
         achievement: action.payload.achievement,
+      };
+
+    case SET_CONFIGS:
+      return {
+        ...state,
+        configs: action.payload.configs,
       };
 
     case SET_TOUCHED_FOR_PLAY:

@@ -1,0 +1,138 @@
+@import '../../../../assets/styles/constant.css';
+
+:local(.container) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--black-alpha5);
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+
+  :local {
+    animation-name: show;
+  }
+
+  &::before {
+    content: attr(data-title);
+    margin-top: 75px;
+    padding-right: 20px;
+    font-size: 25px;
+    text-align: right;
+  }
+
+  :local(.slider-container) {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 200px);
+    background-color: var(--black);
+
+    :local(.pager) {
+      width: 30px;
+      height: calc(100% - 200px);
+      position: absolute;
+      background-image: url(/assets/images/arrow-white.svg);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 70%;
+      box-sizing: border-box;
+      border-left: 2px solid white;
+      background-color: var(--black);
+      z-index: 10;
+
+      &.left {
+        left: 2px;
+      }
+      &.right {
+        transform: rotate(180deg);
+        right: 2px;
+      }
+    }
+
+    :local(.slider-body) {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 100ms ease-out;
+
+      :local(.slider) {
+        width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+
+        & > img {
+          height: 100%;
+          margin-left: 40px;
+        }
+
+        :local(.detail) {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          margin-left: 12px;
+          margin-right: 35px;
+          overflow-y: scroll;
+
+          :local(.detail-title) {
+            font-size: larger;
+            margin: 10px 0px;
+          }
+
+          :local(.detail-body) {
+            font-size: smaller;
+          }
+        }
+      }
+    }
+  }
+
+  :local(.tutorial-config) {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+    font-size: smaller;
+
+    :local(.check-box) {
+      width: 20px;
+      height: 20px;
+      background-image: url(/assets/images/checkbox-white.svg);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 70%;
+
+      &.checked {
+        background-image: url(/assets/images/checkbox-white-checked.svg);
+      }
+    }
+  }
+
+  :local(.close) {
+    display: flex;
+    justify-content: center;
+
+    :local(.button) {
+      width: 50px;
+      height: 50px;
+      border: 3px solid white;
+      background-color: var(--black);
+      border-radius: 100%;
+      background-image: url(/assets/images/cross-white.svg);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 40%;
+    }
+  }
+}
+
+@keyframes :local(show) {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

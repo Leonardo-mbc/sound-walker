@@ -2,7 +2,7 @@ import { call, put, takeEvery, select } from 'redux-saga/effects';
 import * as SystemAction from './system-actions';
 import * as TitleAction from '../components/pages/title/title-actions';
 import { AudioUtils } from '../utilities/audio-utils';
-import { Sound, Achievement } from '../systems/system-interfaces';
+import { Sound, Achievement, Configs } from '../systems/system-interfaces';
 import * as localStorage from '../utilities/local-storage';
 import { STORAGE_KEYS, WEBSQL_TABLES } from '../constant/storage-keys';
 import { delay } from '../utilities/delay';
@@ -19,6 +19,7 @@ const systemSaga = [
       SystemAction.setDisplayVertically(window.innerWidth, window.innerHeight)
     );
     yield put(SystemAction.getAchievement());
+    yield put(SystemAction.getConfigs());
   }),
 
   takeEvery(SystemAction.LOAD_SYSTEM_SOUNDS, function*(
@@ -129,7 +130,9 @@ const systemSaga = [
     _action: SystemAction.GetAchievement
   ) {
     const achievement = yield call(() => {
-      const data = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
+      const data = localStorage.read({
+        where: STORAGE_KEYS.ACHIEVEMENT,
+      }) as Achievement;
       if (!data.scores) {
         const emptyScores = {
           scores: [
@@ -150,6 +153,91 @@ const systemSaga = [
     });
 
     yield put(SystemAction.setAchievement(achievement));
+  }),
+
+  takeEvery(SystemAction.GET_CONFIGS, function*(
+    _action: SystemAction.GetConfigs
+  ) {
+    const configs = yield call(() => {
+      const data = localStorage.read({
+        where: STORAGE_KEYS.CONFIGS,
+      }) as Configs;
+      if (Object.keys(data).length == 0) {
+        const emptyConfigs = {
+          skipTutorial: {
+            playMode: false,
+            djMode: false,
+          },
+        } as Configs;
+        localStorage.write({
+          where: STORAGE_KEYS.CONFIGS,
+          value: emptyConfigs,
+        });
+        return emptyConfigs;
+      } else {
+        return data;
+      }
+    });
+
+    yield put(SystemAction.setConfigs(configs));
+  }),
+
+  takeEvery(SystemAction.SET_ACHIEVEMENT_STATE, function*(
+    action: SystemAction.SetAchievementState
+  ) {
+    const { musicId, status } = action.payload;
+    const { scores } = localStorage.read({
+      where: STORAGE_KEYS.ACHIEVEMENT,
+    }) as Achievement;
+    const scoresMusicIds = scores.map(({ musicId }) => musicId);
+
+    let newScores;
+    if (scoresMusicIds.indexOf(musicId) < 0) {
+      newScores = [...scores, { musicId, status }];
+    } else {
+      newScores = scores.map((score) => {
+        if (score.musicId === musicId) {
+          return { ...score, status };
+        }
+        return score;
+      });
+    }
+
+    const achievement = { scores: newScores };
+    yield call(() => {
+      localStorage.write({
+        where: STORAGE_KEYS.ACHIEVEMENT,
+        value: achievement,
+      });
+    });
+    yield put(SystemAction.setAchievement(achievement));
+  }),
+
+  takeEvery(SystemAction.SET_CONFIGS_STATE, function*(
+    action: SystemAction.SetConfigsState
+  ) {
+    const { key, value } = action.payload;
+    const configs = localStorage.read({
+      where: STORAGE_KEYS.CONFIGS,
+    }) as Configs & { [index: string]: Partial<Configs> };
+
+    const newConfigs = {
+      ...configs,
+      [key]:
+        typeof value === 'object'
+          ? {
+              ...configs[key],
+              ...value,
+            }
+          : value,
+    };
+    yield call(() => {
+      localStorage.write({
+        where: STORAGE_KEYS.CONFIGS,
+        value: newConfigs,
+      });
+    });
+    yield put(SystemAction.setConfigs(newConfigs));
   }),
 
   takeEvery(SystemAction.RING_UNLOCK_SOUND, function*(
@@ -178,35 +266,6 @@ const systemSaga = [
         bufferNode: bufferNode,
       })
     );
-  }),
-
-  takeEvery(SystemAction.SET_ACHIEVEMENT_STATE, function*(
-    action: SystemAction.SetAchievementState
-  ) {
-    const { musicId, status } = action.payload;
-    const { scores } = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
-    const scoresMusicIds = scores.map(({ musicId }) => musicId);
-
-    let newScores;
-    if (scoresMusicIds.indexOf(musicId) < 0) {
-      newScores = [...scores, { musicId, status }];
-    } else {
-      newScores = scores.map((score) => {
-        if (score.musicId === musicId) {
-          return { ...score, status };
-        }
-        return score;
-      });
-    }
-
-    const achievement = { scores: newScores };
-    yield call(() => {
-      localStorage.write({
-        where: STORAGE_KEYS.ACHIEVEMENT,
-        value: achievement,
-      });
-    });
-    yield put(SystemAction.setAchievement(achievement));
   }),
 
   takeEvery(SystemAction.ADD_PLAY_LOG, function*(
@@ -242,7 +301,9 @@ const systemSaga = [
       playLogs.push(result.rows.item(i));
     }
 
-    const achievement = localStorage.read({ where: STORAGE_KEYS.ACHIEVEMENT });
+    const achievement = localStorage.read({
+      where: STORAGE_KEYS.ACHIEVEMENT,
+    }) as Achievement;
     const newArrivalIds = achievementReview({
       achievement,
       playLogs,
