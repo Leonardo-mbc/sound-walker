@@ -125,9 +125,6 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
           </div>
           <KaossPad vhSize={80} filterNode={this.props.filterNode} />
         </div>
-        <div className={styles.systemButtons} data-target={BACK_TO_DJ_MODE}>
-          <span data-target={BACK_TO_DJ_MODE}>Back</span>
-        </div>
       </div>
     );
   }

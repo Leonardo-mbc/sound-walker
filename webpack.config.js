@@ -123,13 +123,17 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.css'],
   },
-  devtool: 'source-map',
-  devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
-    compress: true,
-    port: 3000,
-    host: '0.0.0.0',
-  },
+  ...(IS_DEBUG
+    ? {
+        devtool: 'source-map',
+        devServer: {
+          contentBase: path.resolve(__dirname, 'public'),
+          compress: true,
+          port: 3000,
+          host: '0.0.0.0',
+        },
+      }
+    : {}),
   module: {
     rules: [
       {
