@@ -11,6 +11,7 @@ import {
   TUTORIAL_SKIP_NEXT,
   TUTORIAL_BACK_PAGE,
   TUTORIAL_NEXT_PAGE,
+  TUTORIAL_BODY,
 } from '../../../../constant/target-name';
 
 interface PlayerTutorialProps {
@@ -23,6 +24,9 @@ interface PlayerTutorialState {
   isSkipTutorialFromNext: boolean;
   page: number;
   maxPage: number;
+  touchstartPositionX: number;
+  touchmovePositionX: number;
+  touchmovePreviousPositionX: number;
 }
 
 const getTitleName = (mode: MusicSelectMode) => {
@@ -54,6 +58,9 @@ export class PlayerTutorial extends React.Component<
             return 2;
         }
       })(),
+      touchstartPositionX: null,
+      touchmovePositionX: 0,
+      touchmovePreviousPositionX: 0,
     };
   }
 
@@ -90,6 +97,11 @@ export class PlayerTutorial extends React.Component<
             case TUTORIAL_NEXT_PAGE:
               this.setPage(1);
               break;
+            case TUTORIAL_BODY:
+              if (this.state.touchstartPositionX === null) {
+                this.setTouchstartPositionX(e.touches[0].clientX);
+              }
+              break;
           }
         },
         passiveSupported ? { passive: false } : false
@@ -101,9 +113,9 @@ export class PlayerTutorial extends React.Component<
           e.preventDefault();
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
-
           switch (target) {
-            default:
+            case TUTORIAL_BODY:
+              this.calcTutorialMove(e.touches[0].clientX);
               break;
           }
         },
@@ -117,7 +129,9 @@ export class PlayerTutorial extends React.Component<
 
           const target = (e.target as HTMLElement).getAttribute('data-target');
           switch (target) {
-            default:
+            case TUTORIAL_BODY:
+              this.setTouchstartPositionX(null);
+              this.setTouchmovePositionX(0);
               break;
           }
         },
@@ -157,12 +171,52 @@ export class PlayerTutorial extends React.Component<
     this.setState({ page: newPage });
   }
 
+  setTouchstartPositionX(x: number) {
+    this.setState({
+      touchstartPositionX: x,
+    });
+  }
+
+  setTouchmovePositionX(x: number) {
+    this.setState({
+      touchmovePositionX: x,
+    });
+  }
+
+  setTouchmovePreviousPositionX(x: number) {
+    this.setState({
+      touchmovePreviousPositionX: x,
+    });
+  }
+
+  calcTutorialMove(x: number) {
+    if (this.state.touchstartPositionX !== null) {
+      const { page, maxPage } = this.state;
+      const moveX = x - this.state.touchstartPositionX;
+      const acc = Math.abs(this.state.touchmovePreviousPositionX - moveX) / 2;
+      const amountX = moveX + acc * moveX * 0.075;
+      if (amountX <= -170 && page < maxPage) {
+        this.setPage(1);
+        this.setTouchstartPositionX(null);
+        this.setTouchmovePositionX(0);
+      } else if (170 <= amountX && 0 < page) {
+        this.setPage(-1);
+        this.setTouchstartPositionX(null);
+        this.setTouchmovePositionX(0);
+      } else {
+        this.setTouchmovePreviousPositionX(this.state.touchmovePositionX);
+        this.setTouchmovePositionX(moveX);
+      }
+    }
+  }
+
   render() {
     const { mode } = this.props;
     const { isSkipTutorialFromNext, page, maxPage } = this.state;
 
     const slideBodyStyle = {
-      transform: `translate3d(-${page * 100}%, 0px, 0px)`,
+      transform: `translate3d(calc(${this.state.touchmovePositionX *
+        0.8}px - ${page * 100}%), 0px, 0px)`,
     };
 
     return (
@@ -177,23 +231,41 @@ export class PlayerTutorial extends React.Component<
             style={{ visibility: page === 0 ? 'hidden' : 'visible' }}
             data-target={TUTORIAL_BACK_PAGE}
           />
-          <div className={styles.sliderBody} style={slideBodyStyle}>
-            <div className={styles.slider}>
-              <img src="/assets/images/tutorial/knob.gif" />
-              <div className={styles.detail}>
-                <span className={styles.detailTitle}>
+          <div
+            className={styles.sliderBody}
+            style={slideBodyStyle}
+            data-target={TUTORIAL_BODY}
+          >
+            <div className={styles.slider} data-target={TUTORIAL_BODY}>
+              <img
+                src="/assets/images/tutorial/knob.gif"
+                data-target={TUTORIAL_BODY}
+              />
+              <div className={styles.detail} data-target={TUTORIAL_BODY}>
+                <span
+                  className={styles.detailTitle}
+                  data-target={TUTORIAL_BODY}
+                >
                   KNOB（ノブ）オブジェクト
                 </span>
-                <span className={styles.detailBody}>
+                <span className={styles.detailBody} data-target={TUTORIAL_BODY}>
                   KNOBオブジェクトは左右／上下にスワイプすることで値を変更できます。
                 </span>
               </div>
             </div>
-            <div className={styles.slider}>
-              <img src="/assets/images/tutorial/effector-pad.gif" />
-              <div className={styles.detail}>
-                <span className={styles.detailTitle}>エフェクターパッド</span>
-                <span className={styles.detailBody}>
+            <div className={styles.slider} data-target={TUTORIAL_BODY}>
+              <img
+                src="/assets/images/tutorial/effector-pad.gif"
+                data-target={TUTORIAL_BODY}
+              />
+              <div className={styles.detail} data-target={TUTORIAL_BODY}>
+                <span
+                  className={styles.detailTitle}
+                  data-target={TUTORIAL_BODY}
+                >
+                  エフェクターパッド
+                </span>
+                <span className={styles.detailBody} data-target={TUTORIAL_BODY}>
                   左右（←→）は LowPassFilter、上下（↑↓）は HighPassFilter
                   が割り当てられています。
                 </span>
