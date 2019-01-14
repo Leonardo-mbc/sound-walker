@@ -41,7 +41,8 @@ const systemSaga = [
             'player-system-progress'
           );
           if (playerSystemProgress) {
-            playerSystemProgress.innerText = `${Math.floor(loaded * 100.0)}%`;
+            const progress = loaded < 1.0 ? Math.floor(loaded * 100.0) : 100;
+            playerSystemProgress.innerText = `${progress}%`;
           }
         },
       });

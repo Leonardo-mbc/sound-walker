@@ -21,7 +21,8 @@ const playerSaga = [
             'player-music-progress'
           );
           if (playerMusicProgress) {
-            playerMusicProgress.innerText = `${Math.floor(loaded * 100.0)}%`;
+            const progress = loaded < 1.0 ? Math.floor(loaded * 100.0) : 100;
+            playerMusicProgress.innerText = `${progress}%`;
           }
         },
       });
