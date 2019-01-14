@@ -196,8 +196,6 @@ export class PlayerTutorial extends React.Component<
                 <span className={styles.detailBody}>
                   左右（←→）は LowPassFilter、上下（↑↓）は HighPassFilter
                   が割り当てられています。
-                  <br />
-                  KNOBオブジェクトと組み合わせてエフェクトを作ることもできます。
                 </span>
               </div>
             </div>

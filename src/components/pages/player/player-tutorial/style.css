@@ -78,12 +78,12 @@
           overflow-y: scroll;
 
           :local(.detail-title) {
-            font-size: larger;
+            font-size: 20px;
             margin: 10px 0px;
           }
 
           :local(.detail-body) {
-            font-size: smaller;
+            font-size: 13px;
           }
         }
       }
