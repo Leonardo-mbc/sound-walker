@@ -9,7 +9,7 @@ import { Achievement } from '../../../systems/system-interfaces';
 export interface MusicSelectProps {
   mode: MusicSelectMode;
   isSystemReady: boolean;
-  isTouchedForPlay: boolean;
+  contextState: string;
   musicSelect: MusicSelectState;
   achievement: Achievement;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;

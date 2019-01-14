@@ -14,45 +14,13 @@ import {
 import { AppProps } from './app-container';
 
 export class App extends React.Component<State & AppProps, {}> {
-  private container: HTMLDivElement;
-
-  componentDidMount() {
-    let passiveSupported = false;
-    try {
-      document.addEventListener(
-        'test',
-        null,
-        Object.defineProperty({}, 'passive', {
-          get: function() {
-            passiveSupported = true;
-          },
-        })
-      );
-
-      this.container.addEventListener(
-        'touchstart',
-        () => {
-          const { system } = this.props;
-          if (!system.isTouchedForPlay) {
-            this.props.audioEnable();
-          }
-        },
-        passiveSupported ? { passive: false } : false
-      );
-    } catch (err) {}
-  }
-
   render() {
     const { system } = this.props;
-    const {
-      isSystemReady,
-      isTouchedForPlay,
-      display,
-      achievement,
-      configs,
-    } = system;
+    const { isSystemReady, display, achievement, configs, sound } = system;
+    const contextState = sound.context.state;
+
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div className={styles.container}>
         <Switch>
           <Route
             path="/player/:musicId"
@@ -82,7 +50,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <MusicSelectView
                 mode={MUSIC_SELECT_PLAY}
                 isSystemReady={isSystemReady}
-                isTouchedForPlay={isTouchedForPlay}
+                contextState={contextState}
                 achievement={achievement}
               />
             )}
@@ -93,7 +61,7 @@ export class App extends React.Component<State & AppProps, {}> {
               <MusicSelectView
                 mode={MUSIC_SELECT_DJ_MODE}
                 isSystemReady={isSystemReady}
-                isTouchedForPlay={isTouchedForPlay}
+                contextState={contextState}
                 achievement={achievement}
               />
             )}

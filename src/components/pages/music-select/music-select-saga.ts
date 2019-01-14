@@ -116,6 +116,8 @@ const musicSelectSaga = [
       samples[musicAId].start(0, 0);
       samples[musicBId].start(0, 0);
     } catch (e) {}
+
+    console.log('context', store.system.sound.context);
   }),
 
   takeEvery(MusicSelectAction.SAMPLE_MUSIC_FADE_OUT, function*(

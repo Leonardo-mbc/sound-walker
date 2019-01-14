@@ -50,7 +50,7 @@ export class MusicSelect extends React.Component<
       isTransitionVisible: false,
       isArrivalShow: false,
       arrivalClassState: '',
-      isAudioEnablerVisible: !props.isTouchedForPlay,
+      isAudioEnablerVisible: props.contextState === 'suspended' ? true : false,
     };
 
     props.getMusicList();

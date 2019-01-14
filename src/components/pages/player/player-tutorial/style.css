@@ -30,13 +30,13 @@
     background-color: var(--black);
 
     :local(.pager) {
-      width: 30px;
+      width: 50px;
       height: calc(100% - 200px);
       position: absolute;
       background-image: url(/assets/images/arrow-white.svg);
       background-repeat: no-repeat;
       background-position: center;
-      background-size: 70%;
+      background-size: 50%;
       box-sizing: border-box;
       border-left: 2px solid white;
       background-color: var(--black);
@@ -66,7 +66,7 @@
 
         & > img {
           height: 100%;
-          margin-left: 40px;
+          margin-left: 60px;
         }
 
         :local(.detail) {
@@ -74,7 +74,7 @@
           flex-direction: column;
           height: 100%;
           margin-left: 12px;
-          margin-right: 35px;
+          margin-right: 60px;
           overflow-y: scroll;
 
           :local(.detail-title) {
