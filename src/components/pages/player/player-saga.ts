@@ -1,9 +1,10 @@
 import { put, takeEvery, select, call } from 'redux-saga/effects';
 import * as PlayerAction from './player-actions';
 import * as SystemAction from '../../../systems/system-actions';
-import { Sound } from '../../../systems/system-interfaces';
+import { Sound, SystemState } from '../../../systems/system-interfaces';
 import { AudioUtils } from '../../../utilities/audio-utils';
 import { request } from '../../../utilities/request';
+import { delay } from '../../../utilities/delay';
 import { PlayerState } from './player-interfaces';
 import { push } from 'react-router-redux';
 
@@ -45,8 +46,14 @@ const playerSaga = [
   takeEvery(PlayerAction.START_MUSIC, function*(
     _action: PlayerAction.StartMusic
   ) {
-    const { player } = yield select();
+    const { player, system } = yield select();
     const { source } = player as PlayerState;
+    const { sound } = system as SystemState;
+
+    if (sound.context.state === 'suspended') {
+      sound.context.resume();
+      yield delay(250);
+    }
 
     source.start(0, 0);
     yield put(PlayerAction.setOffsetCurrentTime(source.context.currentTime));
