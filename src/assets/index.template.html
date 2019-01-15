@@ -23,6 +23,33 @@
       rel="stylesheet"
     />
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta property="og:title" content="Sound Walker" />
+    <meta
+      property="og:description"
+      content="[demo] Sound Walker is a music apps that can be played on the Web."
+    />
+    <meta
+      property="og:url"
+      content="https://sound-walker-dj-demo.firebaseapp.com"
+    />
+    <meta
+      property="og:image"
+      content="https://sound-walker-dj-demo.firebaseapp.com/assets/images/logo@x2.png"
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Sound Walker" />
+    <meta property="fb:app_id" content="143887059821434" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@_sound_walker" />
+    <meta property="twitter:title" content="Sound Walker" />
+    <meta
+      property="twitter:description"
+      content="[demo] Sound Walker is a music apps that can be played on the Web."
+    />
+    <meta
+      property="twitter:image"
+      content="https://sound-walker-dj-demo.firebaseapp.com/assets/images/logo@x2.png"
+    />
   </head>
 
   <body>
@@ -31,6 +58,20 @@
       if (navigator.serviceWorker) {
         navigator.serviceWorker.register('/service-worker.js');
       }
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-132475668-2"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-132475668-2');
     </script>
   </body>
 </html>
