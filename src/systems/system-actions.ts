@@ -20,7 +20,8 @@ export type ActionTypes =
   | AddPlayLog
   | AchievementReview
   | SetTouchedForPlay
-  | ResumeAudioContext;
+  | ResumeAudioContext
+  | SetUserAgent;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -42,6 +43,7 @@ export const ADD_PLAY_LOG = 'ADD_PLAY_LOG';
 export const ACHIEVEMENT_REVIEW = 'ACHIEVEMENT_REVIEW';
 export const SET_TOUCHED_FOR_PLAY = 'SET_TOUCHED_FOR_PLAY';
 export const RESUME_AUDIO_CONTEXT = 'RESUME_AUDIO_CONTEXT';
+export const SET_USER_AGENT = 'SET_USER_AGENT';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -297,4 +299,11 @@ export interface ResumeAudioContext {
 }
 export const resumeAudioContext = (): ResumeAudioContext => ({
   type: RESUME_AUDIO_CONTEXT,
+});
+
+export interface SetUserAgent {
+  type: typeof SET_USER_AGENT;
+}
+export const setUserAgent = (): SetUserAgent => ({
+  type: SET_USER_AGENT,
 });

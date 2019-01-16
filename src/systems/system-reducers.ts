@@ -10,9 +10,11 @@ import {
   SET_ACHIEVEMENT,
   SET_TOUCHED_FOR_PLAY,
   SET_CONFIGS,
+  SET_USER_AGENT,
 } from './system-actions';
 import { SystemState } from './system-interfaces';
 import { AudioUtils } from '../utilities/audio-utils';
+import { Browser } from '../utilities/browser';
 
 export function systemReducer(
   state: SystemState = initialState.system,
@@ -131,6 +133,16 @@ export function systemReducer(
       return {
         ...state,
         isTouchedForPlay: action.payload.isTouchedForPlay,
+      };
+
+    case SET_USER_AGENT:
+      const browser = Browser.instance;
+      return {
+        ...state,
+        userAgent: {
+          os: browser.device,
+          version: browser.version,
+        },
       };
 
     default:

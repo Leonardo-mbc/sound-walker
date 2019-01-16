@@ -3,6 +3,7 @@ export interface SystemState {
   isSystemReady: boolean;
   sound: Sound;
   display: Display;
+  userAgent: UserAgent;
   achievement: Achievement;
   configs: Configs;
 }
@@ -47,6 +48,11 @@ export interface Display {
 interface LogoTransition {
   isVisible: boolean;
   duration: number;
+}
+
+interface UserAgent {
+  os: string;
+  version: number;
 }
 
 export interface Achievement {

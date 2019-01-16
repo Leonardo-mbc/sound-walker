@@ -37,6 +37,10 @@ export const initialState: State = {
         duration: 2000,
       },
     },
+    userAgent: {
+      os: null,
+      version: null,
+    },
     achievement: null,
     configs: null,
   },
