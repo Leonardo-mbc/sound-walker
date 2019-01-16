@@ -1,4 +1,32 @@
 :local(.container) {
   width: 100%;
   height: 100%;
+
+  :local(.qr-container) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    :local(.qr-body) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: absolute;
+      z-index: 5;
+
+      p {
+        font-weight: bold;
+        font-size: larger;
+      }
+    }
+
+    img {
+      width: 140%;
+      position: absolute;
+      z-index: 0;
+      opacity: 0.1;
+    }
+  }
 }
