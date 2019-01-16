@@ -26,13 +26,11 @@
   }
   :local(.systemButtons) {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    top: 16px;
+    left: 13px;
 
-    :local(span) {
-      font-weight: bold;
-      font-size: 27px;
-      cursor: pointer;
+    img {
+      margin: 0px 5px;
     }
   }
 }
