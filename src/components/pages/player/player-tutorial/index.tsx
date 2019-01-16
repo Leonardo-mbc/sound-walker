@@ -219,6 +219,12 @@ export class PlayerTutorial extends React.Component<
         0.8}px - ${page * 100}%), 0px, 0px)`,
     };
 
+    const closeButtonStyle = {
+      ...(innerHeight < 340
+        ? { position: 'absolute', right: '16px', top: '16px' }
+        : {}),
+    };
+
     return (
       <div
         ref={(elem) => (this.container = elem)}
@@ -289,7 +295,7 @@ export class PlayerTutorial extends React.Component<
             次からチュートリアルを表示しない
           </span>
         </div>
-        <div className={styles.close}>
+        <div className={styles.close} style={closeButtonStyle}>
           <div className={styles.button} data-target={TUTORIAL_CLOSE} />
         </div>
       </div>
