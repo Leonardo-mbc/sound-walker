@@ -15,6 +15,7 @@ const systemSaga = [
   ) {
     yield put(SystemAction.createSoundsLine());
     yield put(SystemAction.loadSystemSounds());
+    yield put(SystemAction.setUserAgent());
     yield put(
       SystemAction.setDisplayVertically(window.innerWidth, window.innerHeight)
     );
