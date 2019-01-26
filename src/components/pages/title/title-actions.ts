@@ -5,7 +5,8 @@ export type ActionTypes =
   | GoToMainMenu
   | JumpTitleSound
   | GoToMusicSelect
-  | GoToDJMode;
+  | GoToDJMode
+  | SetOffsetCurrentTime;
 
 export const SET_LOADING_BAR_WIDTH = 'SET_LOADING_BAR_WIDTH';
 export const SET_LOAD_COMPLETE = 'SET_LOAD_COMPLETE';
@@ -14,6 +15,7 @@ export const GO_TO_MAIN_MENU = 'GO_TO_MAIN_MENU';
 export const JUMP_TITLE_SOUND = 'JUMP_TITLE_SOUND';
 export const GO_TO_MUSIC_SELECT = 'GO_TO_MUSIC_SELECT';
 export const GO_TO_DJ_MODE = 'GO_TO_DJ_MODE';
+export const SET_TITLE_OFFSET_CURRENT_TIME = 'SET_TITLE_OFFSET_CURRENT_TIME';
 
 export interface SetLoadingBarWidth {
   type: typeof SET_LOADING_BAR_WIDTH;
@@ -68,4 +70,19 @@ export interface GoToDJMode {
 }
 export const goToDJMode = (): GoToDJMode => ({
   type: GO_TO_DJ_MODE,
+});
+
+export interface SetOffsetCurrentTime {
+  type: typeof SET_TITLE_OFFSET_CURRENT_TIME;
+  payload: {
+    offsetCurrentTime: number;
+  };
+}
+export const setOffsetCurrentTime = (
+  offsetCurrentTime: number
+): SetOffsetCurrentTime => ({
+  type: SET_TITLE_OFFSET_CURRENT_TIME,
+  payload: {
+    offsetCurrentTime,
+  },
 });

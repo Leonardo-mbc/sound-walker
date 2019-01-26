@@ -47,6 +47,7 @@ export const initialState: State = {
   title: {
     loadingBarWidth: 0,
     isLoadComplete: false,
+    offsetCurrentTime: 0,
   },
   player: {
     isSourceReady: false,

@@ -1,3 +1,5 @@
+@import '../../../../assets/styles/constant.css';
+
 :local(.container) {
   width: 100%;
   height: 100%;
@@ -17,5 +19,61 @@
       max-width: 800px;
       flex-shrink: 0;
     }
+    :local(.ncs-logo) {
+      height: 50%;
+      max-height: 800px;
+      flex-shrink: 0;
+
+      animation-duration: 300ms;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+
+      :local {
+        animation-name: show;
+      }
+    }
+    :local(.profile) {
+      animation-duration: 4800ms;
+      animation-fill-mode: forwards;
+
+      :local {
+        animation-name: show-hide;
+      }
+    }
+
+    :local(.tap-to-skip) {
+      position: absolute;
+      bottom: 4vh;
+      right: 10vw;
+      font-size: small;
+      border: 2px solid var(--white);
+      border-radius: 20px;
+      padding: 2px 20px;
+      opacity: 0.7;
+    }
+  }
+}
+
+@keyframes :local(show) {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes :local(show-hide) {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

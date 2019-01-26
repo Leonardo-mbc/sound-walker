@@ -5,13 +5,14 @@ import * as SystemAction from '../../../systems/system-actions';
 import { Sound } from '../../../systems/system-interfaces';
 import { push } from 'react-router-redux';
 import { delay } from '../../../utilities/delay';
+import { TitleState } from './title-interfaces';
 
 const titleSaga = [
   takeEvery(TitleAction.START_GAME_TITLE, function*(
     _action: TitleAction.StartGameTitle
   ) {
     const { system } = yield select();
-    const { sources } = system.sound as Sound;
+    const { sources, context } = system.sound as Sound;
 
     if (!system.isTouchedForPlay) {
       yield put(SystemAction.createSoundsLine());
@@ -20,6 +21,7 @@ const titleSaga = [
     }
 
     sources.title.start(0, 0);
+    yield put(TitleAction.setOffsetCurrentTime(context.currentTime));
 
     yield put(push('/title/intro'));
   }),
@@ -37,17 +39,27 @@ const titleSaga = [
   takeEvery(TitleAction.JUMP_TITLE_SOUND, function*(
     _action: TitleAction.JumpTitleSound
   ) {
-    const { system } = yield select();
-    const { sources } = system.sound as Sound;
+    const { system, title } = yield select();
+    const { sources, context } = system.sound as Sound;
+    const { offsetCurrentTime } = title as TitleState;
 
-    yield put(
-      SystemAction.remakeSystemSounds({
-        key: 'title',
-        bufferNode: sources.title,
-        startTime: 11.65,
-        soonToPlay: true,
-      })
-    );
+    const STEP_START_TIME = 9.6;
+
+    if (
+      offsetCurrentTime === 0 ||
+      context.currentTime - offsetCurrentTime < STEP_START_TIME
+    ) {
+      yield put(
+        SystemAction.remakeSystemSounds({
+          key: 'title',
+          bufferNode: sources.title,
+          startTime: STEP_START_TIME,
+          soonToPlay: true,
+        })
+      );
+    }
+
+    yield put(TitleAction.setOffsetCurrentTime(0));
   }),
 
   takeEvery(TitleAction.GO_TO_MUSIC_SELECT, function*(
