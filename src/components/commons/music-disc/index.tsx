@@ -201,7 +201,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
         (this.state.faderBarPositionX + this.state.faderBarTouchmovePositionX) /
         parseFloat(getComputedStyle(this.fader).width);
       pickerCustomStyle = {
-        marginLeft: `${faderBRatio * 100}%`,
+        marginLeft: `calc(${faderBRatio * 100}% - 10px)`,
       };
 
       imageACustomStyle.opacity = 1;

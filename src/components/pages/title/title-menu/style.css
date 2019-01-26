@@ -107,6 +107,38 @@
     }
   }
 
+  :local(.play-dj-mode-container) {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    font-size: 20px;
+
+    & > :local(span) {
+      text-shadow: 2px 2px 6px var(--black);
+      bottom: 20vh;
+      position: absolute;
+      animation-duration: 2000ms;
+      animation-timing-function: ease-in;
+      animation-iteration-count: infinite;
+      transition: opacity ease-out 1000ms;
+      :local {
+        animation-name: blink;
+      }
+
+      &:local(.selected) {
+        opacity: 0;
+        :local {
+          animation-name: fade-out;
+          animation-duration: 400ms;
+          animation-iteration-count: 1;
+        }
+      }
+    }
+  }
+
   :local(.credit-container) {
     position: absolute;
     width: 100%;
@@ -251,6 +283,27 @@
 }
 
 @keyframes :local(credit-hide) {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes :local(blink) {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes :local(fade-out) {
   0% {
     opacity: 1;
   }

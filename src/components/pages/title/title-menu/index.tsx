@@ -146,7 +146,7 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
         <div className={styles.animationContainer}>
           <AnimationGround fadeOut={this.state.animationGroundFadeOut} />
         </div>
-        <div
+        {/* <div
           className={`${styles.menuList} ${
             this.state.selectedItem !== null ? styles.selected : ''
           }`}
@@ -176,19 +176,20 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
           >
             <p data-target={MENU_DJ_MODE}>Dj Mode</p>
           </span>
-          {false ? (
-            <span
-              className={
-                this.state.selectedItem &&
-                this.state.selectedItem !== MENU_OPTIONS
-                  ? styles.hideMenuText
-                  : ''
-              }
-              onClick={() => this.selectMenu(MENU_OPTIONS)}
-            >
-              <p data-target={MENU_OPTIONS}>Options</p>
-            </span>
-          ) : null}
+          <span
+            className={
+              this.state.selectedItem &&
+              this.state.selectedItem !== MENU_OPTIONS
+                ? styles.hideMenuText
+                : ''
+            }
+            onClick={() => this.selectMenu(MENU_OPTIONS)}
+          >
+            <p data-target={MENU_OPTIONS}>Options</p>
+          </span>
+        </div> */}
+        <div className={styles.playDjModeContainer} data-target={MENU_DJ_MODE}>
+          <span className={this.state.selectedItem !== null ? styles.selected : ''} data-target={MENU_DJ_MODE}>TAP TO PLAY DJ MODE</span>
         </div>
         {this.state.creditShow ? (
           <div
