@@ -339,9 +339,11 @@ const systemSaga = [
     // AudioContext の作成を待つ
     yield delay(200);
 
-    yield call(async () => {
-      await context.resume();
-    });
+    if (context.state === 'suspended') {
+      context.resume();
+      yield put(SystemAction.setTouchedForPlay(true));
+      yield delay(100);
+    }
   }),
 ];
 

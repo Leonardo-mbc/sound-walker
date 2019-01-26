@@ -14,8 +14,8 @@ const titleSaga = [
     const { system } = yield select();
     const { sources, context } = system.sound as Sound;
 
-    if (!system.isTouchedForPlay) {
-      yield put(SystemAction.createSoundsLine());
+    if (context.state === 'suspended') {
+      context.resume();
       yield put(SystemAction.setTouchedForPlay(true));
       yield delay(100);
     }
