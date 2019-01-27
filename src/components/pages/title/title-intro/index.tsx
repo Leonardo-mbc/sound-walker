@@ -79,7 +79,7 @@ export class TitleIntro extends React.Component<
       // @ts-ignore: Unreachable code error
       creditEndTimer = setTimeout(() => {
         this.props.goToMainMenu();
-      }, 9600);
+      }, 10000);
     }
   }
 
