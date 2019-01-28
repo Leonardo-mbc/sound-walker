@@ -69,5 +69,6 @@ export interface Configs {
   skipTutorial: {
     djMode: boolean;
     playMode: boolean;
+    musicSelect: boolean;
   };
 }

@@ -169,6 +169,7 @@ const systemSaga = [
           skipTutorial: {
             playMode: false,
             djMode: false,
+            musicSelect: false,
           },
         } as Configs;
         localStorage.write({

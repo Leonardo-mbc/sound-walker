@@ -23,3 +23,4 @@ export const hide: string;
 export const arrivalMessage: string;
 export const unlockedText: string;
 export const confirmText: string;
+export const tutorialContainer: string;

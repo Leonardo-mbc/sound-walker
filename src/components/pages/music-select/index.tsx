@@ -21,6 +21,7 @@ import { LoaderCurtain } from '../../commons/loader-curtain';
 import { SamplePlayer } from './sample-player';
 import { LogoTransition } from '../../commons/logo-transition';
 import { musicList } from '../../../constant/music-list';
+import { MusicSelectTutorial } from './music-select-tutorial';
 
 interface MusicSelectState {
   discTouchstartPositionX: number;
@@ -31,6 +32,7 @@ interface MusicSelectState {
   isArrivalShow: boolean;
   arrivalClassState: string;
   isAudioEnablerVisible: boolean;
+  showTutorial: boolean;
 }
 
 export class MusicSelect extends React.Component<
@@ -51,6 +53,7 @@ export class MusicSelect extends React.Component<
       isArrivalShow: false,
       arrivalClassState: '',
       isAudioEnablerVisible: props.contextState === 'suspended' ? true : false,
+      showTutorial: !props.skipTutorial,
     };
 
     props.getMusicList();
@@ -260,6 +263,12 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  hideTutorial() {
+    this.setState({
+      showTutorial: false,
+    });
+  }
+
   render() {
     const {
       musicSelect,
@@ -269,8 +278,9 @@ export class MusicSelect extends React.Component<
       isSystemReady,
       achievement,
       ringUnlockSound,
+      setSkipTutorialState,
     } = this.props;
-    const { isAudioEnablerVisible } = this.state;
+    const { isAudioEnablerVisible, showTutorial } = this.state;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
@@ -401,6 +411,14 @@ export class MusicSelect extends React.Component<
                     </span>
                   </div>
                 </div>
+              </div>
+            ) : null}
+            {showTutorial ? (
+              <div className={styles.tutorialContainer}>
+                <MusicSelectTutorial
+                  setSkipTutorialState={setSkipTutorialState}
+                  hideTutorial={() => this.hideTutorial()}
+                />
               </div>
             ) : null}
             {this.state.isArrivalShow && arrivalMeta ? (

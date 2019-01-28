@@ -224,6 +224,7 @@ export class PlayerTutorial extends React.Component<
         ref={(elem) => (this.container = elem)}
         className={styles.container}
         data-title={`${getTitleName(mode)} TUTORIAL`}
+        data-target={TUTORIAL_CLOSE}
       >
         <div className={styles.sliderContainer}>
           <div
@@ -286,10 +287,10 @@ export class PlayerTutorial extends React.Component<
             data-target={TUTORIAL_SKIP_NEXT}
           />
           <span data-target={TUTORIAL_SKIP_NEXT}>
-            次からチュートリアルを表示しない
+            次からこのチュートリアルを表示しない
           </span>
         </div>
-        <div className={styles.close}>
+        <div className={styles.close} data-target={TUTORIAL_CLOSE}>
           <div className={styles.button} data-target={TUTORIAL_CLOSE} />
         </div>
       </div>

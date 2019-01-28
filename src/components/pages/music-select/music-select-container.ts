@@ -4,7 +4,7 @@ import { MusicSelectState } from './music-select-interfaces';
 import * as MusicSelectAction from './music-select-actions';
 import * as TitleAction from '../title/title-actions';
 import * as SystemAction from '../../../systems/system-actions';
-import { Achievement } from '../../../systems/system-interfaces';
+import { Achievement, Configs } from '../../../systems/system-interfaces';
 
 export interface MusicSelectProps {
   mode: MusicSelectMode;
@@ -12,6 +12,7 @@ export interface MusicSelectProps {
   contextState: string;
   musicSelect: MusicSelectState;
   achievement: Achievement;
+  skipTutorial: boolean;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
   goToMainMenu: () => void;
   sampleMusicPlay: (
@@ -28,6 +29,7 @@ export interface MusicSelectProps {
     { musicId, status }: SystemAction.SetAchievementStatePayload
   ) => void;
   resumeAudioContext: () => void;
+  setSkipTutorialState: (value: Partial<Configs>) => void;
 }
 
 export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
@@ -87,6 +89,9 @@ export const MusicSelectView = connect(
     },
     resumeAudioContext: () => {
       dispatch(SystemAction.resumeAudioContext());
+    },
+    setSkipTutorialState: (value: Partial<Configs>) => {
+      dispatch(SystemAction.setConfigsState('skipTutorial', value));
     },
   })
 )(MusicSelect);

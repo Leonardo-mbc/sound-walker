@@ -52,6 +52,7 @@ export class App extends React.Component<State & AppProps, {}> {
                 isSystemReady={isSystemReady}
                 contextState={contextState}
                 achievement={achievement}
+                skipTutorial={configs.skipTutorial.musicSelect}
               />
             )}
           />
@@ -63,6 +64,7 @@ export class App extends React.Component<State & AppProps, {}> {
                 isSystemReady={isSystemReady}
                 contextState={contextState}
                 achievement={achievement}
+                skipTutorial={configs.skipTutorial.musicSelect}
               />
             )}
           />
