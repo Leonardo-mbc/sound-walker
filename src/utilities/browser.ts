@@ -21,6 +21,16 @@ export class Browser {
     this._ua = navigator.userAgent;
     this._device = this._getDevice(this._ua);
     this._version = this._getVersion(this._ua);
+
+    // FIXME
+    const isIPhoneX =
+      window.devicePixelRatio === 3 &&
+      (window.screen.width === 375 || window.screen.height === 375) &&
+      /iPhone/.test(window.navigator.userAgent);
+
+    if (isIPhoneX) {
+      document.body.classList.add('iphonex');
+    }
   }
 
   _getDevice(ua: string) {

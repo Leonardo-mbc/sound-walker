@@ -15,3 +15,13 @@ a:hover,
 a:active {
   color: #efefef;
 }
+
+body.iphonex {
+  position: absolute;
+  bottom: 80px;
+}
+
+body.iphonex canvas {
+  bottom: 0px;
+  position: absolute;
+}

@@ -85,10 +85,16 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
       this.props.filterNode.lowPassFilterNode.frequency.value =
         44100 * 0.25 * (1 - ratioX) + 70;
 
+      // FIXME
+      let iPhoneXBottomFix = 0;
+      if (document.body.classList.contains('iphonex')) {
+        iPhoneXBottomFix = 80;
+      }
+
       this.setState({
         cursorStyle: {
           opacity: 1,
-          top: cursorY - this.cursor.clientHeight / 2,
+          top: cursorY - this.cursor.clientHeight / 2 + iPhoneXBottomFix,
           left: cursorX - this.cursor.clientWidth / 2,
           filter: 60 * (ratioX - ratioY),
         },
