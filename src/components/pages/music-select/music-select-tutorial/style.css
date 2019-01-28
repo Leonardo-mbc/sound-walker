@@ -83,7 +83,7 @@
           }
 
           :local(.detail-body) {
-            font-size: 13px;
+            font-size: xx-small;
           }
         }
       }
