@@ -11,7 +11,12 @@ import {
   MUSIC_SELECT_BACK_BUTTON,
   MUSIC_SELECT_CONFIRM_CANCEL,
   MUSIC_SELECT_CONFIRM,
+  MUSIC_SELECT_SHARE_BUTTON,
+  MUSIC_SELECT_SHARE_CLOSE_BUTTON,
   ARRIVAL_CONTAINER,
+  MUSIC_SELECT_SHARE_TWITTER,
+  MUSIC_SELECT_SHARE_FACEBOOK,
+  MUSIC_SELECT_SHARE_LINE,
 } from '../../../constant/target-name';
 import {
   getMusicMetaByIds,
@@ -33,7 +38,10 @@ interface MusicSelectState {
   arrivalClassState: string;
   isAudioEnablerVisible: boolean;
   showTutorial: boolean;
+  isSharerVisible: boolean;
 }
+
+const SHARE_URL_BASE = 'https://www.sound-walker.app';
 
 export class MusicSelect extends React.Component<
   MusicSelectProps,
@@ -54,6 +62,7 @@ export class MusicSelect extends React.Component<
       arrivalClassState: '',
       isAudioEnablerVisible: props.contextState === 'suspended' ? true : false,
       showTutorial: !props.skipTutorial,
+      isSharerVisible: false,
     };
 
     props.getMusicList();
@@ -118,6 +127,26 @@ export class MusicSelect extends React.Component<
                 'data-music-id'
               );
               this.hideArrival(musicId);
+              break;
+
+            case MUSIC_SELECT_SHARE_BUTTON:
+              this.shareOpen();
+              break;
+
+            case MUSIC_SELECT_SHARE_CLOSE_BUTTON:
+              this.shareHide();
+              break;
+
+            case MUSIC_SELECT_SHARE_TWITTER:
+              this.shareTwitter();
+              break;
+
+            case MUSIC_SELECT_SHARE_FACEBOOK:
+              this.shareFacebook();
+              break;
+
+            case MUSIC_SELECT_SHARE_LINE:
+              this.shareLine();
               break;
           }
         },
@@ -269,6 +298,53 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  shareOpen() {
+    this.setState({
+      isSharerVisible: true,
+    });
+  }
+
+  shareHide() {
+    this.setState({
+      isSharerVisible: false,
+    });
+  }
+
+  makeShareParams() {
+    const { mode, musicSelect } = this.props;
+    const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
+
+    const musicMeta = musicList[cursor][discSide[cursor] || 0].meta;
+    const title = `${musicMeta.title} - ${musicMeta.artist}`;
+    const shareUrl = encodeURIComponent(
+      `${SHARE_URL_BASE}/#/${
+        mode === MUSIC_SELECT_DJ_MODE ? 'dj-player' : 'player'
+      }/${selectedMusicId}`
+    );
+
+    return {
+      title,
+      shareUrl,
+    };
+  }
+
+  shareTwitter() {
+    const { title, shareUrl } = this.makeShareParams();
+    const text = encodeURIComponent(`Playing [${title}] #SoundWalker`);
+    location.href = `https://twitter.com/intent/tweet?text=${text}&url=${shareUrl}`;
+  }
+
+  shareFacebook() {
+    const { shareUrl } = this.makeShareParams();
+    location.href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+  }
+
+  shareLine() {
+    const { title, shareUrl } = this.makeShareParams();
+    const text = encodeURIComponent(`${title} from Sound Walker`);
+    location.href = `https://social-plugins.line.me/lineit/share?url=${shareUrl}&text=${text}`;
+  }
+
   render() {
     const {
       musicSelect,
@@ -280,7 +356,7 @@ export class MusicSelect extends React.Component<
       ringUnlockSound,
       setSkipTutorialState,
     } = this.props;
-    const { isAudioEnablerVisible, showTutorial } = this.state;
+    const { isAudioEnablerVisible, showTutorial, isSharerVisible } = this.state;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
 
     const discListStyle: React.CSSProperties = {
@@ -337,6 +413,16 @@ export class MusicSelect extends React.Component<
               data-target={isMusicOpened ? MUSIC_SELECT_CONFIRM : ''}
             >
               Play
+            </div>
+            <div
+              className={styles.shareButton}
+              data-target={MUSIC_SELECT_SHARE_BUTTON}
+            >
+              <img
+                src="/assets/images/share-white.svg"
+                data-target={MUSIC_SELECT_SHARE_BUTTON}
+              />
+              <span data-target={MUSIC_SELECT_SHARE_BUTTON}>SHARE</span>
             </div>
             <div className={styles.discList} style={discListStyle}>
               {musicList
@@ -410,6 +496,48 @@ export class MusicSelect extends React.Component<
                       Play
                     </span>
                   </div>
+                </div>
+              </div>
+            ) : null}
+            {isSharerVisible ? (
+              <div
+                className={styles.shareContainer}
+                data-target={MUSIC_SELECT_SHARE_CLOSE_BUTTON}
+              >
+                <div className={styles.shareBox}>
+                  <MusicDisc
+                    isDiscImageOnly
+                    discInfo={musicList[cursor]}
+                    discSide={discSide[cursor]}
+                    size="25vh"
+                    customStyle={{ margin: '20px' }}
+                  />
+                  <div className={styles.shareButtons}>
+                    <img
+                      src="assets/images/social-icons/twitter.svg"
+                      width="50px"
+                      data-target={MUSIC_SELECT_SHARE_TWITTER}
+                    />
+                    <img
+                      src="assets/images/social-icons/facebook.svg"
+                      width="50px"
+                      data-target={MUSIC_SELECT_SHARE_FACEBOOK}
+                    />
+                    <img
+                      src="assets/images/social-icons/line.svg"
+                      width="50px"
+                      data-target={MUSIC_SELECT_SHARE_LINE}
+                    />
+                  </div>
+                </div>
+                <div
+                  className={styles.shareClose}
+                  data-target={MUSIC_SELECT_SHARE_CLOSE_BUTTON}
+                >
+                  <div
+                    className={styles.shareCloseButton}
+                    data-target={MUSIC_SELECT_SHARE_CLOSE_BUTTON}
+                  />
                 </div>
               </div>
             ) : null}
