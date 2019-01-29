@@ -25,7 +25,10 @@ export class Browser {
     // FIXME
     const isIPhoneX =
       window.devicePixelRatio === 3 &&
-      (window.screen.width === 375 || window.screen.height === 375) &&
+      (window.screen.width === 375 ||
+        window.screen.height === 375 ||
+        window.screen.width === 414 ||
+        window.screen.height === 414) &&
       /iPhone/.test(window.navigator.userAgent);
 
     if (isIPhoneX) {
