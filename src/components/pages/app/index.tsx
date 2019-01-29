@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as QRCode from 'qrcode.react';
 import { Route, Switch } from 'react-router';
 import * as styles from './style.css';
 import { TitleView } from '../title/title-container';
@@ -21,57 +22,73 @@ export class App extends React.Component<State & AppProps, {}> {
 
     return (
       <div className={styles.container}>
-        <Switch>
-          <Route
-            path="/player/:musicId"
-            render={(props) => (
-              <PlayerView
-                mode={MUSIC_SELECT_PLAY}
-                isSystemReady={isSystemReady}
-                skipTutorial={configs.skipTutorial.playMode}
-                {...props}
+        {system.userAgent.os !== 'PC' ? (
+          <>
+            <Switch>
+              <Route
+                path="/player/:musicId"
+                render={(props) => (
+                  <PlayerView
+                    mode={MUSIC_SELECT_PLAY}
+                    isSystemReady={isSystemReady}
+                    skipTutorial={configs.skipTutorial.playMode}
+                    {...props}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            path="/dj-player/:musicId"
-            render={(props) => (
-              <PlayerView
-                mode={MUSIC_SELECT_DJ_MODE}
-                isSystemReady={isSystemReady}
-                skipTutorial={configs.skipTutorial.djMode}
-                {...props}
+              <Route
+                path="/dj-player/:musicId"
+                render={(props) => (
+                  <PlayerView
+                    mode={MUSIC_SELECT_DJ_MODE}
+                    isSystemReady={isSystemReady}
+                    skipTutorial={configs.skipTutorial.djMode}
+                    {...props}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            path="/music-select"
-            render={() => (
-              <MusicSelectView
-                mode={MUSIC_SELECT_PLAY}
-                isSystemReady={isSystemReady}
-                contextState={contextState}
-                achievement={achievement}
-                skipTutorial={configs.skipTutorial.musicSelect}
+              <Route
+                path="/music-select"
+                render={() => (
+                  <MusicSelectView
+                    mode={MUSIC_SELECT_PLAY}
+                    isSystemReady={isSystemReady}
+                    contextState={contextState}
+                    achievement={achievement}
+                    skipTutorial={configs.skipTutorial.musicSelect}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            path="/dj-mode"
-            render={() => (
-              <MusicSelectView
-                mode={MUSIC_SELECT_DJ_MODE}
-                isSystemReady={isSystemReady}
-                contextState={contextState}
-                achievement={achievement}
-                skipTutorial={configs.skipTutorial.musicSelect}
+              <Route
+                path="/dj-mode"
+                render={() => (
+                  <MusicSelectView
+                    mode={MUSIC_SELECT_DJ_MODE}
+                    isSystemReady={isSystemReady}
+                    contextState={contextState}
+                    achievement={achievement}
+                    skipTutorial={configs.skipTutorial.musicSelect}
+                  />
+                )}
               />
-            )}
-          />
-          <Route path="/" component={TitleView} />
-        </Switch>
-        <LoadingCircle isVisible={display.isLoadingCircleVisible} />
-        <VerticalAnnounce isVisible={!display.isPortrait} />
+              <Route path="/" component={TitleView} />
+            </Switch>
+            <LoadingCircle isVisible={display.isLoadingCircleVisible} />
+            <VerticalAnnounce isVisible={!display.isPortrait} />
+          </>
+        ) : (
+          <div className={styles.qrContainer}>
+            <img src="assets/images/logo@x2.png" />
+            <div className={styles.qrBody}>
+              <p>スマートフォンでアクセスしてください</p>
+              <QRCode
+                value={location.href}
+                bgColor="#212121"
+                fgColor="#FFFFFF"
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
