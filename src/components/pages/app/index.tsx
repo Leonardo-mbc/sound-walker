@@ -81,11 +81,14 @@ export class App extends React.Component<State & AppProps, {}> {
             <img src="assets/images/logo@x2.png" />
             <div className={styles.qrBody}>
               <p>スマートフォンでアクセスしてください</p>
-              <QRCode
-                value={location.href}
-                bgColor="#212121"
-                fgColor="#FFFFFF"
-              />
+              <div className={styles.qr}>
+                <QRCode
+                  size={128}
+                  value={location.href}
+                  bgColor="#212121"
+                  fgColor="#FFFFFF"
+                />
+              </div>
             </div>
           </div>
         )}
