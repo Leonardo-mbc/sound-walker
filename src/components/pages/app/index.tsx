@@ -22,7 +22,7 @@ export class App extends React.Component<State & AppProps, {}> {
 
     return (
       <div className={styles.container}>
-        {system.userAgent.os !== 'PC' ? (
+        {system.userAgent.os == 'PC' || IS_DEBUG ? (
           <>
             <Switch>
               <Route
