@@ -11,6 +11,7 @@ import {
   MUSIC_SELECT_BACK_BUTTON,
   MUSIC_SELECT_CONFIRM_CANCEL,
   MUSIC_SELECT_CONFIRM,
+  MUSIC_SELECT_MIDI_BUTTON,
   MUSIC_SELECT_SHARE_BUTTON,
   MUSIC_SELECT_SHARE_CLOSE_BUTTON,
   ARRIVAL_CONTAINER,
@@ -127,6 +128,10 @@ export class MusicSelect extends React.Component<
                 'data-music-id'
               );
               this.hideArrival(musicId);
+              break;
+
+            case MUSIC_SELECT_MIDI_BUTTON:
+              this.props.isMIDIConnected ? null : this.openMidiSetting();
               break;
 
             case MUSIC_SELECT_SHARE_BUTTON:
@@ -298,6 +303,10 @@ export class MusicSelect extends React.Component<
     });
   }
 
+  async openMidiSetting() {
+    this.props.registerMIDIDevice();
+  }
+
   shareOpen() {
     this.setState({
       isSharerVisible: true,
@@ -355,6 +364,8 @@ export class MusicSelect extends React.Component<
       achievement,
       ringUnlockSound,
       setSkipTutorialState,
+      canUseMIDI,
+      isMIDIConnected,
     } = this.props;
     const { isAudioEnablerVisible, showTutorial, isSharerVisible } = this.state;
     const { cursor, musicList, discSide, selectedMusicId } = musicSelect;
@@ -414,6 +425,24 @@ export class MusicSelect extends React.Component<
             >
               Play
             </div>
+            {canUseMIDI ? (
+              <div
+                className={`${styles.midiButton} ${
+                  isMIDIConnected ? styles.midiConnected : ''
+                }`}
+                data-target={MUSIC_SELECT_MIDI_BUTTON}
+              >
+                <img
+                  src={
+                    isMIDIConnected
+                      ? '/assets/images/midi-setting-connected.svg'
+                      : '/assets/images/midi-setting.svg'
+                  }
+                  data-target={MUSIC_SELECT_MIDI_BUTTON}
+                />
+                <span data-target={MUSIC_SELECT_MIDI_BUTTON}>MIDI</span>
+              </div>
+            ) : null}
             <div
               className={styles.shareButton}
               data-target={MUSIC_SELECT_SHARE_BUTTON}
@@ -551,9 +580,7 @@ export class MusicSelect extends React.Component<
             ) : null}
             {this.state.isArrivalShow && arrivalMeta ? (
               <div
-                className={`${styles.arrivalContainer} ${
-                  this.state.arrivalClassState
-                }`}
+                className={`${styles.arrivalContainer} ${this.state.arrivalClassState}`}
                 onLoad={() => ringUnlockSound()}
                 data-target={ARRIVAL_CONTAINER}
                 data-music-id={arrivalMeta.musicId}

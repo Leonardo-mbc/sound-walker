@@ -6,6 +6,7 @@ export interface SystemState {
   userAgent: UserAgent;
   achievement: Achievement;
   configs: Configs;
+  isMIDIConnected: boolean;
 }
 
 export interface Sound {

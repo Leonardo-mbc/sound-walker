@@ -11,6 +11,8 @@ import {
   SET_TOUCHED_FOR_PLAY,
   SET_CONFIGS,
   SET_USER_AGENT,
+  SET_MIDI_CONNECTED,
+  SEND_MIDI_SIGNAL,
 } from './system-actions';
 import { SystemState } from './system-interfaces';
 import { AudioUtils } from '../utilities/audio-utils';
@@ -144,6 +146,18 @@ export function systemReducer(
           version: browser.version,
         },
       };
+
+    case SET_MIDI_CONNECTED:
+      const { isMIDIConnected } = action.payload;
+      return {
+        ...state,
+        isMIDIConnected,
+      };
+
+    case SEND_MIDI_SIGNAL:
+      const { op1, op2, value } = action.payload;
+      console.log(op1, op2, value);
+      break;
 
     default:
       return state;

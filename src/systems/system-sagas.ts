@@ -8,6 +8,8 @@ import { STORAGE_KEYS, WEBSQL_TABLES } from '../constant/storage-keys';
 import { delay } from '../utilities/delay';
 import { WebSQL } from '../utilities/web-sql';
 import { achievementReview } from '../utilities/achievement-review';
+import { getMidiAccess } from '../utilities/midi-setting';
+import { getBluetoothAccess } from '../utilities/bluetooth-setting';
 
 const systemSaga = [
   takeEvery(SystemAction.INITIAL_RUN, function*(
@@ -344,6 +346,58 @@ const systemSaga = [
       context.resume();
       yield put(SystemAction.setTouchedForPlay(true));
       yield delay(100);
+    }
+  }),
+
+  takeEvery(SystemAction.REGISTER_MIDI_DEVICE, function*(
+    _action: SystemAction.RegisterMIDIDevice
+  ) {
+    const characteristic = yield call(async () => {
+      try {
+        await getMidiAccess();
+        const characteristic = await getBluetoothAccess();
+
+        return characteristic;
+      } catch (e) {
+        // DOMException: Must be handling a user gesture to show a permission request.
+        console.log(e);
+      }
+    });
+
+    if (characteristic) {
+      yield put(SystemAction.setMIDIConnected(true));
+
+      const { system } = yield select();
+      const { filterNode } = system.sound as Sound;
+
+      characteristic.addEventListener(
+        'characteristicvaluechanged',
+        (event: any) => {
+          const data = event.target.value;
+          const signal = [];
+          for (let i = 0; i < data.buffer.byteLength; i++) {
+            signal.push(data.getUint8(i));
+          }
+
+          const [op1, op2, value] = signal.slice(2, 5);
+          if (op1 !== 248) {
+            // 248 is MIDI CLOCK
+            const op = op1.toString(16) + op2.toString(16);
+            const ratio = value / 127.0;
+
+            switch (op) {
+              case 'b06':
+                filterNode.highPassFilterNode.frequency.value =
+                  44100 * 0.25 * ratio;
+                break;
+              case 'b07':
+                filterNode.lowPassFilterNode.frequency.value =
+                  44100 * 0.25 * (1 - ratio) + 70;
+                break;
+            }
+          }
+        }
+      );
     }
   }),
 ];

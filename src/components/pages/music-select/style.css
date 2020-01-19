@@ -55,6 +55,35 @@
     }
   }
 
+  :local(.midi-button) {
+    position: absolute;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    left: 5%;
+    top: calc(50% - 30px);
+    user-select: none;
+    cursor: pointer;
+    z-index: 10;
+
+    :local(img) {
+      width: 30px;
+    }
+
+    &:local(.midi-connected) {
+      animation-duration: 300ms;
+      animation-timing-function: cubic-bezier(0, 0, 0, 1.2);
+      :local {
+        animation-name: midi-bound;
+      }
+
+      & > span {
+        color: var(--green);
+      }
+    }
+  }
+
   :local(.share-button) {
     position: absolute;
     width: 30px;
@@ -335,5 +364,17 @@
   100% {
     transform: translate3d(0px, 0px, 0px);
     opacity: 1;
+  }
+}
+
+@keyframes :local(midi-bound) {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    transform: scale3d(1.2, 1.2, 1.2);
+  }
+  100% {
+    transform: scale3d(1, 1, 1);
   }
 }

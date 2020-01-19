@@ -13,11 +13,14 @@ export interface MusicSelectProps {
   musicSelect: MusicSelectState;
   achievement: Achievement;
   skipTutorial: boolean;
+  canUseMIDI: boolean;
+  isMIDIConnected: boolean;
   goToPlayer: (mode: MusicSelectMode, musicId: string) => void;
   goToMainMenu: () => void;
-  sampleMusicPlay: (
-    { musicIds, faderGainValues }: MusicSelectAction.SampleMusicPlayPayload
-  ) => void;
+  sampleMusicPlay: ({
+    musicIds,
+    faderGainValues,
+  }: MusicSelectAction.SampleMusicPlayPayload) => void;
   sampleMusicFadeOut: (musicIds: string[], duration?: number) => void;
   fadeDiscMusic: (cursor: number, values: number[]) => void;
   changeDiscSide: (cursor: number, discSide: number) => void;
@@ -25,11 +28,13 @@ export interface MusicSelectProps {
   getMusicList: () => void;
   setCursor: (cursor: number) => void;
   ringUnlockSound: () => void;
-  setAchievementState: (
-    { musicId, status }: SystemAction.SetAchievementStatePayload
-  ) => void;
+  setAchievementState: ({
+    musicId,
+    status,
+  }: SystemAction.SetAchievementStatePayload) => void;
   resumeAudioContext: () => void;
   setSkipTutorialState: (value: Partial<Configs>) => void;
+  registerMIDIDevice: () => void;
 }
 
 export const MUSIC_SELECT_PLAY = 'MUSIC_SELECT_PLAY';
@@ -92,6 +97,9 @@ export const MusicSelectView = connect(
     },
     setSkipTutorialState: (value: Partial<Configs>) => {
       dispatch(SystemAction.setConfigsState('skipTutorial', value));
+    },
+    registerMIDIDevice: () => {
+      dispatch(SystemAction.registerMIDIDevice());
     },
   })
 )(MusicSelect);

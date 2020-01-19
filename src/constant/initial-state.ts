@@ -43,6 +43,7 @@ export const initialState: State = {
     },
     achievement: null,
     configs: null,
+    isMIDIConnected: false,
   },
   title: {
     loadingBarWidth: 0,

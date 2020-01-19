@@ -17,12 +17,20 @@ import { AppProps } from './app-container';
 export class App extends React.Component<State & AppProps, {}> {
   render() {
     const { system } = this.props;
-    const { isSystemReady, display, achievement, configs, sound } = system;
+    const {
+      isSystemReady,
+      display,
+      achievement,
+      configs,
+      sound,
+      isMIDIConnected,
+      userAgent,
+    } = system;
     const contextState = sound.context.state;
 
     return (
       <div className={styles.container}>
-        {system.userAgent.os == 'PC' || IS_DEBUG ? (
+        {system.userAgent.os !== 'PC' || IS_DEBUG ? (
           <>
             <Switch>
               <Route
@@ -56,6 +64,8 @@ export class App extends React.Component<State & AppProps, {}> {
                     contextState={contextState}
                     achievement={achievement}
                     skipTutorial={configs.skipTutorial.musicSelect}
+                    isMIDIConnected={isMIDIConnected}
+                    canUseMIDI={userAgent.os === 'Android'}
                   />
                 )}
               />
@@ -68,6 +78,8 @@ export class App extends React.Component<State & AppProps, {}> {
                     contextState={contextState}
                     achievement={achievement}
                     skipTutorial={configs.skipTutorial.musicSelect}
+                    isMIDIConnected={isMIDIConnected}
+                    canUseMIDI={userAgent.os === 'Android'}
                   />
                 )}
               />

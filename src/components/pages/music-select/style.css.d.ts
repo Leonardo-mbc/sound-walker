@@ -1,4 +1,5 @@
 export const container: string;
+export const midiBound: string;
 export const confirmShow: string;
 export const arrivalItemsShow: string;
 export const arrivalItemsHide: string;
@@ -10,6 +11,8 @@ export const show: string;
 export const title: string;
 export const playButton: string;
 export const locked: string;
+export const midiButton: string;
+export const midiConnected: string;
 export const shareButton: string;
 export const backButton: string;
 export const discList: string;

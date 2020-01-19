@@ -21,7 +21,10 @@ export type ActionTypes =
   | AchievementReview
   | SetTouchedForPlay
   | ResumeAudioContext
-  | SetUserAgent;
+  | SetUserAgent
+  | RegisterMIDIDevice
+  | SetMIDIConnected
+  | SendMIDISignal;
 
 export const INITIAL_RUN = 'INITIAL_RUN';
 export const SET_SYSTEM_READY = 'SET_PLAYER_READY';
@@ -44,6 +47,9 @@ export const ACHIEVEMENT_REVIEW = 'ACHIEVEMENT_REVIEW';
 export const SET_TOUCHED_FOR_PLAY = 'SET_TOUCHED_FOR_PLAY';
 export const RESUME_AUDIO_CONTEXT = 'RESUME_AUDIO_CONTEXT';
 export const SET_USER_AGENT = 'SET_USER_AGENT';
+export const REGISTER_MIDI_DEVICE = 'REGISTER_MIDI_DEVICE';
+export const SET_MIDI_CONNECTED = 'SET_MIDI_CONNECTED';
+export const SEND_MIDI_SIGNAL = 'SEND_MIDI_SIGNAL';
 
 export interface InitialRun {
   type: typeof INITIAL_RUN;
@@ -306,4 +312,47 @@ export interface SetUserAgent {
 }
 export const setUserAgent = (): SetUserAgent => ({
   type: SET_USER_AGENT,
+});
+
+export interface RegisterMIDIDevice {
+  type: typeof REGISTER_MIDI_DEVICE;
+}
+export const registerMIDIDevice = (): RegisterMIDIDevice => ({
+  type: REGISTER_MIDI_DEVICE,
+});
+
+export interface SetMIDIConnected {
+  type: typeof SET_MIDI_CONNECTED;
+  payload: {
+    isMIDIConnected: boolean;
+  };
+}
+export const setMIDIConnected = (
+  isMIDIConnected: boolean
+): SetMIDIConnected => ({
+  type: SET_MIDI_CONNECTED,
+  payload: {
+    isMIDIConnected,
+  },
+});
+
+export interface SendMIDISignal {
+  type: typeof SEND_MIDI_SIGNAL;
+  payload: {
+    op1: number;
+    op2: number;
+    value: number;
+  };
+}
+export const sendMIDISignal = (
+  op1: number,
+  op2: number,
+  value: number
+): SendMIDISignal => ({
+  type: SEND_MIDI_SIGNAL,
+  payload: {
+    op1,
+    op2,
+    value,
+  },
 });
