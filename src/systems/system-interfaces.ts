@@ -73,3 +73,7 @@ export interface Configs {
     musicSelect: boolean;
   };
 }
+
+export interface PlayLogs {
+  [index: string]: number;
+}

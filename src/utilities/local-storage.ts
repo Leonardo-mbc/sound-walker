@@ -1,7 +1,7 @@
 import { Base64 } from './base64';
-import { Achievement, Configs } from '../systems/system-interfaces';
+import { Achievement, Configs, PlayLogs } from '../systems/system-interfaces';
 
-export type StorageParams = Achievement | Configs;
+export type StorageParams = Achievement | Configs | PlayLogs;
 
 export function write({
   where,

@@ -2,11 +2,15 @@ import { call, put, takeEvery, select } from 'redux-saga/effects';
 import * as SystemAction from './system-actions';
 import * as TitleAction from '../components/pages/title/title-actions';
 import { AudioUtils } from '../utilities/audio-utils';
-import { Sound, Achievement, Configs } from '../systems/system-interfaces';
+import {
+  Sound,
+  Achievement,
+  Configs,
+  PlayLogs,
+} from '../systems/system-interfaces';
 import * as localStorage from '../utilities/local-storage';
-import { STORAGE_KEYS, WEBSQL_TABLES } from '../constant/storage-keys';
+import { STORAGE_KEYS } from '../constant/storage-keys';
 import { delay } from '../utilities/delay';
-import { WebSQL } from '../utilities/web-sql';
 import { achievementReview } from '../utilities/achievement-review';
 import { getMidiAccess } from '../utilities/midi-setting';
 import { getBluetoothAccess } from '../utilities/bluetooth-setting';
@@ -276,12 +280,19 @@ const systemSaga = [
   takeEvery(SystemAction.ADD_PLAY_LOG, function*(
     action: SystemAction.AddPlayLog
   ) {
-    const db = new WebSQL();
     yield call(async () => {
       try {
-        return await db.insert(WEBSQL_TABLES.PLAY_LOGS, {
-          musicId: action.payload.musicId,
-          datetime: +new Date(),
+        const playLogs = localStorage.read({
+          where: STORAGE_KEYS.PLAY_LOGS,
+        }) as PlayLogs;
+
+        playLogs[action.payload.musicId] = playLogs[action.payload.musicId]
+          ? playLogs[action.payload.musicId] + 1
+          : 1;
+
+        localStorage.write({
+          where: STORAGE_KEYS.PLAY_LOGS,
+          value: playLogs,
         });
       } catch (e) {
         console.error(e);
@@ -292,23 +303,14 @@ const systemSaga = [
   takeEvery(SystemAction.ACHIEVEMENT_REVIEW, function*(
     _action: SystemAction.AchievementReview
   ) {
-    const db = new WebSQL();
-    const result = yield call(async () => {
-      try {
-        return await db.select(WEBSQL_TABLES.PLAY_LOGS);
-      } catch (e) {
-        console.error(e);
-      }
-    });
-
-    let playLogs = [];
-    for (let i = 0; i < result.rows.length; i++) {
-      playLogs.push(result.rows.item(i));
-    }
-
     const achievement = localStorage.read({
       where: STORAGE_KEYS.ACHIEVEMENT,
     }) as Achievement;
+
+    const playLogs = localStorage.read({
+      where: STORAGE_KEYS.PLAY_LOGS,
+    }) as PlayLogs;
+
     const newArrivalIds = achievementReview({
       achievement,
       playLogs,

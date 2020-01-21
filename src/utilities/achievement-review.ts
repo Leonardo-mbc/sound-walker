@@ -1,9 +1,8 @@
-import { Achievement } from '../systems/system-interfaces';
-import { PlayLog } from './web-sql';
+import { Achievement, PlayLogs } from '../systems/system-interfaces';
 
 interface AchievementReview {
   achievement: Achievement;
-  playLogs: PlayLog[];
+  playLogs: PlayLogs;
 }
 
 export const achievementReview = ({
@@ -15,9 +14,8 @@ export const achievementReview = ({
     .filter(({ status }) => status === 'UNLOCKED' || status === 'ARRIVAL')
     .map(({ musicId }) => musicId);
 
-  playLogs
-    .map(({ musicId }) => musicId)
-    .filter((x, i, self) => self.indexOf(x) === i)
+  openedMusicIds
+    .filter((musicId) => playLogs[musicId] && 1 <= playLogs[musicId])
     .map((musicId) => {
       // Played musicIds loop
       switch (musicId) {
