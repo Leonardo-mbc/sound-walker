@@ -31,7 +31,7 @@
     "redux-devtools-extension": "^2.13.5",
     "redux-saga": "^0.16.0",
     "rxjs": "^6.2.2",
-    "three": "^0.96.0",
+    "three": "^0.137.0",
     "three-orbitcontrols": "^2.1.2",
     "three-shaders": "^1.0.16",
     "tween.js": "^16.6.0",
