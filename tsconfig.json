@@ -4,19 +4,16 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "module": "commonjs",
-    "target": "es5",
-    "allowJs": false,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "target": "es2020",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "skipLibCheck": true,
-    "lib": [
-      "es2015",
-      "dom"
-    ],
-    "jsx": "react"
+    "jsx": "react",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "isolatedModules": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "_references.ts"],
+  "exclude": ["node_modules", "public"]
 }
