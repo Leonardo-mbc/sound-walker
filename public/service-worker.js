@@ -1,34 +1,3 @@
-/**
- * Welcome to your Workbox-powered service worker!
- *
- * You'll need to register this file in your web app and you should
- * disable HTTP caching for this file too.
- * See https://goo.gl/nhQhGp
- *
- * The rest of the code is auto-generated. Please don't update this file
- * directly; instead, make changes to your Workbox build configuration
- * and re-run your build process.
- * See https://goo.gl/2aRDsh
- */
-
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
-
-importScripts(
-  "precache-manifest/5004da51ad17b6eb3f3082c2b33e4157.js"
-);
-
-workbox.skipWaiting();
-workbox.clientsClaim();
-
-/**
- * The workboxSW.precacheAndRoute() method efficiently caches and responds to
- * requests for URLs in the manifest.
- * See https://goo.gl/S9QRab
- */
-self.__precacheManifest = [].concat(self.__precacheManifest || []);
-workbox.precaching.suppressWarnings();
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
-
-workbox.routing.registerRoute(/assets\/images/, workbox.strategies.cacheFirst({ "cacheName":"images", plugins: [new workbox.expiration.Plugin({"maxAgeSeconds":86400,"purgeOnQuotaError":false})] }), 'GET');
-workbox.routing.registerRoute(/assets\/sounds/, workbox.strategies.cacheFirst({ "cacheName":"sounds", plugins: [new workbox.expiration.Plugin({"maxAgeSeconds":2592000,"purgeOnQuotaError":false})] }), 'GET');
-workbox.routing.registerRoute(/musics/, workbox.strategies.cacheFirst({ "cacheName":"musics", plugins: [new workbox.expiration.Plugin({"maxAgeSeconds":2592000,"purgeOnQuotaError":false})] }), 'GET');
+if(!self.define){let e,s={};const n=(n,c)=>(n=new URL(n+".js",c).href,s[n]||new Promise(s=>{if("document"in self){const e=document.createElement("script");e.src=n,e.onload=s,document.head.appendChild(e)}else e=n,importScripts(n),s()}).then(()=>{let e=s[n];if(!e)throw new Error(`Module ${n} didn’t register its module`);return e}));self.define=(c,i)=>{const o=e||("document"in self?document.currentScript.src:"")||location.href;if(s[o])return;let t={};const r=e=>n(e,o),u={module:{uri:o},exports:t,require:r};s[o]=Promise.all(c.map(e=>u[e]||r(e))).then(e=>(i(...e),t))}}define(["./workbox-4723f0ce"],function(e){"use strict";self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"/app.js",revision:"5afc07192c5a812d671869613b17c644"},{url:"/app.js.LICENSE.txt",revision:"00bbbfb7ec9351f74e553f3ae1125b25"},{url:"/index.html",revision:"a6491b90dbccab6c26d18a2359c4ddbb"},{url:"/style.css",revision:"fc8702f684422382493c40d207c7267c"}],{}),e.registerRoute(/assets\/images/,new e.CacheFirst({cacheName:"images",plugins:[new e.ExpirationPlugin({maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/assets\/sounds/,new e.CacheFirst({cacheName:"sounds",plugins:[new e.ExpirationPlugin({maxAgeSeconds:2592e3})]}),"GET"),e.registerRoute(/musics/,new e.CacheFirst({cacheName:"musics",plugins:[new e.ExpirationPlugin({maxAgeSeconds:2592e3})]}),"GET")});
+//# sourceMappingURL=service-worker.js.map
+//# sourceMappingURL=service-worker.js.map
