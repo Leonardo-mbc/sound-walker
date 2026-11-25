@@ -39,8 +39,8 @@
 
   :local(.play-button) {
     position: absolute;
-    bottom: 5%;
-    right: 5%;
+    bottom: max(5%, env(safe-area-inset-bottom));
+    right: max(5%, env(safe-area-inset-right));
     display: block;
     font-weight: bold;
     font-size: xx-large;
@@ -103,8 +103,8 @@
 
   :local(.back-button) {
     position: absolute;
-    bottom: 5%;
-    left: 5%;
+    bottom: max(5%, env(safe-area-inset-bottom));
+    left: max(5%, env(safe-area-inset-left));
     display: block;
     font-weight: bold;
     font-size: xx-large;
@@ -142,6 +142,11 @@
       border-bottom: 2px solid var(--white-alpha8);
       border-top: 2px solid var(--white-alpha8);
       flex-direction: column;
+
+      @media (orientation: portrait) {
+        height: auto;
+        padding: 16px 16px 12px;
+      }
       justify-content: center;
 
       animation-duration: 300ms;
@@ -185,6 +190,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      box-sizing: border-box;
+
+      @media (orientation: portrait) {
+        flex-direction: column;
+        padding: 16px 6vw;
+      }
 
       animation-duration: 200ms;
       animation-fill-mode: backwards;
@@ -203,6 +214,11 @@
 
     :local(.arrival-message) {
       width: 50%;
+      min-width: 0;
+
+      @media (orientation: portrait) {
+        width: 100%;
+      }
       animation-duration: 200ms;
       animation-offset: 100ms;
       animation-fill-mode: backwards;
@@ -220,8 +236,9 @@
           background-size: contain;
           background-repeat: no-repeat;
           background-position: center;
-          width: 80vh;
-          height: 10vh;
+          width: min(80vh, 100%);
+          height: auto;
+          aspect-ratio: 8 / 1;
           display: block;
         }
       }
@@ -240,8 +257,9 @@
   }
 
   :local(.tutorial-container) {
-    position: absolute;
+    position: fixed;
     top: 0px;
+    left: 0px;
     width: 100%;
     height: 100%;
     z-index: 10;

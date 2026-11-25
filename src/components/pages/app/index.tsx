@@ -1,18 +1,27 @@
 import * as React from 'react';
-import * as QRCode from 'qrcode.react';
-import { Route, Switch } from 'react-router';
+import { QRCodeSVG } from 'qrcode.react';
+import { Route, Routes, useParams } from 'react-router';
 import * as styles from './style.css';
 import { TitleView } from '../title/title-container';
 import { PlayerView } from '../player/player-container';
 import { State } from '../../../constant/initial-state';
 import { LoadingCircle } from '../../commons/loading-circle';
-import { VerticalAnnounce } from '../../commons/vertical-announce/index';
 import {
   MusicSelectView,
   MUSIC_SELECT_DJ_MODE,
   MUSIC_SELECT_PLAY,
+  MusicSelectMode,
 } from '../music-select/music-select-container';
 import { AppProps } from './app-container';
+
+function PlayerRoute(props: {
+  mode: MusicSelectMode;
+  isSystemReady: boolean;
+  skipTutorial: boolean;
+}) {
+  const { musicId = '' } = useParams();
+  return <PlayerView {...props} match={{ params: { musicId } }} />;
+}
 
 export class App extends React.Component<State & AppProps, {}> {
   render() {
@@ -26,67 +35,69 @@ export class App extends React.Component<State & AppProps, {}> {
       isMIDIConnected,
       userAgent,
     } = system;
-    const contextState = sound.context.state;
+    const contextState = sound.context ? sound.context.state : 'suspended';
+    const playTutorial = configs ? configs.skipTutorial.playMode : false;
+    const djTutorial = configs ? configs.skipTutorial.djMode : false;
+    const musicSelectTutorial = configs
+      ? configs.skipTutorial.musicSelect
+      : false;
 
     return (
       <div className={styles.container}>
         {system.userAgent.os !== 'PC' || IS_DEBUG ? (
           <>
-            <Switch>
+            <Routes>
               <Route
                 path="/player/:musicId"
-                render={(props) => (
-                  <PlayerView
+                element={
+                  <PlayerRoute
                     mode={MUSIC_SELECT_PLAY}
                     isSystemReady={isSystemReady}
-                    skipTutorial={configs.skipTutorial.playMode}
-                    {...props}
+                    skipTutorial={playTutorial}
                   />
-                )}
+                }
               />
               <Route
                 path="/dj-player/:musicId"
-                render={(props) => (
-                  <PlayerView
+                element={
+                  <PlayerRoute
                     mode={MUSIC_SELECT_DJ_MODE}
                     isSystemReady={isSystemReady}
-                    skipTutorial={configs.skipTutorial.djMode}
-                    {...props}
+                    skipTutorial={djTutorial}
                   />
-                )}
+                }
               />
               <Route
                 path="/music-select"
-                render={() => (
+                element={
                   <MusicSelectView
                     mode={MUSIC_SELECT_PLAY}
                     isSystemReady={isSystemReady}
                     contextState={contextState}
                     achievement={achievement}
-                    skipTutorial={configs.skipTutorial.musicSelect}
+                    skipTutorial={musicSelectTutorial}
                     isMIDIConnected={isMIDIConnected}
                     canUseMIDI={userAgent.os === 'Android'}
                   />
-                )}
+                }
               />
               <Route
                 path="/dj-mode"
-                render={() => (
+                element={
                   <MusicSelectView
                     mode={MUSIC_SELECT_DJ_MODE}
                     isSystemReady={isSystemReady}
                     contextState={contextState}
                     achievement={achievement}
-                    skipTutorial={configs.skipTutorial.musicSelect}
+                    skipTutorial={musicSelectTutorial}
                     isMIDIConnected={isMIDIConnected}
                     canUseMIDI={userAgent.os === 'Android'}
                   />
-                )}
+                }
               />
-              <Route path="/" component={TitleView} />
-            </Switch>
+              <Route path="/*" element={<TitleView />} />
+            </Routes>
             <LoadingCircle isVisible={display.isLoadingCircleVisible} />
-            <VerticalAnnounce isVisible={!display.isPortrait} />
           </>
         ) : (
           <div className={styles.qrContainer}>
@@ -94,7 +105,7 @@ export class App extends React.Component<State & AppProps, {}> {
             <div className={styles.qrBody}>
               <p>スマートフォンでアクセスしてください</p>
               <div className={styles.qr}>
-                <QRCode
+                <QRCodeSVG
                   size={128}
                   value={location.href}
                   bgColor="#212121"

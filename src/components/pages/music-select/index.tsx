@@ -74,7 +74,7 @@ export class MusicSelect extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -372,8 +372,8 @@ export class MusicSelect extends React.Component<
 
     const discListStyle: React.CSSProperties = {
       transform: `translate3d(calc(${this.state.discTouchmovePositionX *
-        0.8}px - ${cursor * 100}vh), calc(${this.state.discTouchmovePositionX *
-        0.8}px - ${cursor * 100}vh), 0px)`,
+        0.8}px - ${cursor * 100}vmin), calc(${this.state.discTouchmovePositionX *
+        0.8}px - ${cursor * 100}vmin + (100dvh - 100vmin) / 2), 0px)`,
     };
     const openedMusics = achievement.scores
       .filter(({ status }) => status === 'UNLOCKED')
@@ -396,7 +396,7 @@ export class MusicSelect extends React.Component<
     }
 
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         {isSystemReady ? (
           <>
             <div
@@ -461,7 +461,7 @@ export class MusicSelect extends React.Component<
                 )
                 .map((discInfo, idx) => {
                   const customStyle: React.CSSProperties = {
-                    marginLeft: `${idx * 200}vh`,
+                    marginLeft: `${idx * 200}vmin`,
                   };
                   return (
                     <MusicDisc
@@ -538,7 +538,7 @@ export class MusicSelect extends React.Component<
                     isDiscImageOnly
                     discInfo={musicList[cursor]}
                     discSide={discSide[cursor]}
-                    size="25vh"
+                    size="25vmin"
                     customStyle={{ margin: '20px' }}
                   />
                   <div className={styles.shareButtons}>
@@ -594,7 +594,7 @@ export class MusicSelect extends React.Component<
                     isDiscImageOnly
                     discInfo={musicList[arrivalPosition.cursor]}
                     discSide={arrivalPosition.side}
-                    size="25vh"
+                    size="25vmin"
                     customStyle={{ margin: '20px' }}
                   />
                   <div

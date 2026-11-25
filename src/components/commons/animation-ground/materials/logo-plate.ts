@@ -5,9 +5,9 @@ export const logoPlateFactory = () => {
   const texture = textureLoader.load('/assets/images/logo@x2.png');
   texture.minFilter = THREE.NearestFilter;
   texture.magFilter = THREE.NearestFilter;
-  texture.format = THREE.RGBFormat;
+  texture.colorSpace = THREE.NoColorSpace;
 
-  const geometry = new THREE.PlaneBufferGeometry(2048, 2048, 1, 1);
+  const geometry = new THREE.PlaneGeometry(2048, 2048, 1, 1);
   const material = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     map: texture,

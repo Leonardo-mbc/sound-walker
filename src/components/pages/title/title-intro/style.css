@@ -24,6 +24,13 @@
       max-height: 800px;
       flex-shrink: 0;
 
+      @media (orientation: portrait) {
+        width: 46%;
+        height: auto;
+        max-width: 200px;
+        max-height: none;
+      }
+
       animation-duration: 300ms;
       animation-timing-function: ease-out;
       animation-fill-mode: forwards;

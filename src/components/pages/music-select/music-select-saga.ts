@@ -1,9 +1,9 @@
-import * as TWEEN from 'tween.js';
+import * as TWEEN from '../../../utilities/tween';
 import { takeEvery, put, call, select } from 'redux-saga/effects';
 import * as MusicSelectAction from './music-select-actions';
 import * as SystemAction from '../../../systems/system-actions';
 import { delay } from '../../../utilities/delay';
-import { push } from 'react-router-redux';
+import { push } from '../../../utilities/navigate';
 import { AudioUtils } from '../../../utilities/audio-utils';
 import { Sound } from '../../../systems/system-interfaces';
 import { musicList } from '../../../constant/music-list';
@@ -19,17 +19,17 @@ const musicSelectSaga = [
     // yield delay(800);
     switch (action.payload.mode) {
       case MUSIC_SELECT_PLAY:
-        yield put(push(`/player/${action.payload.musicId}`));
+        yield call(push, `/player/${action.payload.musicId}`);
         break;
       case MUSIC_SELECT_DJ_MODE:
-        yield put(push(`/dj-player/${action.payload.musicId}`));
+        yield call(push, `/dj-player/${action.payload.musicId}`);
         break;
     }
   }),
 
   takeEvery(MusicSelectAction.SAMPLE_MUSIC_PLAY, function*(
     action: MusicSelectAction.SampleMusicPlay
-  ) {
+  ): Generator<any, void, any> {
     const { musicIds, faderGainValues } = action.payload;
     const [musicAId, musicBId] = musicIds;
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as styles from './style.css';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 import {
   MENU_MUSIC_SELECT,
   MENU_DJ_MODE,
@@ -33,10 +33,6 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
   constructor(props: TitleMenuProps, state: TitleMenuState) {
     super(props, state);
 
-    if (props.isLoadComplete) {
-      props.jumpTitleSound();
-    }
-
     this.state = {
       selectedItem: null,
       animationGroundFadeOut: false,
@@ -46,11 +42,15 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
   }
 
   componentDidMount() {
+    if (this.props.isLoadComplete) {
+      this.props.jumpTitleSound();
+    }
+
     let passiveSupported = false;
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -142,7 +142,7 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
 
   render() {
     return this.props.isLoadComplete ? (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         <div className={styles.animationContainer}>
           <AnimationGround fadeOut={this.state.animationGroundFadeOut} />
         </div>
@@ -222,7 +222,7 @@ export class TitleMenu extends React.Component<TitleMenuProps, TitleMenuState> {
         </div>
       </div>
     ) : (
-      <Redirect to={'/'} />
+      <Navigate to="/" replace />
     );
   }
 }

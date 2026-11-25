@@ -37,7 +37,7 @@ export class MusicSelectTutorial extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -69,10 +69,9 @@ export class MusicSelectTutorial extends React.Component<
   setSkipTutorialState(isSkipTutorialFromNext: boolean) {
     const { setSkipTutorialState } = this.props;
 
-    // FIXME 動作は問題ないけど、型でエラーになる
-    const skipTarget = 'musicSelect' || '';
-
-    setSkipTutorialState({ [skipTarget]: isSkipTutorialFromNext });
+    setSkipTutorialState({
+      musicSelect: isSkipTutorialFromNext,
+    } as Partial<Configs>);
     this.setState({
       isSkipTutorialFromNext,
     });
@@ -83,7 +82,7 @@ export class MusicSelectTutorial extends React.Component<
 
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.container}
         data-title={`TUTORIAL`}
         data-target={TUTORIAL_MS_CLOSE}

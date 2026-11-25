@@ -30,7 +30,7 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -97,7 +97,7 @@ export class DJPlayer extends React.Component<DJPlayerProps, DJPlayerState> {
     const { analyzerNode, analyzerParams } = this.props;
 
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         <div className={styles.circleVisualizerContainer}>
           <CircleVisualizer
             analyzerNode={analyzerNode}

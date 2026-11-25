@@ -25,7 +25,6 @@ export const squareFactory = ({
     color: color,
     fog: false,
     wireframe: true,
-    wireframeLinewidth: 2,
     transparent: true,
     opacity: 0.5,
   });

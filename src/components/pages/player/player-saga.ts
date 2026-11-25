@@ -6,10 +6,12 @@ import { AudioUtils } from '../../../utilities/audio-utils';
 import { request } from '../../../utilities/request';
 import { delay } from '../../../utilities/delay';
 import { PlayerState } from './player-interfaces';
-import { push } from 'react-router-redux';
+import { push } from '../../../utilities/navigate';
 
 const playerSaga = [
-  takeEvery(PlayerAction.LOAD_MUSIC, function*(action: PlayerAction.LoadMusic) {
+  takeEvery(PlayerAction.LOAD_MUSIC, function*(
+    action: PlayerAction.LoadMusic
+  ): Generator<any, void, any> {
     yield put(SystemAction.setLoadingCircleVisible(true));
 
     const { url } = action.payload;
@@ -66,7 +68,7 @@ const playerSaga = [
 
   takeEvery(PlayerAction.LOAD_MUSIC_INFO, function*(
     action: PlayerAction.LoadMusicInfo
-  ) {
+  ): Generator<any, void, any> {
     const { musicId } = action.payload;
 
     const scoreJson = yield call(async () => {
@@ -107,7 +109,7 @@ const playerSaga = [
     const { source } = player as PlayerState;
 
     source.stop();
-    yield put(push(`/dj-mode`));
+    yield call(push, '/dj-mode');
   }),
 ];
 

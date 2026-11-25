@@ -5,7 +5,7 @@ export class Browser {
   static instance: Browser;
   private _ua: string;
   private _device: string;
-  private _version: number;
+  private _version: number | null;
 
   get ua() {
     return this._ua;
@@ -22,24 +22,17 @@ export class Browser {
     this._device = this._getDevice(this._ua);
     this._version = this._getVersion(this._ua);
 
-    // FIXME
-    const isIPhoneX =
-      window.devicePixelRatio === 3 &&
-      (window.screen.width === 375 ||
-        window.screen.height === 375 ||
-        window.screen.width === 414 ||
-        window.screen.height === 414) &&
-      /iPhone/.test(window.navigator.userAgent);
-
-    if (isIPhoneX) {
-      document.body.classList.add('iphonex');
+    if (this._device === 'iOS') {
+      document.body.classList.add('ios');
     }
   }
 
   _getDevice(ua: string) {
+    const isIpadDesktop =
+      navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform);
     if (/Android/.test(ua)) {
       return 'Android';
-    } else if (/iP(hone|od|ad)/.test(ua)) {
+    } else if (/iP(hone|od|ad)/.test(ua) || isIpadDesktop) {
       return 'iOS';
     } else {
       return 'PC';
@@ -50,24 +43,25 @@ export class Browser {
     switch (this._getDevice(ua)) {
       case 'Android':
         return this._getAndroidVersion(ua);
-        break;
 
       case 'iOS':
         return this._getIosVersion(ua);
-        break;
 
       default:
-        // PC or Unknown
         return null;
     }
   }
 
   _getAndroidVersion(ua: string) {
-    return parseFloat(ua.slice(ua.indexOf('Android') + 8));
+    const matched = ua.match(/Android (\d+(?:\.\d+)?)/);
+    return matched ? parseFloat(matched[1]) : null;
   }
 
   _getIosVersion(ua: string) {
-    ua.match(/iP(hone|od|ad).+?OS (\w+){1,3}/g);
-    return parseFloat(RegExp.$2.replace(/_/, '.').replace(/_/g, ''));
+    const matched = ua.match(/OS (\d+)[_\.](\d+)?/);
+    if (!matched) {
+      return null;
+    }
+    return parseFloat(`${matched[1]}.${matched[2] || '0'}`);
   }
 }

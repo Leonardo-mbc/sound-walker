@@ -1,7 +1,7 @@
 :local(.container) {
   width: 100%;
   height: 100%;
-  filter: blur(3px);
+  filter: blur(1px);
 
   & > canvas {
     display: block;

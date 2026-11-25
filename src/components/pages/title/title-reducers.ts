@@ -25,10 +25,13 @@ export function titleReducer(
       };
 
     case SET_TITLE_OFFSET_CURRENT_TIME:
-      return {
-        ...state,
-        offsetCurrentTime: action.payload.offsetCurrentTime,
-      };
+    if (state.offsetCurrentTime === action.payload.offsetCurrentTime) {
+      return state;
+    }
+    return {
+      ...state,
+      offsetCurrentTime: action.payload.offsetCurrentTime,
+    };
 
     default:
       return state;

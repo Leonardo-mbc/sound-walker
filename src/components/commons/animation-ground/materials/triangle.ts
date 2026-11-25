@@ -13,13 +13,19 @@ export const triangleFactory = ({
   offsetX,
   offsetY,
 }: TriangleFactoryParams) => {
-  const geometry = new THREE.Geometry();
-
-  geometry.vertices.push(new THREE.Vector3(0, 200, index));
-  geometry.vertices.push(new THREE.Vector3(-400.0 / Math.sqrt(3), -200, index));
-  geometry.vertices.push(new THREE.Vector3(400.0 / Math.sqrt(3), -200, index));
-
-  geometry.faces[0] = new THREE.Face3(0, 1, 2);
+  const geometry = new THREE.BufferGeometry();
+  const vertices = new Float32Array([
+    0,
+    200,
+    index,
+    -400.0 / Math.sqrt(3),
+    -200,
+    index,
+    400.0 / Math.sqrt(3),
+    -200,
+    index,
+  ]);
+  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
   const material = new THREE.MeshBasicMaterial({
     color: color,

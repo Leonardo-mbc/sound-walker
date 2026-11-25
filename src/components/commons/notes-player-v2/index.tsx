@@ -18,7 +18,7 @@ interface NotesPlayerV2State {
   stepsTimers: number[];
   stepsState: StepsState;
   timingBarBlink: boolean;
-  tapEffectDoms: JSX.Element[];
+  tapEffectDoms: React.ReactElement[];
   knobBarState: KnobBarState;
 }
 
@@ -101,7 +101,7 @@ export class NotesPlayerV2 extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -237,7 +237,7 @@ export class NotesPlayerV2 extends React.Component<
     };
 
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         <div
           className={`${styles.timingBar} ${
             timingBarBlink ? styles.timingBarBlink : ''
@@ -272,7 +272,7 @@ export class NotesPlayerV2 extends React.Component<
           </div>
         </div>
         <div
-          ref={(elem) => (this.stepCursor = elem)}
+          ref={(elem) => { this.stepCursor = elem; }}
           className={styles.stepCursor}
         />
         {scores.map((score, scoreKey) => {

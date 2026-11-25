@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export class SimpleScene {
   private _scene: THREE.Scene;
-  private _clearColor: number;
+  private _clearColor: THREE.Color;
   private _alpha: number;
   private _camera: THREE.PerspectiveCamera;
   private _fbo: THREE.WebGLRenderTarget;
@@ -21,7 +21,10 @@ export class SimpleScene {
     const width = innerWidth;
     const height = innerHeight;
 
-    this._clearColor = clearColor;
+    this._clearColor = new THREE.Color().setHex(
+      clearColor,
+      THREE.LinearSRGBColorSpace
+    );
     this._alpha = alpha;
     this._camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
@@ -33,11 +36,23 @@ export class SimpleScene {
     });
   }
 
+  resize(width: number, height: number) {
+    const safeWidth = Math.max(1, Math.floor(width));
+    const safeHeight = Math.max(1, Math.floor(height));
+    this._camera.aspect = safeWidth / safeHeight;
+    this._camera.updateProjectionMatrix();
+    this._fbo.setSize(safeWidth * 2, safeHeight * 2);
+  }
+
   render(renderer: THREE.WebGLRenderer, _delta: number, _rtt: boolean) {
     renderer.setClearColor(this._clearColor, this._alpha);
     if (_rtt) {
-      renderer.render(this._scene, this._camera, this.fbo, true);
+      renderer.setRenderTarget(this._fbo);
+      renderer.clear();
+      renderer.render(this._scene, this._camera);
+      renderer.setRenderTarget(null);
     } else {
+      renderer.setRenderTarget(null);
       renderer.render(this._scene, this._camera);
     }
   }

@@ -4,6 +4,7 @@ import { DiscInfo } from './music-disc-interface';
 import { DISC_LABEL, FADER_BAR } from '../../../constant/target-name';
 
 interface MusicDiscProps {
+  children?: React.ReactNode;
   discInfo: DiscInfo;
   discSide: number;
   customStyle?: React.CSSProperties;
@@ -46,7 +47,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -225,7 +226,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
 
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.container}
         style={customContainerStyle}
       >
@@ -265,7 +266,7 @@ export class MusicDisc extends React.Component<MusicDiscProps, MusicDiscState> {
               <div className={styles.crossFader}>
                 <span className={styles.a}>A</span>
                 <div
-                  ref={(elem) => (this.fader = elem)}
+                  ref={(elem) => { this.fader = elem; }}
                   className={styles.fader}
                 >
                   <div

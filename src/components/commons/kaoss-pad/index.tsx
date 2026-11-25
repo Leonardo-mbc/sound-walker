@@ -106,8 +106,8 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
     const { opacity, top, left, filter } = this.state.cursorStyle;
     const vhSize = this.props.vhSize || 20;
     const containerStyle = {
-      width: `${vhSize}vh`,
-      height: `${vhSize}vh`,
+      width: `${vhSize}vmin`,
+      height: `${vhSize}vmin`,
     };
 
     const cursorStyle = {
@@ -119,7 +119,7 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
 
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.container}
         style={containerStyle}
         data-target={KAOSS_PAD}
@@ -128,7 +128,7 @@ export class KaossPad extends React.Component<KaossPadProps, KaossPadState> {
         onTouchEnd={(e) => this.onTouchEnd(e)}
       >
         <div
-          ref={(elem) => (this.cursor = elem)}
+          ref={(elem) => { this.cursor = elem; }}
           style={cursorStyle}
           className={styles.chipCursor}
         />

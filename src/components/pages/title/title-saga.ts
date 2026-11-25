@@ -1,9 +1,9 @@
-import * as TWEEN from 'tween.js';
-import { put, takeEvery, select } from 'redux-saga/effects';
+import * as TWEEN from '../../../utilities/tween';
+import { call, put, takeEvery, select } from 'redux-saga/effects';
 import * as TitleAction from './title-actions';
 import * as SystemAction from '../../../systems/system-actions';
 import { Sound } from '../../../systems/system-interfaces';
-import { push } from 'react-router-redux';
+import { push } from '../../../utilities/navigate';
 import { delay } from '../../../utilities/delay';
 import { TitleState } from './title-interfaces';
 
@@ -15,15 +15,15 @@ const titleSaga = [
     const { sources, context } = system.sound as Sound;
 
     if (context.state === 'suspended') {
-      context.resume();
+      yield call(() => context.resume());
       yield put(SystemAction.setTouchedForPlay(true));
-      yield delay(100);
+      yield delay(50);
     }
 
     sources.title.start(0, 0);
     yield put(TitleAction.setOffsetCurrentTime(context.currentTime));
 
-    yield put(push('/title/intro'));
+    yield call(push, '/title/intro');
   }),
 
   takeEvery(TitleAction.GO_TO_MAIN_MENU, function*(
@@ -33,7 +33,7 @@ const titleSaga = [
     const { systemGainNode } = system.sound as Sound;
     new TWEEN.Tween(systemGainNode.gain).to({ value: 1.0 }, 1000).start();
 
-    yield put(push('/title/menu'));
+    yield call(push, '/title/menu');
   }),
 
   takeEvery(TitleAction.JUMP_TITLE_SOUND, function*(
@@ -78,7 +78,7 @@ const titleSaga = [
       })
       .start();
     yield delay(800);
-    yield put(push('/music-select'));
+    yield call(push, '/music-select');
   }),
 
   takeEvery(TitleAction.GO_TO_DJ_MODE, function*(
@@ -97,7 +97,7 @@ const titleSaga = [
       })
       .start();
     yield delay(800);
-    yield put(push('/dj-mode'));
+    yield call(push, '/dj-mode');
   }),
 ];
 

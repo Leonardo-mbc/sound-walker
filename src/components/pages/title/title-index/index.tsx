@@ -15,7 +15,7 @@ export class TitleIndex extends React.Component<TitleIndexProps, {}> {
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -51,7 +51,7 @@ export class TitleIndex extends React.Component<TitleIndexProps, {}> {
 
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.loadingContainer}
       >
         {isLoadComplete ? (

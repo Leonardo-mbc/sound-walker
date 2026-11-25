@@ -47,27 +47,21 @@ export class Transition {
     this._quadmaterial = new THREE.ShaderMaterial({
       uniforms: {
         tDiffuse1: {
-          type: 't',
           value: null,
         },
         tDiffuse2: {
-          type: 't',
           value: null,
         },
         mixRatio: {
-          type: 'f',
           value: 0.0,
         },
         threshold: {
-          type: 'f',
           value: 0.1,
         },
         useTexture: {
-          type: 'i',
           value: 1,
         },
         tMixTexture: {
-          type: 't',
           value: this._textures[0],
         },
       },
@@ -114,7 +108,7 @@ export class Transition {
       ].join('\n'),
     });
 
-    const quadgeometry = new THREE.PlaneBufferGeometry(
+    const quadgeometry = new THREE.PlaneGeometry(
       window.innerWidth,
       window.innerHeight
     );
@@ -122,8 +116,8 @@ export class Transition {
     this._scene.add(new THREE.Mesh(quadgeometry, this._quadmaterial));
 
     // Link both scenes and their FBOs
-    this._quadmaterial.uniforms.tDiffuse1.value = sceneA.fbo;
-    this._quadmaterial.uniforms.tDiffuse2.value = sceneB.fbo;
+    this._quadmaterial.uniforms.tDiffuse1.value = sceneA.fbo.texture;
+    this._quadmaterial.uniforms.tDiffuse2.value = sceneB.fbo.texture;
   }
 
   setTextureThreshold(value: any) {
@@ -136,6 +130,21 @@ export class Transition {
 
   setTexture(i: number) {
     this._quadmaterial.uniforms.tMixTexture.value = this._textures[i];
+  }
+
+  resize(width: number, height: number) {
+    this._cameraOrtho.left = width / -2;
+    this._cameraOrtho.right = width / 2;
+    this._cameraOrtho.top = height / 2;
+    this._cameraOrtho.bottom = height / -2;
+    this._cameraOrtho.position.z = 5;
+    this._cameraOrtho.updateProjectionMatrix();
+
+    const mesh = this._scene.children[0] as THREE.Mesh;
+    mesh.geometry.dispose();
+    mesh.geometry = new THREE.PlaneGeometry(width, height);
+    this._sceneA.resize(width, height);
+    this._sceneB.resize(width, height);
   }
 
   render(renderer: THREE.WebGLRenderer, delta: number, transition: number) {
@@ -153,7 +162,8 @@ export class Transition {
       // When 0<transition<1 render transition between two scenes
       this._sceneA.render(renderer, delta, true);
       this._sceneB.render(renderer, delta, true);
-      renderer.render(this._scene, this._cameraOrtho, null, true);
+      renderer.setRenderTarget(null);
+      renderer.render(this._scene, this._cameraOrtho);
     }
   }
 }

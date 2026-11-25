@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
-import { RouteProps } from 'react-router';
 import { Title } from './index';
-import { TitleState } from './title-interfaces';
 import * as TitleAction from './title-actions';
+import { State } from '../../../constant/initial-state';
 
 export interface TitleViewProps {
-  title: TitleState;
-  router: RouteProps;
+  title: {
+    isLoadComplete: boolean;
+  };
   startGameTitle: () => void;
   goToMainMenu: () => void;
   jumpTitleSound: () => void;
@@ -15,11 +15,11 @@ export interface TitleViewProps {
 }
 
 export const TitleView = connect(
-  (state: TitleViewProps) => {
-    const { title, router } = state;
+  (state: State) => {
     return {
-      title,
-      router,
+      title: {
+        isLoadComplete: state.title.isLoadComplete,
+      },
     };
   },
   (dispatch) => ({

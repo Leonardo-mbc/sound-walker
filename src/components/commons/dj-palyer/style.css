@@ -26,13 +26,25 @@
   }
   :local(.systemButtons) {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: max(5%, env(safe-area-inset-bottom));
+    left: max(5%, env(safe-area-inset-left));
 
     :local(span) {
       font-weight: bold;
       font-size: 27px;
       cursor: pointer;
     }
+  }
+}
+
+@media (orientation: portrait) {
+  :local(.effector-container) {
+    flex-direction: column;
+    gap: 2vmin;
+  }
+
+  :local(.knob-container) {
+    display: flex;
+    justify-content: center;
   }
 }

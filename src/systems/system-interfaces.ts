@@ -36,8 +36,8 @@ export interface FilterNode {
 }
 
 export interface AnalyserParams {
-  times: Uint8Array;
-  freqs: Uint8Array;
+  times: Uint8Array<ArrayBuffer>;
+  freqs: Uint8Array<ArrayBuffer>;
 }
 
 export interface Display {

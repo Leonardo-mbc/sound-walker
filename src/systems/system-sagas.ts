@@ -108,23 +108,38 @@ const systemSaga = [
   takeEvery(SystemAction.REMAKE_SYSTEM_SOUNDS, function*(
     action: SystemAction.RemakeSystemSounds
   ) {
-    try {
-      // タイトル以外の画面から入ってきたときに再生されてないためエラーとなるため
-      action.payload.bufferNode.stop(0);
-    } catch (e) {}
-
     const audioUtils = AudioUtils.instance;
-    const buffer = action.payload.bufferNode.buffer;
-    const bufferNode = audioUtils.context.createBufferSource();
+    const context = audioUtils.context;
+    const previous = action.payload.bufferNode;
+    const buffer = previous.buffer
+      ? audioUtils.cloneIntoContext(previous.buffer)
+      : null;
+    const bufferNode = context.createBufferSource();
     bufferNode.buffer = buffer;
 
     const { system } = yield select();
     const { systemGainNode } = system.sound as Sound;
     bufferNode.connect(systemGainNode);
 
-    if (action.payload.soonToPlay) {
-      bufferNode.start(0, action.payload.startTime);
+    // iOS は start(0, offset) だと、シーク位置から壊れた音を出し続ける
+    const when = context.currentTime + 0.03;
+    if (action.payload.soonToPlay && buffer) {
+      const offset = Math.min(
+        Math.max(action.payload.startTime || 0, 0),
+        Math.max(buffer.duration - 0.05, 0)
+      );
+      bufferNode.start(when, offset);
     }
+
+    try {
+      // タイトル以外の画面から入ってきたときに再生されてないためエラーとなるため
+      previous.stop(when);
+    } catch (e) {}
+    window.setTimeout(() => {
+      try {
+        previous.disconnect();
+      } catch (e) {}
+    }, 100);
 
     yield put(
       SystemAction.setSystemSource({
@@ -136,7 +151,7 @@ const systemSaga = [
 
   takeEvery(SystemAction.GET_ACHIEVEMENT, function*(
     _action: SystemAction.GetAchievement
-  ) {
+  ): Generator<any, void, any> {
     const achievement = yield call(() => {
       const data = localStorage.read({
         where: STORAGE_KEYS.ACHIEVEMENT,
@@ -165,7 +180,7 @@ const systemSaga = [
 
   takeEvery(SystemAction.GET_CONFIGS, function*(
     _action: SystemAction.GetConfigs
-  ) {
+  ): Generator<any, void, any> {
     const configs = yield call(() => {
       const data = localStorage.read({
         where: STORAGE_KEYS.CONFIGS,
@@ -341,19 +356,15 @@ const systemSaga = [
     const { system } = yield select();
     const { context } = system.sound as Sound;
 
-    // AudioContext の作成を待つ
-    yield delay(200);
-
-    if (context.state === 'suspended') {
-      context.resume();
+    if (context && context.state === 'suspended') {
+      yield call(() => context.resume());
       yield put(SystemAction.setTouchedForPlay(true));
-      yield delay(100);
     }
   }),
 
   takeEvery(SystemAction.REGISTER_MIDI_DEVICE, function*(
     _action: SystemAction.RegisterMIDIDevice
-  ) {
+  ): Generator<any, void, any> {
     const characteristic = yield call(async () => {
       try {
         await getMidiAccess();

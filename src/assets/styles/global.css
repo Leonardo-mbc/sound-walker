@@ -1,12 +1,23 @@
 html,
 body,
 #app {
+  box-sizing: border-box;
   font-family: 'Play', 'Rounded Mplus 1c', sans-serif;
   width: 100%;
   height: 100%;
   margin: 0px;
   background-color: #212121;
   color: #efefef;
+}
+
+html,
+body {
+  height: 100dvh;
+}
+
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 }
 
 a:link,
@@ -16,12 +27,6 @@ a:active {
   color: #efefef;
 }
 
-body.iphonex {
-  position: absolute;
-  bottom: 80px;
-}
-
-body.iphonex canvas {
-  bottom: 0px;
-  position: absolute;
+body.ios {
+  box-sizing: border-box;
 }

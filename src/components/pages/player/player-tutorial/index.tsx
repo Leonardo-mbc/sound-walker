@@ -69,7 +69,7 @@ export class PlayerTutorial extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -221,7 +221,7 @@ export class PlayerTutorial extends React.Component<
 
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.container}
         data-title={`${getTitleName(mode)} TUTORIAL`}
         data-target={TUTORIAL_CLOSE}

@@ -10,8 +10,8 @@
   overflow: hidden;
 
   :local(.chip-cursor) {
-    width: 40vh;
-    height: 40vh;
+    width: 50%;
+    height: 50%;
     border-radius: 100%;
     background: transparent;
     position: relative;

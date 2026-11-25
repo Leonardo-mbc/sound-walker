@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as styles from './style.css';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 
 interface TitleIntroProps {
   isLoadComplete: boolean;
@@ -35,7 +35,7 @@ export class TitleIntro extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -88,7 +88,7 @@ export class TitleIntro extends React.Component<
     const { creditState } = this.state;
 
     return (
-      <div ref={(elem) => (this.container = elem)} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         {isLoadComplete ? (
           <div className={styles.goToMainMenu}>
             {(() => {
@@ -120,7 +120,7 @@ export class TitleIntro extends React.Component<
             </div>
           </div>
         ) : (
-          <Redirect to={'/'} />
+          <Navigate to="/" replace />
         )}
       </div>
     );

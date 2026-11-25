@@ -1,15 +1,14 @@
 import { connect } from 'react-redux';
-import { RouteProps } from 'react-router';
 import { Player } from '.';
 import { PlayerState } from './player-interfaces';
 import * as PlayerAction from './player-actions';
 import { MusicSelectMode } from '../music-select/music-select-container';
 import * as SystemAction from '../../../systems/system-actions';
 import { Configs } from '../../../systems/system-interfaces';
+import { State } from '../../../constant/initial-state';
 
 export interface PlayerViewProps {
   player: PlayerState;
-  router: RouteProps;
   mode: MusicSelectMode;
   isSystemReady: boolean;
   skipTutorial: boolean;
@@ -24,11 +23,9 @@ export interface PlayerViewProps {
 }
 
 export const PlayerView = connect(
-  (state: PlayerViewProps) => {
-    const { player, router } = state;
+  (state: State) => {
     return {
-      player,
-      router,
+      player: state.player,
     };
   },
   (dispatch) => ({

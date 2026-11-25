@@ -14,7 +14,7 @@ interface NotesPlayerState {
   stepsTimers: number[];
   stepsState: StepsState;
   timingBarBlink: boolean;
-  tapEffectDoms: JSX.Element[];
+  tapEffectDoms: React.ReactElement[];
 }
 
 interface StepsState {
@@ -76,7 +76,7 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
   componentDidMount() {
     let passiveSupported = false;
     try {
-      document.addEventListener("test", null, Object.defineProperty({}, "passive", {
+      document.addEventListener("test", function () {}, Object.defineProperty({}, "passive", {
         get: function() {
           passiveSupported = true;
         }
@@ -118,7 +118,7 @@ export class NotesPlayer extends React.Component<NotesPlayerProps, NotesPlayerSt
     const { stepsState, timingBarBlink, tapEffectDoms } = this.state;
 
     return (
-      <div ref={(elem) => this.container = elem} className={styles.container}>
+      <div ref={(elem) => { this.container = elem; }} className={styles.container}>
         {scores.map((score, scoreKey) => {
           return score.map((_, stepKey) => {
             const key = `${scoreKey}-${stepKey}`;

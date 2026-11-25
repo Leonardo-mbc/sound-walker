@@ -23,7 +23,12 @@ export class CircleVisualizer extends React.Component<
 > {
   private container: HTMLDivElement;
   private renderer: THREE.WebGLRenderer;
-  private composer: typeof EffectComposer;
+  private composer: EffectComposer;
+  private clock: THREE.Clock;
+  private camera: THREE.PerspectiveCamera;
+  private viewWidth = 0;
+  private viewHeight = 0;
+  private frameId = 0;
 
   constructor(props: CircleVisualizerProps, state: CircleVisualizerState) {
     super(props, state);
@@ -33,23 +38,26 @@ export class CircleVisualizer extends React.Component<
 
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     const cameraBasePositions = { x: 0, y: 0, z: 50 };
-    camera.position.set(
+    this.camera.position.set(
       cameraBasePositions.x,
       cameraBasePositions.y,
       cameraBasePositions.z
     );
 
+    this.clock = new THREE.Clock();
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(width, height);
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.shadowMap.enabled = false;
-    this.renderer.setPixelRatio(devicePixelRatio);
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
 
-    this.composer = new EffectComposer(this.renderer);
-    const renderPass = new RenderPass(scene, camera);
-    renderPass.renderToScreen = true;
+    this.composer = new EffectComposer(this.renderer, {
+      frameBufferType: THREE.UnsignedByteType,
+    });
+    const renderPass = new RenderPass(scene, this.camera);
     this.composer.addPass(renderPass);
 
     // materialの追加
@@ -63,6 +71,7 @@ export class CircleVisualizer extends React.Component<
 
     waveForm = waveFormFactory();
     waveForm.visible = true;
+    waveForm.renderOrder = 2;
     scene.add(waveForm);
   }
 
@@ -71,24 +80,73 @@ export class CircleVisualizer extends React.Component<
     this.frameAction();
   }
 
+  componentWillUnmount() {
+    cancelAnimationFrame(this.frameId);
+  }
+
   frameAction() {
+    this.resizeIfNeeded();
     this.calcWaveForm();
     this.calcSpectrum();
-    this.composer.render();
-    requestAnimationFrame(this.frameAction.bind(this));
+    this.composer.render(this.clock.getDelta());
+    this.frameId = requestAnimationFrame(this.frameAction.bind(this));
+  }
+
+  resizeIfNeeded() {
+    const width = this.container.clientWidth;
+    const height = this.container.clientHeight;
+    if (width === 0 || height === 0) {
+      return;
+    }
+    if (width === this.viewWidth && height === this.viewHeight) {
+      return;
+    }
+    this.viewWidth = width;
+    this.viewHeight = height;
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.composer.setSize(width, height);
+  }
+
+  visibleRadius(z: number) {
+    const distance = Math.abs(this.camera.position.z - z);
+    return (
+      Math.tan(THREE.MathUtils.degToRad(this.camera.fov * 0.5)) * distance
+    );
+  }
+
+  fitRadius(z: number) {
+    const vertical = this.visibleRadius(z);
+    if (this.viewHeight === 0) {
+      return vertical;
+    }
+    const horizontal = vertical * (this.viewWidth / this.viewHeight);
+    return Math.min(vertical, horizontal);
   }
 
   calcWaveForm() {
     const { analyzerParams } = this.props;
 
     const waveFormMesh = waveForm as THREE.Mesh;
-    const waveFormGeometry = waveFormMesh.geometry as THREE.Geometry;
+    const waveFormGeometry = waveFormMesh.geometry as THREE.BufferGeometry;
+    const positions = waveFormGeometry.getAttribute(
+      'position'
+    ) as THREE.BufferAttribute;
+    const vertical = this.visibleRadius(waveForm.position.z);
+    const aspect =
+      this.viewHeight === 0 ? 1 : this.viewWidth / this.viewHeight;
+    const horizontal = vertical * aspect;
+    const span = horizontal * 2;
+    waveForm.position.x = 0;
+    waveForm.position.y = 0;
 
-    for (var i = 0; i < 1024; i++) {
-      waveFormGeometry.vertices[i].y = analyzerParams.times[i] * 1;
+    for (let i = 0; i < 1024; i++) {
+      const centered = (analyzerParams.times[i] - 128) / 128;
+      positions.setX(i, (i / 1023 - 0.5) * span);
+      positions.setY(i, centered * Math.min(vertical, horizontal) * 0.22);
     }
 
-    waveFormGeometry.verticesNeedUpdate = true;
+    positions.needsUpdate = true;
   }
 
   getSpectrum() {
@@ -103,69 +161,62 @@ export class CircleVisualizer extends React.Component<
 
     const freqsLength = analyzerParams.freqs.length;
     const theta = Math.PI / freqsLength;
-    for (let i = 0; i < freqsLength; i++) {
-      const value = Math.sqrt(analyzerParams.freqs[i]);
-      const width = value * 0.15 < 1 ? 1 : value * 0.15;
-      const halfWidth = width * 0.25;
-      const spectrumMeth = circleSpectrum.children[i] as THREE.Mesh;
-      const spectrumGeometry = spectrumMeth.geometry as THREE.ShapeGeometry;
-      const spectrumMaterial = spectrumMeth.material as THREE.MeshBasicMaterial;
-      const spectrumVertices = spectrumGeometry.vertices;
+    const inner = 9.2;
+    const maxRadius = this.fitRadius(circleSpectrum.position.z) * 0.96;
 
-      const thetaMuli = theta * i;
-      const thetaPlusPI = thetaMuli + Math.PI / 2;
-      const thetaSubPI = thetaMuli - Math.PI / 2;
+    const placeBar = (index: number, freqIndex: number) => {
+      const freq = analyzerParams.freqs[freqIndex] || 0;
+      const level = Math.sqrt(freq / 255);
+      const outer = inner + 1.8 + level * Math.max(0, maxRadius - inner - 1.8);
+      const halfWidth = 1.1 + level * 1.2;
+      const spectrumMesh = circleSpectrum.children[index] as THREE.Mesh;
+      const spectrumGeometry = spectrumMesh.geometry as THREE.BufferGeometry;
+      const spectrumMaterial = spectrumMesh.material as THREE.MeshBasicMaterial;
+      const spectrumVertices = spectrumGeometry.getAttribute(
+        'position'
+      ) as THREE.BufferAttribute;
+      const angle = theta * index;
+      const plus = angle + Math.PI / 2;
+      const sub = angle - Math.PI / 2;
 
-      spectrumVertices[2].x =
-        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaPlusPI);
-      spectrumVertices[2].y =
-        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaPlusPI);
-      spectrumVertices[3].x =
-        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaSubPI);
-      spectrumVertices[3].y =
-        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaSubPI);
-
-      spectrumGeometry.verticesNeedUpdate = true;
-      spectrumMaterial.color.setHSL(analyzerParams.freqs[i] / 256, 1.0, 0.5);
-    }
-
-    for (let i = freqsLength; i < freqsLength * 2; i++) {
-      const value = Math.sqrt(analyzerParams.freqs[i - freqsLength]);
-      const width = value * 0.15 < 1 ? 1 : value * 0.15;
-      const halfWidth = width * 0.25;
-      const spectrumMeth = circleSpectrum.children[i] as THREE.Mesh;
-      const spectrumGeometry = spectrumMeth.geometry as THREE.ShapeGeometry;
-      const spectrumMaterial = spectrumMeth.material as THREE.MeshBasicMaterial;
-      const spectrumVertices = spectrumGeometry.vertices;
-
-      const thetaMuli = theta * i;
-      const thetaPlusPI = thetaMuli + Math.PI / 2;
-      const thetaSubPI = thetaMuli - Math.PI / 2;
-
-      spectrumVertices[2].x =
-        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaPlusPI);
-      spectrumVertices[2].y =
-        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaPlusPI);
-      spectrumVertices[3].x =
-        value * Math.cos(thetaMuli) + halfWidth * Math.cos(thetaSubPI);
-      spectrumVertices[3].y =
-        value * Math.sin(thetaMuli) + halfWidth * Math.sin(thetaSubPI);
-
-      spectrumGeometry.verticesNeedUpdate = true;
-      spectrumMaterial.color.setHSL(
-        analyzerParams.freqs[i - freqsLength] / 256,
-        1.0,
-        0.5
+      spectrumVertices.setXY(
+        0,
+        inner * Math.cos(angle) + halfWidth * Math.cos(sub),
+        inner * Math.sin(angle) + halfWidth * Math.sin(sub)
       );
+      spectrumVertices.setXY(
+        1,
+        inner * Math.cos(angle) + halfWidth * Math.cos(plus),
+        inner * Math.sin(angle) + halfWidth * Math.sin(plus)
+      );
+      spectrumVertices.setXY(
+        2,
+        outer * Math.cos(angle) + halfWidth * Math.cos(plus),
+        outer * Math.sin(angle) + halfWidth * Math.sin(plus)
+      );
+      spectrumVertices.setXY(
+        3,
+        outer * Math.cos(angle) + halfWidth * Math.cos(sub),
+        outer * Math.sin(angle) + halfWidth * Math.sin(sub)
+      );
+      spectrumVertices.needsUpdate = true;
+      spectrumMaterial.color.setHSL(freq / 256, 1, 0.62);
+    };
+
+    for (let i = 0; i < freqsLength; i++) {
+      placeBar(i, i);
+    }
+    for (let i = freqsLength; i < freqsLength * 2; i++) {
+      placeBar(i, i - freqsLength);
     }
 
-    speakerCone.position.z = analyzerParams.freqs[6] * 0.07;
+    speakerCone.position.z = Math.min(analyzerParams.freqs[6] * 0.02, 1);
   }
 
   render() {
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={styles.container}
       />
     );

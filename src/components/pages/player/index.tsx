@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
 import * as styles from './style.css';
 import { PlayerViewProps } from './player-container';
 import { SoundPlayer } from '../../commons/sound-player';
@@ -22,13 +21,13 @@ interface PlayerViewState {
 }
 
 export class Player extends React.Component<
-  PlayerViewProps & RouteComponentProps<MatchParams>,
+  PlayerViewProps & { match: { params: MatchParams } },
   PlayerViewState
 > {
   private container: HTMLDivElement;
 
   constructor(
-    props: PlayerViewProps & RouteComponentProps<MatchParams>,
+    props: PlayerViewProps & { match: { params: MatchParams } },
     state: PlayerViewState
   ) {
     super(props, state);
@@ -56,7 +55,7 @@ export class Player extends React.Component<
     try {
       document.addEventListener(
         'test',
-        null,
+        function () {},
         Object.defineProperty({}, 'passive', {
           get: function() {
             passiveSupported = true;
@@ -117,7 +116,7 @@ export class Player extends React.Component<
     const { musicId } = match.params;
     return (
       <div
-        ref={(elem) => (this.container = elem)}
+        ref={(elem) => { this.container = elem; }}
         className={`${styles.container} ${
           showTutorial ? styles.tutorialShow : ''
         }`}

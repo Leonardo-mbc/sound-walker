@@ -1,40 +1,59 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Switch, Route } from 'react-router';
-import createHistory from 'history/createHashHistory';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Provider } from "react-redux";
-import { ConnectedRouter, routerReducer as router, routerMiddleware } from 'react-router-redux';
+import { createRoot } from 'react-dom/client';
+import { HashRouter, Route, Routes, useNavigate } from 'react-router';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from '@redux-devtools/extension';
 
 import { reducer } from './reducers';
 import { rootSaga } from './sagas';
 import { AppView } from './components/pages/app/app-container';
+import { AudioUtils } from './utilities/audio-utils';
+import { bindNavigator } from './utilities/navigate';
 
-const history = createHistory();
-const routerMiddlewareImpl = routerMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
   ...reducer,
-  router
 });
-const storeEnhancer = applyMiddleware(routerMiddlewareImpl, sagaMiddleware);
+const storeEnhancer = applyMiddleware(sagaMiddleware);
 const composeEnhancers = composeWithDevTools({
-  serialize: true
+  serialize: true,
 });
-const store = process.env.NODE_ENV === 'production'
-  ? createStore(rootReducer, storeEnhancer)
-  : createStore(rootReducer, composeEnhancers(storeEnhancer));
+const enhancer =
+  process.env.NODE_ENV === 'production'
+    ? storeEnhancer
+    : composeEnhancers(storeEnhancer);
+const store = createStore(rootReducer, undefined, enhancer);
 
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render((
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Switch>
-        <Route path='/' component={AppView} />        
-      </Switch>
-    </ConnectedRouter>
-  </Provider>
-), document.getElementById('app'));
+function unlockAudio() {
+  AudioUtils.instance.unlockFromUserGesture();
+}
+
+window.addEventListener('touchstart', unlockAudio, { capture: true });
+window.addEventListener('touchend', unlockAudio, { capture: true });
+window.addEventListener('click', unlockAudio, { capture: true });
+
+function NavigatorBinder(): null {
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    bindNavigator(navigate);
+  }, [navigate]);
+  return null;
+}
+
+const container = document.getElementById('app');
+if (container) {
+  createRoot(container).render(
+    <Provider store={store}>
+      <HashRouter>
+        <NavigatorBinder />
+        <Routes>
+          <Route path="/*" element={<AppView />} />
+        </Routes>
+      </HashRouter>
+    </Provider>
+  );
+}

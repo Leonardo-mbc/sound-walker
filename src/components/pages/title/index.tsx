@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Routes } from 'react-router';
 import * as styles from './style.css';
 import { TitleViewProps } from './title-container';
 import { TitleMenu } from './title-menu';
@@ -19,37 +19,37 @@ export class Title extends React.Component<TitleViewProps, {}> {
 
     return (
       <div className={styles.container}>
-        <Switch>
+        <Routes>
           <Route
             path="/title/menu"
-            render={() => (
+            element={
               <TitleMenu
                 isLoadComplete={title.isLoadComplete}
                 jumpTitleSound={jumpTitleSound}
                 goToMusicSelect={goToMusicSelect}
                 goToDJMode={goToDJMode}
               />
-            )}
+            }
           />
           <Route
             path="/title/intro"
-            render={() => (
+            element={
               <TitleIntro
                 isLoadComplete={title.isLoadComplete}
                 goToMainMenu={goToMainMenu}
               />
-            )}
+            }
           />
           <Route
-            path="/"
-            render={() => (
+            path="*"
+            element={
               <TitleIndex
                 isLoadComplete={title.isLoadComplete}
                 startGameTitle={startGameTitle}
               />
-            )}
+            }
           />
-        </Switch>
+        </Routes>
       </div>
     );
   }

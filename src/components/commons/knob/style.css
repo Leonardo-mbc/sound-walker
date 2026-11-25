@@ -1,27 +1,27 @@
 @import '../../../assets/styles/constant.css';
 
 :local(.container) {
-  width: 20vh;
-  height: 20vh;
-  margin: 5vh;
+  width: 20vmin;
+  height: 20vmin;
+  margin: 5vmin;
 
   position: relative;
 
   &:local(.whit-label) {
-    margin: 5vh 5vh calc(5vh + 1em) 5vh;
+    margin: 5vmin 5vmin calc(5vmin + 1em) 5vmin;
   }
 
   :local(.indicators) {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20vh;
-    height: 20vh;
+    width: 20vmin;
+    height: 20vmin;
     border-radius: 100%;
 
     :local(.indicator) {
       width: 140%;
-      height: 0.5vh;
+      height: 0.5vmin;
       transform-origin: center;
       display: flex;
       justify-content: flex-start;
@@ -31,7 +31,7 @@
       &::before {
         content: '';
         display: block;
-        width: 3vh;
+        width: 3vmin;
         height: 100%;
         background-color: #1d1d1d;
         box-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px, #1d1d1d 0 0 10px;

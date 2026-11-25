@@ -3,10 +3,10 @@ import { App } from './index';
 import { State } from '../../../constant/initial-state';
 import * as SystemAction from '../../../systems/system-actions';
 
-import * as TWEEN from 'tween.js';
+import * as TWEEN from '../../../utilities/tween';
 
-function animate() {
-  TWEEN.update();
+function animate(time: number) {
+  TWEEN.update(time);
   requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
